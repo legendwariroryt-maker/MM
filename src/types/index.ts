@@ -32,6 +32,7 @@ export interface MindfulnessExercise {
   description: string;
   duration: number; // in minutes
   type: 'breathing' | 'meditation' | 'grounding';
+  icon?: string;
   instructions: string[];
   completed?: boolean;
 }

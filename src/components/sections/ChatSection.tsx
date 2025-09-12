@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, RotateCcw, Bot, User } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { ChatMessage, EmotionType } from "@/types";
 
-const emotions: EmotionType[] = ['anxious', 'happy', 'stressed', 'sad', 'angry', 'excited', 'overwhelmed', 'calm'];
+const emotions = [
+  { name: 'Happy', emoji: '😊' },
+  { name: 'Sad', emoji: '😢' },
+  { name: 'Anxious', emoji: '😰' },
+  { name: 'Angry', emoji: '😠' },
+  { name: 'Tired', emoji: '😴' },
+  { name: 'Grateful', emoji: '😌' },
+  { name: 'Stressed', emoji: '😤' },
+  { name: 'Excited', emoji: '🤩' },
+];
 
 
 export function ChatSection() {
@@ -17,14 +25,15 @@ export function ChatSection() {
     {
       id: '1',
       type: 'ai',
-      message: "Hi there! I'm your mental health companion. How are you feeling today? Select your emotion and tell me what's on your mind.",
+      message: "Hi there! I'm here to listen and support you.\nHow are you feeling today?",
       timestamp: new Date()
     }
   ]);
   const [selectedEmotion, setSelectedEmotion] = useState<string>('');
-  const [intensity, setIntensity] = useState<number[]>([5]);
+  const [intensity, setIntensity] = useState<number>(8);
   const [userMessage, setUserMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmotionContext, setShowEmotionContext] = useState(false);
 
   const getAIResponse = async (emotion: string, userMsg: string): Promise<string> => {
     // Simple keyword detection for crisis situations
@@ -38,7 +47,7 @@ export function ChatSection() {
     }
     
     try {
-      const systemPrompt = `You are a compassionate mental health companion for teenagers. The user is feeling ${emotion} with intensity ${intensity[0]}/10. 
+      const systemPrompt = `You are a compassionate mental health companion for teenagers. The user is feeling ${emotion} with intensity ${intensity}/10. 
       Provide empathetic, supportive responses that:
       - Acknowledge their feelings
       - Offer practical coping strategies
@@ -73,14 +82,14 @@ export function ChatSection() {
   };
 
   const handleSendMessage = async () => {
-    if (!userMessage.trim() || !selectedEmotion || isLoading) return;
+    if (!userMessage.trim() || isLoading) return;
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       type: 'user',
       message: userMessage,
       emotion: selectedEmotion,
-      intensity: intensity[0],
+      intensity: intensity,
       timestamp: new Date()
     };
 
@@ -117,117 +126,153 @@ export function ChatSection() {
     setMessages([{
       id: '1',
       type: 'ai',
-      message: "Hi there! I'm your mental health companion. How are you feeling today?",
+      message: "Hi there! I'm here to listen and support you.\nHow are you feeling today?",
       timestamp: new Date()
     }]);
     setSelectedEmotion('');
-    setIntensity([5]);
+    setIntensity(8);
     setUserMessage('');
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bot className="w-5 h-5 text-primary" />
-            AI Mental Health Companion
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Emotion Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">How are you feeling?</label>
-              <Select value={selectedEmotion} onValueChange={setSelectedEmotion}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your emotion" />
-                </SelectTrigger>
-                <SelectContent>
-                  {emotions.map(emotion => (
-                    <SelectItem key={emotion} value={emotion} className="capitalize">
-                      {emotion}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                Intensity: {intensity[0]}/10
-              </label>
-              <Slider
-                value={intensity}
-                onValueChange={setIntensity}
-                min={1}
-                max={10}
-                step={1}
-                className="w-full"
-              />
-            </div>
-          </div>
-
-          {/* Chat History */}
-          <Card>
-            <ScrollArea className="h-64 p-4">
-              <div className="space-y-4">
-                {messages.map(message => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-xs lg:max-w-md p-3 rounded-lg ${
-                      message.type === 'user' 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-muted text-muted-foreground'
-                    }`}>
-                      <div className="flex items-start gap-2">
-                        {message.type === 'ai' ? (
-                          <Bot className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                        ) : (
-                          <User className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                        )}
-                        <div>
-                          <p className="text-sm">{message.message}</p>
-                          {message.emotion && (
-                            <p className="text-xs opacity-70 mt-1">
-                              Feeling: {message.emotion} ({message.intensity}/10)
-                            </p>
-                          )}
-                        </div>
-                      </div>
+    <Card className="max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          💬 Supportive Chat
+        </CardTitle>
+        <CardDescription>
+          Chat with your AI companion for emotional support and guidance
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Chat Messages */}
+        <ScrollArea className="h-[400px] w-full border rounded-lg p-4">
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={cn(
+                  "flex gap-3",
+                  message.type === 'user' ? "justify-end" : "justify-start"
+                )}
+              >
+                {message.type === 'ai' && (
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      🤗
                     </div>
                   </div>
+                )}
+                <div
+                  className={cn(
+                    "max-w-xs px-4 py-2 rounded-lg whitespace-pre-wrap",
+                    message.type === 'user'
+                      ? "bg-primary text-primary-foreground ml-auto"
+                      : "bg-muted"
+                  )}
+                >
+                  <p className="text-sm">{message.message}</p>
+                </div>
+                {message.type === 'user' && (
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                      👤
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex gap-3 justify-start">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                    🤗
+                  </div>
+                </div>
+                <div className="bg-muted px-4 py-2 rounded-lg">
+                  <p className="text-sm">Thinking...</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+
+        {/* Emotion Context Toggle */}
+        <button
+          onClick={() => setShowEmotionContext(!showEmotionContext)}
+          className="text-sm text-primary flex items-center gap-1 hover:underline"
+        >
+          ⭐ {showEmotionContext ? 'Hide' : 'Add'} emotion context (optional)
+        </button>
+
+        {/* Emotion Selection */}
+        {showEmotionContext && (
+          <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
+            <div>
+              <p className="text-sm font-medium mb-3">How are you feeling right now?</p>
+              <div className="grid grid-cols-4 gap-2">
+                {emotions.map((emotion) => (
+                  <Button
+                    key={emotion.name}
+                    variant={selectedEmotion === emotion.name ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedEmotion(emotion.name)}
+                    className="flex flex-col items-center gap-1 h-auto py-3"
+                  >
+                    <span className="text-lg">{emotion.emoji}</span>
+                    <span className="text-xs">{emotion.name}</span>
+                  </Button>
                 ))}
               </div>
-            </ScrollArea>
-          </Card>
+            </div>
 
-          {/* Message Input */}
-          <div className="space-y-3">
-            <Textarea
-              placeholder="Tell me what's on your mind..."
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              className="min-h-[80px]"
-            />
-            <div className="flex gap-2">
-              <Button 
-                onClick={handleSendMessage} 
-                disabled={!selectedEmotion || !userMessage.trim() || isLoading}
-                className="flex-1"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                {isLoading ? 'Thinking...' : 'Send Message'}
-              </Button>
-              <Button variant="outline" onClick={clearChat} disabled={isLoading}>
-                <RotateCcw className="w-4 h-4" />
-              </Button>
+            {/* Intensity Slider */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-sm font-medium">Intensity: {intensity}/10</Label>
+              </div>
+              <div className="space-y-2">
+                <Slider
+                  value={[intensity]}
+                  onValueChange={(value) => setIntensity(value[0])}
+                  max={10}
+                  min={1}
+                  step={1}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Low</span>
+                  <span>Moderate</span>
+                  <span>High</span>
+                </div>
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        )}
+
+        {/* Message Input */}
+        <div className="flex gap-2">
+          <Textarea
+            placeholder="Share what's on your mind..."
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+            className="min-h-[60px] resize-none"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+              }
+            }}
+          />
+          <Button 
+            onClick={handleSendMessage} 
+            disabled={!userMessage.trim() || isLoading}
+            className="self-end"
+          >
+            {isLoading ? 'Thinking...' : 'Send'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

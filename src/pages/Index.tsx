@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Navigation } from "@/components/Navigation";
 import { ChatSection } from "@/components/sections/ChatSection";
 import { EmotionsSection } from "@/components/sections/EmotionsSection";
 import { MindfulnessSection } from "@/components/sections/MindfulnessSection";
 import { JournalSection } from "@/components/sections/JournalSection";
 import { EmergencySection } from "@/components/sections/EmergencySection";
-import { Brain, Heart, Sparkles } from "lucide-react";
+import { Brain } from "lucide-react";
 import { AppSection } from "@/types";
-import heroImage from "@/assets/hero-mental-health.jpg";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState<AppSection>('chat');
@@ -32,96 +29,80 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Header */}
-      <header className="relative overflow-hidden">
-        <div 
-          className="h-64 bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-accent/80" />
-          <div className="relative container mx-auto px-4 h-full flex items-center">
-            <div className="text-white max-w-2xl">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">
-                Mindful Me
-              </h1>
-              <p className="text-xl md:text-2xl mb-6 text-white/90">
-                Your personal mental health companion for teenagers
-              </p>
-              <div className="flex flex-wrap items-center gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <Brain className="w-5 h-5" />
-                  <span>AI Support</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Heart className="w-5 h-5" />
-                  <span>Emotion Tracking</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  <span>Mindfulness Tools</span>
-                </div>
-              </div>
-            </div>
+      <header className="py-6 px-4 border-b bg-card/50 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-primary">MindfulMe</h1>
+            <button className="text-sm text-muted-foreground hover:text-foreground">
+              Sign out
+            </button>
           </div>
         </div>
       </header>
 
+      {/* Welcome Section */}
+      <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+        <h2 className="text-3xl font-bold text-foreground mb-2">
+          Welcome back, friend! 💙
+        </h2>
+        <p className="text-muted-foreground mb-8">
+          Your personal mental wellness companion
+        </p>
+
+        {/* Navigation Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <Button
+            variant={activeSection === 'chat' ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveSection('chat')}
+            className="flex items-center gap-2"
+          >
+            <Brain className="w-4 h-4" />
+            Supportive Chat
+          </Button>
+          <Button
+            variant={activeSection === 'emotions' ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveSection('emotions')}
+            className="flex items-center gap-2"
+          >
+            📊 Emotion Analytics
+          </Button>
+          <Button
+            variant={activeSection === 'journal' ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveSection('journal')}
+            className="flex items-center gap-2"
+          >
+            📝 Wellness Journal
+          </Button>
+          <Button
+            variant={activeSection === 'mindfulness' ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveSection('mindfulness')}
+            className="flex items-center gap-2"
+          >
+            🧘 Mindfulness
+          </Button>
+          <Button
+            variant={activeSection === 'emergency' ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveSection('emergency')}
+            className="flex items-center gap-2"
+          >
+            🆘 Emergency Help
+          </Button>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Navigation */}
-        <Navigation 
-          activeSection={activeSection} 
-          onSectionChange={setActiveSection} 
-        />
-
-        {/* Welcome Message */}
-        {activeSection === 'chat' && (
-          <Card className="bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
-            <CardContent className="p-6 text-center">
-              <h2 className="text-2xl font-semibold mb-3 text-primary">
-                Welcome to Your Safe Space 💙
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                This is a judgment-free zone where you can explore your emotions, 
-                practice mindfulness, and get support when you need it most.
-              </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => setActiveSection('emotions')}>
-                  Track Emotions
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setActiveSection('mindfulness')}>
-                  Try Breathing Exercises
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setActiveSection('journal')}>
-                  Start Journaling
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Active Section Content */}
+      <main className="max-w-6xl mx-auto px-4 pb-8">
         <div className="animate-fade-in">
           {renderSection()}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-muted/50 border-t">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center space-y-4">
-            <p className="text-sm text-muted-foreground">
-              <strong>Important:</strong> This app is for demonstration purposes and is not a substitute 
-              for professional mental health care. If you're in crisis, please contact emergency services 
-              or a mental health professional immediately.
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Crisis Resources: 988 Suicide & Crisis Lifeline | Text HOME to 741741
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

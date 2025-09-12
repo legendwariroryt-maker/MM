@@ -9,65 +9,70 @@ import { MindfulnessExercise } from "@/types";
 const exercises: MindfulnessExercise[] = [
   {
     id: '1',
-    name: '4-7-8 Breathing',
-    description: 'Inhale for 4, hold for 7, exhale for 8. Great for anxiety.',
+    name: 'Deep Breathing',
+    description: 'Calm your mind with focused breathing',
     duration: 5,
     type: 'breathing',
+    icon: '🫁',
     instructions: [
       'Sit comfortably with your back straight',
-      'Place the tip of your tongue against the tissue behind your upper teeth',
-      'Exhale completely through your mouth',
-      'Inhale through your nose for 4 counts',
-      'Hold your breath for 7 counts',
-      'Exhale through your mouth for 8 counts',
-      'Repeat 3-4 cycles'
+      'Place one hand on your chest, one on your belly',
+      'Breathe in slowly through your nose for 4 counts',
+      'Feel your belly rise more than your chest',
+      'Hold your breath for 4 counts',
+      'Exhale slowly through your mouth for 6 counts',
+      'Repeat this cycle for the duration'
     ]
   },
   {
     id: '2',
-    name: 'Box Breathing',
-    description: 'Equal counts of inhaling, holding, exhaling, and holding.',
-    duration: 4,
-    type: 'breathing',
+    name: 'Body Scan Meditation',
+    description: 'Release tension by scanning your body',
+    duration: 10,
+    type: 'meditation',
+    icon: '🧘',
     instructions: [
-      'Sit comfortably and close your eyes',
-      'Inhale slowly for 4 counts',
-      'Hold your breath for 4 counts',
-      'Exhale slowly for 4 counts',
-      'Hold empty lungs for 4 counts',
-      'Repeat for several cycles'
+      'Lie down in a comfortable position',
+      'Close your eyes and take a few deep breaths',
+      'Start with your toes - notice any sensations',
+      'Move attention slowly up your legs',
+      'Continue scanning through your torso, arms, and head',
+      'Don\'t try to change anything, just observe',
+      'End by noticing your whole body at once'
     ]
   },
   {
     id: '3',
-    name: '5-4-3-2-1 Grounding',
-    description: 'Use your senses to ground yourself in the present moment.',
+    name: 'Gratitude Reflection',
+    description: 'Focus on positive aspects of your life',
     duration: 3,
-    type: 'grounding',
+    type: 'meditation',
+    icon: '🙏',
     instructions: [
-      'Name 5 things you can see',
-      'Name 4 things you can touch',
-      'Name 3 things you can hear',
-      'Name 2 things you can smell',
-      'Name 1 thing you can taste',
-      'Take a deep breath and notice how you feel'
+      'Sit quietly and close your eyes',
+      'Take three deep breaths to center yourself',
+      'Think of three things you\'re grateful for today',
+      'For each one, really feel the gratitude in your heart',
+      'Notice how gratitude feels in your body',
+      'Expand this feeling to fill your whole being',
+      'End with a smile and gentle breathing'
     ]
   },
   {
     id: '4',
     name: 'Progressive Muscle Relaxation',
-    description: 'Tense and release muscle groups to reduce physical tension.',
-    duration: 10,
+    description: 'Systematically relax your entire body',
+    duration: 15,
     type: 'meditation',
+    icon: '🦋',
     instructions: [
-      'Lie down or sit comfortably',
-      'Start with your toes - tense for 5 seconds, then release',
-      'Move to your calves - tense and release',
-      'Continue up your body: thighs, glutes, abdomen',
-      'Tense your hands into fists, then release',
-      'Tense your arms and shoulders, then release',
-      'Scrunch your face muscles, then release',
-      'Take deep breaths and enjoy the relaxation'
+      'Lie down in a comfortable position',
+      'Start with your toes - tense them for 5 seconds, then relax',
+      'Move to your calves, then thighs, tensing and releasing',
+      'Continue with your abdomen, chest, and arms',
+      'Tense your face muscles, then let everything go',
+      'Feel the contrast between tension and relaxation',
+      'Enjoy the feeling of complete relaxation'
     ]
   }
 ];
@@ -146,63 +151,70 @@ export function MindfulnessSection() {
   return (
     <div className="space-y-6">
       {/* Exercise Library */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Mindfulness Exercises</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {exercises.map(exercise => (
-              <Card key={exercise.id} className="relative">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <Badge variant={exercise.type === 'breathing' ? 'secondary' : 
-                                   exercise.type === 'meditation' ? 'default' : 'outline'}>
-                      {exercise.type}
-                    </Badge>
-                    {completedExercises.includes(exercise.id) && (
-                      <CheckCircle className="w-5 h-5 text-success" />
-                    )}
-                  </div>
-                  <h3 className="font-semibold mb-2">{exercise.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-3">{exercise.description}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">{exercise.duration} min</span>
-                    <Button 
-                      size="sm" 
-                      onClick={() => startExercise(exercise)}
-                      disabled={isActive}
-                      variant="wellness"
-                    >
-                      Start
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
+          🧘 Mindfulness & Breathing
+        </h2>
+        <p className="text-muted-foreground">
+          Take a moment to center yourself with guided exercises
+        </p>
+      </div>
+
+      {/* Exercise Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {exercises.map(exercise => (
+          <Card key={exercise.id} className="relative hover:shadow-lg transition-shadow">
+            <CardContent className="p-6 text-center">
+              <div className="mb-4">
+                <div className="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">{exercise.icon}</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{exercise.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{exercise.description}</p>
+                <div className="text-primary font-medium mb-4">
+                  {exercise.duration} minutes
+                </div>
+              </div>
+              <Button 
+                onClick={() => startExercise(exercise)}
+                disabled={isActive}
+                className="w-full"
+                variant="default"
+              >
+                Start Exercise
+              </Button>
+              {completedExercises.includes(exercise.id) && (
+                <div className="absolute top-3 right-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* Active Exercise */}
       {selectedExercise && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-center">{selectedExercise.name}</CardTitle>
+        <Card className="mb-8">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-2">
+              <span className="text-3xl">{selectedExercise.icon}</span>
+            </div>
+            <CardTitle>{selectedExercise.name}</CardTitle>
+            <p className="text-muted-foreground">{selectedExercise.description}</p>
           </CardHeader>
           <CardContent className="text-center space-y-6">
-            <div className="relative w-32 h-32 mx-auto">
-              <div className={`w-32 h-32 rounded-full bg-primary/20 flex items-center justify-center ${
-                isActive ? 'animate-breathe' : ''
-              }`}>
-                <div className="text-3xl font-bold text-primary">
-                  {formatTime(timeLeft)}
-                </div>
+            {/* Timer Display */}
+            <div className="w-32 h-32 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+              <div className="text-3xl font-bold text-primary">
+                {formatTime(timeLeft)}
               </div>
             </div>
+            <p className="text-muted-foreground">Time remaining</p>
 
-            <Progress value={getProgress()} className="w-full" />
+            <Progress value={getProgress()} className="w-full max-w-md mx-auto" />
 
+            {/* Controls */}
             <div className="flex gap-3 justify-center">
               <Button onClick={pauseResume} variant="outline" size="lg">
                 {isActive ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
@@ -210,20 +222,27 @@ export function MindfulnessSection() {
               <Button onClick={resetTimer} variant="outline" size="lg">
                 <RotateCcw className="w-5 h-5" />
               </Button>
+              <Button 
+                onClick={() => markCompleted(selectedExercise.id)} 
+                className="bg-success text-white hover:bg-success/90"
+              >
+                Complete Session ✨
+              </Button>
             </div>
 
-            <Card className="text-left">
+            {/* Instructions */}
+            <Card className="text-left max-w-2xl mx-auto">
               <CardHeader>
-                <CardTitle className="text-lg">Instructions</CardTitle>
+                <CardTitle className="text-lg">Follow these steps:</CardTitle>
               </CardHeader>
               <CardContent>
-                <ol className="space-y-2 text-sm">
+                <ol className="space-y-3 text-sm">
                   {selectedExercise.instructions.map((instruction, index) => (
                     <li key={index} className="flex gap-3">
-                      <span className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                      <span className="bg-primary text-primary-foreground w-7 h-7 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                         {index + 1}
                       </span>
-                      {instruction}
+                      <span className="leading-relaxed">{instruction}</span>
                     </li>
                   ))}
                 </ol>
