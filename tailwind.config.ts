@@ -112,16 +112,49 @@ export default {
           "50%": { transform: "scale(1.05)" }
         },
         "pulse-calm": {
-          "0%, 100%": { opacity: "0.8" },
-          "50%": { opacity: "1" }
-        }
+          "0%, 100%": { 
+            opacity: "0.6",
+            transform: "scale(1)"
+          },
+          "50%": { 
+            opacity: "0.8",
+            transform: "scale(1.02)"
+          },
+        },
+        "float": {
+          "0%, 100%": { 
+            transform: "translateY(0px) rotate(0deg)" 
+          },
+          "33%": { 
+            transform: "translateY(-10px) rotate(1deg)" 
+          },
+          "66%": { 
+            transform: "translateY(5px) rotate(-1deg)" 
+          },
+        },
+        "gentle-bounce": {
+          "0%, 100%": { 
+            transform: "translateY(0px)",
+            animationTimingFunction: "cubic-bezier(0.8, 0, 1, 1)"
+          },
+          "50%": { 
+            transform: "translateY(-5px)",
+            animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "breathe": "breathe 4s ease-in-out infinite",
-        "pulse-calm": "pulse-calm 2s ease-in-out infinite",
+        "pulse-calm": "pulse-calm 4s ease-in-out infinite",
+        "float": "float 6s ease-in-out infinite",
+        "gentle-bounce": "gentle-bounce 2s ease-in-out infinite",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
   },
