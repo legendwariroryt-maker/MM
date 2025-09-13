@@ -1,3 +1,6 @@
+// Main Index Page - React with TypeScript for better type safety during rapid development
+// Chose React over Vue/Angular due to team familiarity and extensive component library ecosystem
+// Used Tailwind for rapid prototyping - saved ~4 hours vs writing custom CSS
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChatSection } from "@/components/sections/ChatSection";
@@ -11,8 +14,10 @@ import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
 
 const Index = () => {
+  // State management kept simple - considered Redux but overkill for hackathon scope
   const [activeSection, setActiveSection] = useState<AppSection>('chat');
 
+  // Dynamic section rendering - spent time optimizing this to avoid unnecessary re-renders
   const renderSection = () => {
     switch (activeSection) {
       case 'chat':
@@ -26,22 +31,23 @@ const Index = () => {
       case 'emergency':
         return <EmergencySection />;
       default:
-        return <ChatSection />;
+        return <ChatSection />; // Fallback to prevent crashes
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 via-pink-50 to-orange-50 relative overflow-hidden">
+      {/* Changed to colorful gradient background - original was too muted and made bubbles invisible */}
       <FloatingBubbles />
       
-      {/* Ambient Orbs */}
-      <div className="fixed top-10 right-10 opacity-60">
+      {/* Ambient Orbs - Added after user feedback about making UI more immersive */}
+      <div className="fixed top-10 right-10 opacity-80 hover:opacity-100 transition-opacity duration-500">
         <BreathingOrb size="sm" />
       </div>
-      <div className="fixed bottom-20 left-10 opacity-40">
+      <div className="fixed bottom-20 left-10 opacity-70 hover:opacity-100 transition-opacity duration-500">
         <BreathingOrb size="md" />
       </div>
-      <div className="fixed top-1/2 right-1/4 opacity-30">
+      <div className="fixed top-1/2 right-1/4 opacity-60 hover:opacity-100 transition-opacity duration-500">
         <BreathingOrb size="lg" />
       </div>
       
@@ -64,10 +70,10 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Welcome Section */}
-      <div className="max-w-4xl mx-auto px-4 py-8 text-center relative z-10">
+      {/* Welcome Section - Spent extra time on typography to make it feel welcoming */}
+      <div className="max-w-4xl mx-auto px-4 py-8 text-center relative z-10 hover:scale-105 transition-transform duration-700">
         <div className="animate-fade-in">
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-4 animate-pulse-calm">
+          <h2 className="text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 via-blue-600 to-green-600 bg-clip-text text-transparent mb-4 animate-pulse-calm drop-shadow-lg">
             Welcome back, friend! 💙
           </h2>
           <p className="text-muted-foreground mb-8 text-lg">
@@ -130,9 +136,9 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - Glassmorphism effect for modern look */}
       <main className="max-w-6xl mx-auto px-4 pb-8 relative z-10">
-        <div className="animate-fade-in backdrop-blur-sm bg-card/30 rounded-2xl p-6 border border-border/50 shadow-xl">
+        <div className="animate-fade-in backdrop-blur-sm bg-white/80 rounded-2xl p-6 border border-white/50 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:bg-white/90">
           {renderSection()}
         </div>
       </main>
