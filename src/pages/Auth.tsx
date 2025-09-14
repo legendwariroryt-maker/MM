@@ -68,10 +68,10 @@ export default function Auth() {
 
   // Quick guest access - useful for demos and emergency access
   const handleGuestAccess = () => {
-    navigate("/?section=emergency");
+    navigate("/");
     toast({
       title: "Guest Access",
-      description: "You're now browsing as a guest with access to support resources.",
+      description: "You're now browsing as a guest with full app access.",
     });
   };
 
@@ -107,7 +107,9 @@ export default function Auth() {
           {/* Logo and Header - matching main app styling */}
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <BreathingOrb size="md" />
+              <div className="p-2 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 animate-gentle-bounce">
+                <Heart className="w-8 h-8 text-pink-600" />
+              </div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
                 MindfulMe
               </h1>
@@ -125,29 +127,6 @@ export default function Auth() {
             </div>
           </div>
 
-          {/* Emergency Access Button - prominent placement for crisis situations */}
-          <Card className="border-destructive/50 bg-destructive/5 backdrop-blur-sm">
-            <CardContent className="p-4">
-              <div className="text-center space-y-3">
-                <AlertTriangle className="w-8 h-8 text-destructive mx-auto" />
-                <div>
-                  <h3 className="font-semibold text-destructive">Need Immediate Help?</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Get instant access to crisis support resources
-                  </p>
-                </div>
-                <Button 
-                  onClick={handleEmergencyAccess}
-                  variant="destructive" 
-                  size="lg"
-                  className="w-full animate-pulse-calm"
-                >
-                  <AlertTriangle className="w-4 h-4 mr-2" />
-                  Emergency Support Access
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Main Auth Card */}
           <Card className="backdrop-blur-md bg-card/80 border border-white/20 shadow-xl">
@@ -246,21 +225,34 @@ export default function Auth() {
                 Continue as Guest
               </Button>
 
-              {/* Toggle between Sign In/Sign Up */}
-              <div className="text-center pt-4">
+              {/* Toggle between Sign In/Sign Up and Emergency Access */}
+              <div className="text-center pt-4 space-y-3">
                 <button
                   type="button"
                   onClick={() => {
                     setIsSignUp(!isSignUp);
                     setError("");
                   }}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors block"
                 >
                   {isSignUp 
                     ? "Already have an account? Sign in" 
                     : "Don't have an account? Sign up"
                   }
                 </button>
+                
+                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                  <span>Need immediate help?</span>
+                  <Button 
+                    onClick={handleEmergencyAccess}
+                    variant="link" 
+                    size="sm"
+                    className="p-0 h-auto text-xs text-destructive hover:text-destructive/80"
+                  >
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Crisis support
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
