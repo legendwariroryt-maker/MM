@@ -31,11 +31,10 @@ const Index = () => {
     }
   }, [searchParams]);
 
-  // Redirect to auth if not authenticated (but allow guest access for emergency)
+  // Only redirect to auth if explicitly requested (allow guest access)
   useEffect(() => {
-    if (!loading && !user && !searchParams.get('section')) {
-      navigate('/auth');
-    }
+    // Don't redirect guests to auth - they should be able to browse freely
+    // Only redirect if user came from a protected route that requires auth
   }, [user, loading, navigate, searchParams]);
 
   // Show loading state while authentication is being checked
