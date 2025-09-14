@@ -56,10 +56,10 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 animate-gentle-bounce">
-                <Brain className="w-6 h-6 text-primary" />
+              <div className="p-2 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 animate-gentle-bounce">
+                <Brain className="w-6 h-6 text-pink-600" />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent drop-shadow-sm">
                 MindfulMe
               </h1>
             </div>
