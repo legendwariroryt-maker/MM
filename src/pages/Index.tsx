@@ -1,21 +1,56 @@
 // Main Index Page - React with TypeScript for better type safety during rapid development
 // Chose React over Vue/Angular due to team familiarity and extensive component library ecosystem
 // Used Tailwind for rapid prototyping - saved ~4 hours vs writing custom CSS
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChatSection } from "@/components/sections/ChatSection";
 import { EmotionsSection } from "@/components/sections/EmotionsSection";
 import { MindfulnessSection } from "@/components/sections/MindfulnessSection";
 import { JournalSection } from "@/components/sections/JournalSection";
 import { EmergencySection } from "@/components/sections/EmergencySection";
-import { Brain } from "lucide-react";
+import { Brain, LogOut, LogIn } from "lucide-react";
 import { AppSection } from "@/types";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
   // State management kept simple - considered Redux but overkill for hackathon scope
   const [activeSection, setActiveSection] = useState<AppSection>('chat');
+
+  // Handle section from URL params (useful for emergency access)
+  useEffect(() => {
+    const section = searchParams.get('section') as AppSection;
+    if (section && ['chat', 'emotions', 'mindfulness', 'journal', 'emergency'].includes(section)) {
+      setActiveSection(section);
+    }
+  }, [searchParams]);
+
+  // Redirect to auth if not authenticated (but allow guest access for emergency)
+  useEffect(() => {
+    if (!loading && !user && !searchParams.get('section')) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate, searchParams]);
+
+  // Show loading state while authentication is being checked
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 via-pink-50 to-orange-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <BreathingOrb size="lg" />
+          <div className="text-lg text-muted-foreground animate-pulse">
+            Loading your wellness space...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Dynamic section rendering - spent time optimizing this to avoid unnecessary re-renders
   const renderSection = () => {
@@ -63,8 +98,21 @@ const Index = () => {
                 MindfulMe
               </h1>
             </div>
-            <button className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50">
-              Sign out
+            <button 
+              className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
+              onClick={user ? () => signOut() : () => navigate('/auth')}
+            >
+              {user ? (
+                <>
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-4 h-4" />
+                  Sign in
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -74,7 +122,7 @@ const Index = () => {
       <div className="max-w-4xl mx-auto px-4 py-8 text-center relative z-10 hover:scale-105 transition-transform duration-700">
         <div className="animate-fade-in">
           <h2 className="text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 via-blue-600 to-green-600 bg-clip-text text-transparent mb-4 animate-pulse-calm drop-shadow-lg">
-            Welcome back, friend! 💙
+            {user ? `Welcome back, ${user.email?.split('@')[0]}! 💙` : 'Welcome, friend! 💙'}
           </h2>
           <p className="text-muted-foreground mb-8 text-lg">
             Your personal mental wellness companion
