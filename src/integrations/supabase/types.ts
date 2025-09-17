@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      parent_reports: {
+        Row: {
+          id: string
+          parent_email: string
+          privacy_level: Database["public"]["Enums"]["privacy_level"]
+          report_data: Json | null
+          report_date: string
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          parent_email: string
+          privacy_level: Database["public"]["Enums"]["privacy_level"]
+          report_data?: Json | null
+          report_date: string
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          parent_email?: string
+          privacy_level?: Database["public"]["Enums"]["privacy_level"]
+          report_data?: Json | null
+          report_date?: string
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          parent_email: string | null
+          privacy_level: Database["public"]["Enums"]["privacy_level"]
+          report_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_email?: string | null
+          privacy_level?: Database["public"]["Enums"]["privacy_level"]
+          report_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_email?: string | null
+          privacy_level?: Database["public"]["Enums"]["privacy_level"]
+          report_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +82,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      privacy_level: "all" | "some" | "none"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +209,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      privacy_level: ["all", "some", "none"],
+    },
   },
 } as const
