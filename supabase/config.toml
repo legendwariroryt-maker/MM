@@ -1,1 +1,9 @@
 project_id = "srbimjnixzhpaiwongli"
+
+[auth]
+enabled = true
+site_url = "https://srbimjnixzhpaiwongli.lovableproject.com"
+additional_redirect_urls = ["https://localhost:5173", "http://localhost:5173"]
+
+[functions.generate-parent-report]
+verify_jwt = false
