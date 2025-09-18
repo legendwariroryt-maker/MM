@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,12 @@ const PrivacySettings = () => {
   const { preferences, loading, saving, savePreferences } = useUserPreferences();
   const [privacyLevel, setPrivacyLevel] = useState<PrivacyLevel>(preferences.privacy_level);
   const [parentEmail, setParentEmail] = useState(preferences.parent_email || '');
+
+  // Sync local state with loaded preferences
+  useEffect(() => {
+    setPrivacyLevel(preferences.privacy_level);
+    setParentEmail(preferences.parent_email || '');
+  }, [preferences]);
 
   const handleSave = async () => {
     await savePreferences({
