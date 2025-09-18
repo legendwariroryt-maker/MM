@@ -14,7 +14,7 @@ const supabase = createClient(
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
-interface WeeklyReportData {
+interface DailyReportData {
   emotions: any[];
   exercises: any[];
   journals: any[];
@@ -32,7 +32,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting weekly report generation...');
+    console.log('Starting daily report generation...');
 
     // Get all users with report preferences
     const { data: userPrefs, error: prefsError } = await supabase
@@ -49,13 +49,13 @@ serve(async (req) => {
     console.log(`Found ${userPrefs?.length || 0} users with reporting enabled`);
 
     const reports = [];
-    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     for (const userPref of userPrefs || []) {
       try {
         console.log(`Generating report for user ${userPref.user_id}`);
         
-        // Check if report already sent this week
+        // Check if report already sent today
         const reportDate = new Date().toISOString().split('T')[0];
         const { data: existingReport } = await supabase
           .from('parent_reports')
@@ -65,12 +65,12 @@ serve(async (req) => {
           .single();
 
         if (existingReport) {
-          console.log(`Report already sent for user ${userPref.user_id} today`);
+          console.log(`Daily report already sent for user ${userPref.user_id} today`);
           continue;
         }
 
         // Gather user data based on privacy level
-        const reportData: WeeklyReportData = {
+        const reportData: DailyReportData = {
           emotions: [],
           exercises: [],
           journals: [],
@@ -82,7 +82,7 @@ serve(async (req) => {
           }
         };
 
-        // Get emotion entries from the past week
+        // Get emotion entries from the past day
         // Note: This assumes you'll create these tables later or they exist
         // For now, I'll create mock data structure
         
@@ -121,7 +121,7 @@ serve(async (req) => {
         const emailResult = await resend.emails.send({
           from: "MindfulMe <reports@mindfulme.app>",
           to: [userPref.parent_email],
-          subject: `Weekly Mental Wellness Report - ${new Date().toLocaleDateString()}`,
+          subject: `Daily Mental Wellness Report - ${new Date().toLocaleDateString()}`,
           html: emailContent,
         });
 
@@ -179,14 +179,14 @@ serve(async (req) => {
   }
 });
 
-function generateEmailContent(privacyLevel: string, data: WeeklyReportData): string {
+function generateEmailContent(privacyLevel: string, data: DailyReportData): string {
   const date = new Date().toLocaleDateString();
   
   let content = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #6366f1; margin-bottom: 10px;">MindfulMe Weekly Report</h1>
-        <p style="color: #666; font-size: 16px;">Week ending ${date}</p>
+        <h1 style="color: #6366f1; margin-bottom: 10px;">MindfulMe Daily Report</h1>
+        <p style="color: #666; font-size: 16px;">${date}</p>
       </div>
       
       <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 20px; border-radius: 12px; color: white; margin-bottom: 25px;">
@@ -208,7 +208,7 @@ function generateEmailContent(privacyLevel: string, data: WeeklyReportData): str
     content += `
       <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
         <h3 style="color: #374151; margin-bottom: 15px;">🧠 Emotional Journey</h3>
-        <p style="color: #6b7280;">Your teen completed ${data.emotions.length} emotional check-ins this week.</p>
+        <p style="color: #6b7280;">Your teen completed ${data.emotions.length} emotional check-ins today.</p>
         ${data.emotions.length > 0 ? `
           <div style="margin-top: 15px;">
             <strong>Most common emotion:</strong> ${data.emotionSummary.mostCommon}
@@ -220,8 +220,8 @@ function generateEmailContent(privacyLevel: string, data: WeeklyReportData): str
         <h3 style="color: #374151; margin-bottom: 15px;">📝 Journal Insights</h3>
         <p style="color: #6b7280;">
           ${data.journals.length > 0 
-            ? `Your teen wrote ${data.journals.length} journal entries, showing active self-reflection.`
-            : 'No journal entries this week - consider encouraging reflective writing.'
+            ? `Your teen wrote ${data.journals.length} journal entries today, showing active self-reflection.`
+            : 'No journal entries today - consider encouraging reflective writing.'
           }
         </p>
       </div>
@@ -230,8 +230,8 @@ function generateEmailContent(privacyLevel: string, data: WeeklyReportData): str
         <h3 style="color: #374151; margin-bottom: 15px;">💬 Support Conversations</h3>
         <p style="color: #6b7280;">
           ${data.chats.length > 0 
-            ? `Your teen engaged in ${data.chats.length} supportive conversations with our AI companion.`
-            : 'No support conversations this week.'
+            ? `Your teen engaged in ${data.chats.length} supportive conversations with our AI companion today.`
+            : 'No support conversations today.'
           }
         </p>
       </div>
@@ -240,7 +240,7 @@ function generateEmailContent(privacyLevel: string, data: WeeklyReportData): str
     content += `
       <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
         <h3 style="color: #374151; margin-bottom: 15px;">🧠 Emotional Wellness Overview</h3>
-        <p style="color: #6b7280;">Your teen completed ${data.emotions.length} emotional check-ins this week.</p>
+        <p style="color: #6b7280;">Your teen completed ${data.emotions.length} emotional check-ins today.</p>
         ${data.emotions.length > 0 ? `
           <div style="margin-top: 10px; color: #6b7280;">
             <strong>Most frequent emotion:</strong> ${data.emotionSummary.mostCommon}<br>
@@ -253,8 +253,8 @@ function generateEmailContent(privacyLevel: string, data: WeeklyReportData): str
         <h3 style="color: #374151; margin-bottom: 15px;">🧘 Mindfulness Activities</h3>
         <p style="color: #6b7280;">
           ${data.exercises.length > 0 
-            ? `Completed ${data.exercises.length} mindfulness exercises - great for stress management!`
-            : 'No mindfulness exercises this week - consider encouraging relaxation practices.'
+            ? `Completed ${data.exercises.length} mindfulness exercises today - great for stress management!`
+            : 'No mindfulness exercises today - consider encouraging relaxation practices.'
           }
         </p>
       </div>
@@ -274,7 +274,7 @@ function generateEmailContent(privacyLevel: string, data: WeeklyReportData): str
           <li>Continue encouraging regular emotional check-ins</li>
           <li>Celebrate progress in mindfulness practices</li>
           <li>Maintain open communication about mental wellness</li>
-          ${data.emotionSummary.totalEntries < 3 ? '<li>Consider gently encouraging more frequent app usage</li>' : ''}
+          ${data.emotionSummary.totalEntries < 1 ? '<li>Consider gently encouraging more frequent app usage</li>' : ''}
         </ul>
       </div>
 
