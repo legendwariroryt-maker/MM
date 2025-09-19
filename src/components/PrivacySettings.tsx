@@ -98,11 +98,11 @@ const PrivacySettings = () => {
                   <Label htmlFor="all" className="font-semibold text-green-800">Share Everything</Label>
                 </div>
                 <p className="text-sm text-green-700">
-                  Weekly emails include: emotion tracking, journal entries, chat conversations, and mindfulness exercises.
+                  Daily emails include: emotion tracking, journal entries, chat conversations, and mindfulness exercises.
                   Perfect for families with open communication.
                 </p>
                 <div className="text-xs text-green-600 font-medium">
-                  📧 Full weekly reports • 📊 Complete wellness data • 💬 Chat summaries
+                  📧 Daily reports • 📊 Complete wellness data • 💬 Chat summaries
                 </div>
               </div>
             </div>
@@ -116,7 +116,7 @@ const PrivacySettings = () => {
                   <Label htmlFor="some" className="font-semibold text-blue-800">Limited Sharing</Label>
                 </div>
                 <p className="text-sm text-blue-700">
-                  Weekly emails include: emotion patterns, exercise completion, and wellness trends.
+                  Daily emails include: emotion patterns, exercise completion, and wellness trends.
                   Your private thoughts in journals and chats stay private.
                 </p>
                 <div className="text-xs text-blue-600 font-medium">
@@ -161,7 +161,7 @@ const PrivacySettings = () => {
               className="transition-all duration-200"
             />
             <p className="text-xs text-muted-foreground">
-              Weekly reports will be sent every Sunday to this email address
+              Daily reports will be sent every day at 12 AM to this email address
             </p>
           </div>
         )}
@@ -171,7 +171,7 @@ const PrivacySettings = () => {
           <h4 className="font-semibold text-amber-800 mb-2">Important Information</h4>
           <ul className="text-sm text-amber-700 space-y-1">
             <li>• You can change these settings anytime</li>
-            <li>• Reports are sent weekly on Sundays</li>
+            <li>• Reports are sent daily at 12 AM</li>
             <li>• Your data is always secure and encrypted</li>
             <li>• Emergency situations may require immediate parent notification regardless of settings</li>
           </ul>
