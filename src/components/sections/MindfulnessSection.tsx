@@ -74,6 +74,74 @@ const exercises: MindfulnessExercise[] = [
       'Feel the contrast between tension and relaxation',
       'Enjoy the feeling of complete relaxation'
     ]
+  },
+  {
+    id: '5',
+    name: 'Ocean Waves Visualization',
+    description: 'Let the sound of waves wash away your stress',
+    duration: 7,
+    type: 'meditation',
+    icon: '🌊',
+    instructions: [
+      'Sit or lie down comfortably and close your eyes',
+      'Imagine you\'re sitting on a peaceful beach',
+      'Listen to the gentle sound of waves rolling in and out',
+      'With each wave coming in, breathe in slowly',
+      'With each wave going out, breathe out and release tension',
+      'Feel the warm sand beneath you and cool breeze',
+      'Let the rhythm of the ocean calm your mind completely'
+    ]
+  },
+  {
+    id: '6',
+    name: 'Forest Bathing Meditation',
+    description: 'Immerse yourself in the healing energy of nature',
+    duration: 8,
+    type: 'meditation',
+    icon: '🌲',
+    instructions: [
+      'Close your eyes and imagine walking in a peaceful forest',
+      'Feel the soft earth beneath your feet',
+      'Notice the fresh, clean air filling your lungs',
+      'Hear birds singing softly in the trees above',
+      'Feel dappled sunlight warming your skin',
+      'Breathe in the fresh scent of pine and earth',
+      'Let nature\'s energy restore your inner peace'
+    ]
+  },
+  {
+    id: '7',
+    name: 'Loving-Kindness Meditation',
+    description: 'Cultivate compassion for yourself and others',
+    duration: 6,
+    type: 'meditation',
+    icon: '💝',
+    instructions: [
+      'Sit comfortably and place a hand on your heart',
+      'Begin by sending love to yourself: "May I be happy and peaceful"',
+      'Extend love to someone close: "May you be happy and peaceful"',
+      'Send love to someone neutral: "May you be happy and peaceful"',
+      'Include someone difficult: "May you be happy and peaceful"',
+      'Expand to all beings everywhere',
+      'Feel the warmth of universal love and connection'
+    ]
+  },
+  {
+    id: '8',
+    name: 'Moonlight Relaxation',
+    description: 'Find tranquility under the gentle moonlight',
+    duration: 5,
+    type: 'meditation',
+    icon: '🌙',
+    instructions: [
+      'Imagine yourself in a serene moonlit garden',
+      'Feel the soft, silver light surrounding you',
+      'The cool night air gently caresses your skin',
+      'Listen to the peaceful sounds of nighttime',
+      'Let the moon\'s gentle energy calm your thoughts',
+      'Feel deeply connected to the peaceful night',
+      'Allow this tranquility to fill every part of you'
+    ]
   }
 ];
 
@@ -132,6 +200,16 @@ export function MindfulnessSection() {
   const markCompleted = (exerciseId: string) => {
     if (!completedExercises.includes(exerciseId)) {
       setCompletedExercises(prev => [...prev, exerciseId]);
+    }
+  };
+
+  const completeSession = () => {
+    if (selectedExercise) {
+      markCompleted(selectedExercise.id);
+      // Reset the timer and hide the active exercise section
+      setSelectedExercise(null);
+      setIsActive(false);
+      setTimeLeft(0);
     }
   };
 
@@ -223,7 +301,7 @@ export function MindfulnessSection() {
                 <RotateCcw className="w-5 h-5" />
               </Button>
               <Button 
-                onClick={() => markCompleted(selectedExercise.id)} 
+                onClick={completeSession} 
                 className="bg-success text-white hover:bg-success/90"
               >
                 Complete Session ✨
