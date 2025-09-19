@@ -119,7 +119,7 @@ serve(async (req) => {
 
         // Send email
         const emailResult = await resend.emails.send({
-          from: "MindfulMe <reports@mindfulme.app>",
+          from: "MindfulMe <onboarding@resend.dev>",
           to: [userPref.parent_email],
           subject: `Daily Mental Wellness Report - ${new Date().toLocaleDateString()}`,
           html: emailContent,
