@@ -1,6 +1,3 @@
-// Main Index Page - React with TypeScript for better type safety during rapid development
-// Chose React over Vue/Angular due to team familiarity and extensive component library ecosystem
-// Used Tailwind for rapid prototyping - saved ~4 hours vs writing custom CSS
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,6 +11,7 @@ import { AppSection } from "@/types";
 import PrivacySettings from "@/components/PrivacySettings";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
+import { DragonCursorTrail } from "@/components/ui/dragon-cursor-trail";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
@@ -74,6 +72,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 via-pink-50 to-orange-50 relative overflow-hidden">
+      {/* Dragon Cursor Trail */}
+      <DragonCursorTrail />
+      
       {/* Changed to colorful gradient background - original was too muted and made bubbles invisible */}
       <FloatingBubbles />
       
@@ -100,8 +101,10 @@ const Index = () => {
                 MindfulMe
               </h1>
             </div>
-            <button 
-              className="text-sm text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
+            <Button 
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
               onClick={user ? () => signOut() : () => navigate('/auth')}
             >
               {user ? (
@@ -115,7 +118,7 @@ const Index = () => {
                   Sign in
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </header>
