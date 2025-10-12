@@ -1,264 +1,353 @@
-import { useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { useEffect, useRef, useState } from 'react';
 
 interface DragonSegment {
-  position: THREE.Vector3;
-  rotation: number;
-}
-
-function Dragon3D() {
-  const { camera, size } = useThree();
-  const dragonRef = useRef<THREE.Group>(null);
-  const segmentsRef = useRef<THREE.Mesh[]>([]);
-  const targetPosition = useRef(new THREE.Vector3(0, 0, 0));
-  const currentPosition = useRef(new THREE.Vector3(0, 0, 0));
-  const velocity = useRef(new THREE.Vector3(0, 0, 0));
-  const [segments] = useState<DragonSegment[]>(() => 
-    Array.from({ length: 8 }, () => ({
-      position: new THREE.Vector3(0, 0, 0),
-      rotation: 0
-    }))
-  );
-  const wingRotation = useRef(0);
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      // Convert mouse position to 3D coordinates
-      const x = (event.clientX / size.width) * 2 - 1;
-      const y = -(event.clientY / size.height) * 2 + 1;
-      
-      const vector = new THREE.Vector3(x, y, 0);
-      vector.unproject(camera);
-      
-      const dir = vector.sub(camera.position).normalize();
-      const distance = -camera.position.z / dir.z;
-      const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-      
-      targetPosition.current.copy(pos);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [camera, size]);
-
-  useFrame((state, delta) => {
-    if (!dragonRef.current) return;
-
-    // Smooth dragon head movement with physics
-    const acceleration = targetPosition.current.clone()
-      .sub(currentPosition.current)
-      .multiplyScalar(8);
-    
-    velocity.current.add(acceleration.multiplyScalar(delta));
-    velocity.current.multiplyScalar(0.85); // Damping
-    
-    currentPosition.current.add(velocity.current.clone().multiplyScalar(delta));
-
-    // Update head position and rotation
-    const head = segmentsRef.current[0];
-    if (head) {
-      head.position.copy(currentPosition.current);
-      
-      // Point head in direction of movement
-      if (velocity.current.length() > 0.01) {
-        const angle = Math.atan2(velocity.current.y, velocity.current.x);
-        head.rotation.z = angle;
-      }
-    }
-
-    // Update body segments to follow head with serpentine motion
-    for (let i = 1; i < segmentsRef.current.length; i++) {
-      const current = segmentsRef.current[i];
-      const previous = segmentsRef.current[i - 1];
-      
-      if (current && previous) {
-        const target = previous.position.clone();
-        const direction = target.sub(current.position);
-        const distance = direction.length();
-        const targetDistance = 0.4;
-        
-        if (distance > targetDistance) {
-          direction.normalize().multiplyScalar((distance - targetDistance) * 0.3);
-          current.position.add(direction);
-        }
-        
-        // Rotate segments to face direction
-        const angle = Math.atan2(direction.y, direction.x);
-        current.rotation.z = angle;
-      }
-    }
-
-    // Animate wings
-    wingRotation.current += delta * 8;
-  });
-
-  return (
-    <group ref={dragonRef}>
-      {/* Dragon Head */}
-      <mesh
-        ref={(el) => { if (el) segmentsRef.current[0] = el; }}
-        position={[0, 0, 0]}
-      >
-        <coneGeometry args={[0.15, 0.3, 8]} />
-        <meshStandardMaterial 
-          color="#10b981" 
-          emissive="#10b981"
-          emissiveIntensity={0.5}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </mesh>
-
-      {/* Eyes */}
-      <mesh position={[0.08, 0.08, 0.1]}>
-        <sphereGeometry args={[0.03, 8, 8]} />
-        <meshStandardMaterial 
-          color="#fef08a"
-          emissive="#fef08a"
-          emissiveIntensity={1}
-        />
-      </mesh>
-      <mesh position={[0.08, -0.08, 0.1]}>
-        <sphereGeometry args={[0.03, 8, 8]} />
-        <meshStandardMaterial 
-          color="#fef08a"
-          emissive="#fef08a"
-          emissiveIntensity={1}
-        />
-      </mesh>
-
-      {/* Horns */}
-      <mesh position={[0.15, 0.12, 0.05]} rotation={[0, 0, Math.PI / 6]}>
-        <coneGeometry args={[0.02, 0.15, 4]} />
-        <meshStandardMaterial 
-          color="#059669"
-          emissive="#059669"
-          emissiveIntensity={0.3}
-        />
-      </mesh>
-      <mesh position={[0.15, -0.12, 0.05]} rotation={[0, 0, -Math.PI / 6]}>
-        <coneGeometry args={[0.02, 0.15, 4]} />
-        <meshStandardMaterial 
-          color="#059669"
-          emissive="#059669"
-          emissiveIntensity={0.3}
-        />
-      </mesh>
-
-      {/* Body Segments */}
-      {segments.slice(1, 4).map((_, index) => {
-        const i = index + 1;
-        const size = 0.12 - i * 0.015;
-        return (
-          <mesh
-            key={i}
-            ref={(el) => { if (el) segmentsRef.current[i] = el; }}
-            position={[-i * 0.4, 0, 0]}
-          >
-            <sphereGeometry args={[size, 12, 12]} />
-            <meshStandardMaterial 
-              color="#10b981"
-              emissive="#06b6d4"
-              emissiveIntensity={0.4}
-              roughness={0.3}
-              metalness={0.7}
-            />
-          </mesh>
-        );
-      })}
-
-      {/* Wings at segment 2 */}
-      <group position={[-0.8, 0, 0]}>
-        <mesh 
-          rotation={[0, 0, Math.sin(wingRotation.current) * 0.3 + Math.PI / 4]}
-          position={[0, 0.15, 0]}
-        >
-          <boxGeometry args={[0.05, 0.4, 0.01]} />
-          <meshStandardMaterial 
-            color="#06b6d4"
-            emissive="#06b6d4"
-            emissiveIntensity={0.5}
-            transparent
-            opacity={0.7}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        <mesh 
-          rotation={[0, 0, -Math.sin(wingRotation.current) * 0.3 - Math.PI / 4]}
-          position={[0, -0.15, 0]}
-        >
-          <boxGeometry args={[0.05, 0.4, 0.01]} />
-          <meshStandardMaterial 
-            color="#06b6d4"
-            emissive="#06b6d4"
-            emissiveIntensity={0.5}
-            transparent
-            opacity={0.7}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      </group>
-
-      {/* Tail Segments */}
-      {segments.slice(4).map((_, index) => {
-        const i = index + 4;
-        const size = 0.08 - index * 0.012;
-        return (
-          <mesh
-            key={i}
-            ref={(el) => { if (el) segmentsRef.current[i] = el; }}
-            position={[-i * 0.4, 0, 0]}
-          >
-            <sphereGeometry args={[size, 10, 10]} />
-            <meshStandardMaterial 
-              color="#3b82f6"
-              emissive="#3b82f6"
-              emissiveIntensity={0.3}
-              roughness={0.4}
-              metalness={0.6}
-            />
-          </mesh>
-        );
-      })}
-
-      {/* Tail Fin */}
-      <mesh position={[-3.2, 0, 0]} rotation={[0, 0, 0]}>
-        <coneGeometry args={[0.15, 0.3, 3]} />
-        <meshStandardMaterial 
-          color="#3b82f6"
-          emissive="#3b82f6"
-          emissiveIntensity={0.4}
-          transparent
-          opacity={0.8}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-
-      {/* Glowing aura around dragon */}
-      <pointLight 
-        position={[0, 0, 0.3]} 
-        intensity={1.5} 
-        distance={2} 
-        color="#10b981"
-      />
-    </group>
-  );
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  type: 'head' | 'body' | 'tail';
+  scale: number;
 }
 
 export function DragonCursorTrail() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const segments = useRef<DragonSegment[]>([]);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const animationFrameRef = useRef<number>();
+  const time = useRef(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    const updateCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    updateCanvasSize();
+    window.addEventListener('resize', updateCanvasSize);
+
+    // Initialize dragon segments
+    const segmentCount = 12;
+    for (let i = 0; i < segmentCount; i++) {
+      segments.current.push({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        vx: 0,
+        vy: 0,
+        type: i === 0 ? 'head' : i > segmentCount - 4 ? 'tail' : 'body',
+        scale: i === 0 ? 1 : 1 - (i / segmentCount) * 0.5
+      });
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const drawDragonHead = (ctx: CanvasRenderingContext2D, x: number, y: number, angle: number, scale: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.scale(scale, scale);
+
+      // Dragon head outline
+      ctx.beginPath();
+      ctx.moveTo(25, 0);
+      ctx.bezierCurveTo(25, -8, 20, -12, 12, -12);
+      ctx.bezierCurveTo(8, -12, 0, -10, -5, -8);
+      ctx.lineTo(-8, -5);
+      ctx.lineTo(-5, 0);
+      ctx.lineTo(-8, 5);
+      ctx.lineTo(-5, 8);
+      ctx.bezierCurveTo(0, 10, 8, 12, 12, 12);
+      ctx.bezierCurveTo(20, 12, 25, 8, 25, 0);
+      ctx.closePath();
+
+      // Gradient fill
+      const gradient = ctx.createLinearGradient(-10, 0, 25, 0);
+      gradient.addColorStop(0, '#10b981');
+      gradient.addColorStop(0.5, '#059669');
+      gradient.addColorStop(1, '#047857');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // Glow effect
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#10b981';
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Eye
+      ctx.beginPath();
+      ctx.arc(15, -3, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#fef08a';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(16, -3, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+
+      // Nostril
+      ctx.beginPath();
+      ctx.arc(22, 2, 1, 0, Math.PI * 2);
+      ctx.fillStyle = '#047857';
+      ctx.fill();
+
+      // Horns
+      ctx.beginPath();
+      ctx.moveTo(8, -12);
+      ctx.lineTo(6, -20);
+      ctx.lineTo(10, -13);
+      ctx.closePath();
+      ctx.fillStyle = '#059669';
+      ctx.fill();
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(8, 12);
+      ctx.lineTo(6, 20);
+      ctx.lineTo(10, 13);
+      ctx.closePath();
+      ctx.fillStyle = '#059669';
+      ctx.fill();
+      ctx.stroke();
+
+      // Teeth/spikes on jaw
+      for (let i = 0; i < 3; i++) {
+        const tx = 15 + i * 4;
+        ctx.beginPath();
+        ctx.moveTo(tx, -6);
+        ctx.lineTo(tx + 2, -3);
+        ctx.lineTo(tx, 0);
+        ctx.closePath();
+        ctx.fillStyle = '#d1fae5';
+        ctx.fill();
+      }
+
+      ctx.restore();
+    };
+
+    const drawDragonBody = (ctx: CanvasRenderingContext2D, x: number, y: number, angle: number, scale: number, segment: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      const size = 18 * scale;
+      const wobble = Math.sin(time.current * 3 + segment) * 2;
+
+      // Body segment with scales
+      ctx.beginPath();
+      ctx.ellipse(0, wobble, size, size * 0.7, 0, 0, Math.PI * 2);
+      
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size);
+      gradient.addColorStop(0, '#06b6d4');
+      gradient.addColorStop(0.6, '#0891b2');
+      gradient.addColorStop(1, '#0e7490');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#06b6d4';
+      ctx.strokeStyle = '#22d3ee';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Scales pattern
+      ctx.beginPath();
+      ctx.arc(-size * 0.3, wobble - 3, 3, 0, Math.PI * 2);
+      ctx.arc(size * 0.3, wobble + 3, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(34, 211, 238, 0.3)';
+      ctx.fill();
+
+      // Wings on certain segments
+      if (segment === 3 || segment === 4) {
+        const wingAngle = Math.sin(time.current * 8) * 0.4;
+        
+        // Top wing
+        ctx.save();
+        ctx.rotate(wingAngle - Math.PI / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(10, -15, 25, -20, 35, -15);
+        ctx.bezierCurveTo(30, -10, 15, -5, 0, 0);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.6)';
+        ctx.fill();
+        ctx.strokeStyle = '#22d3ee';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
+        // Bottom wing
+        ctx.save();
+        ctx.rotate(-wingAngle + Math.PI / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(10, 15, 25, 20, 35, 15);
+        ctx.bezierCurveTo(30, 10, 15, 5, 0, 0);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.6)';
+        ctx.fill();
+        ctx.strokeStyle = '#22d3ee';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.restore();
+    };
+
+    const drawDragonTail = (ctx: CanvasRenderingContext2D, x: number, y: number, angle: number, scale: number, segment: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      const size = 12 * scale;
+      const wobble = Math.sin(time.current * 4 + segment) * 3;
+
+      // Tail segment
+      ctx.beginPath();
+      ctx.ellipse(0, wobble, size, size * 0.6, 0, 0, Math.PI * 2);
+      
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size);
+      gradient.addColorStop(0, '#3b82f6');
+      gradient.addColorStop(0.6, '#2563eb');
+      gradient.addColorStop(1, '#1d4ed8');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#3b82f6';
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Tail fin
+      if (segment > 9) {
+        ctx.beginPath();
+        ctx.moveTo(0, wobble - size);
+        ctx.lineTo(-8, wobble - size - 10);
+        ctx.lineTo(8, wobble - size - 10);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.7)';
+        ctx.fill();
+        ctx.strokeStyle = '#60a5fa';
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, wobble + size);
+        ctx.lineTo(-8, wobble + size + 10);
+        ctx.lineTo(8, wobble + size + 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    };
+
+    const animate = () => {
+      time.current += 0.016;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Update head to follow mouse with smooth interpolation
+      const head = segments.current[0];
+      const dx = mousePos.current.x - head.x;
+      const dy = mousePos.current.y - head.y;
+      
+      head.vx += dx * 0.001;
+      head.vy += dy * 0.001;
+      head.vx *= 0.92;
+      head.vy *= 0.92;
+      
+      head.x += head.vx;
+      head.y += head.vy;
+
+      // Update body segments to follow with spring physics
+      for (let i = 1; i < segments.current.length; i++) {
+        const segment = segments.current[i];
+        const prev = segments.current[i - 1];
+        
+        const dx = prev.x - segment.x;
+        const dy = prev.y - segment.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const targetDistance = 20;
+        
+        if (distance > 0) {
+          const force = (distance - targetDistance) * 0.15;
+          segment.vx += (dx / distance) * force;
+          segment.vy += (dy / distance) * force;
+        }
+        
+        segment.vx *= 0.88;
+        segment.vy *= 0.88;
+        
+        segment.x += segment.vx;
+        segment.y += segment.vy;
+      }
+
+      // Draw connecting body
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
+      ctx.lineWidth = 12;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(segments.current[0].x, segments.current[0].y);
+      for (let i = 1; i < segments.current.length; i++) {
+        const seg = segments.current[i];
+        ctx.lineTo(seg.x, seg.y);
+      }
+      ctx.stroke();
+
+      // Draw dragon segments
+      for (let i = segments.current.length - 1; i >= 0; i--) {
+        const segment = segments.current[i];
+        const nextSegment = segments.current[i + 1] || segment;
+        
+        const dx = segment.x - nextSegment.x;
+        const dy = segment.y - nextSegment.y;
+        const angle = Math.atan2(dy, dx);
+
+        if (segment.type === 'head') {
+          drawDragonHead(ctx, segment.x, segment.y, angle, segment.scale);
+        } else if (segment.type === 'tail') {
+          drawDragonTail(ctx, segment.x, segment.y, angle, segment.scale, i);
+        } else {
+          drawDragonBody(ctx, segment.x, segment.y, angle, segment.scale, i);
+        }
+      }
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      window.removeEventListener('resize', updateCanvasSize);
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 pointer-events-none z-50">
-      <Canvas
-        camera={{ position: [0, 0, 10], fov: 50 }}
-        style={{ background: 'transparent' }}
-      >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffffff" />
-        <pointLight position={[-10, -10, 10]} intensity={0.3} color="#06b6d4" />
-        <Dragon3D />
-      </Canvas>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-50"
+      style={{ background: 'transparent' }}
+    />
   );
 }
