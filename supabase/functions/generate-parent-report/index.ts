@@ -82,14 +82,20 @@ serve(async (req) => {
           }
         };
 
-        // Get emotion entries from the past day
-        // Note: This assumes you'll create these tables later or they exist
-        // For now, I'll create mock data structure
+        // Fetch chat messages from the past day
+        const { data: chatMessages } = await supabase
+          .from('chat_messages')
+          .select('*')
+          .eq('user_id', userPref.user_id)
+          .gte('created_at', yesterday.toISOString())
+          .order('created_at', { ascending: true });
         
+        const chatData = chatMessages || [];
+        
+        // TODO: Fetch from other tables when they exist
         const emotionEntries = []; // Would fetch from emotions table
         const journalEntries = []; // Would fetch from journals table
         const exerciseData = []; // Would fetch from mindfulness exercises
-        const chatData = []; // Would fetch from chat messages
 
         // Calculate emotion summary
         if (emotionEntries.length > 0) {

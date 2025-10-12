@@ -11,7 +11,7 @@ export function DragonCursorTrail() {
   const [segments, setSegments] = useState<DragonSegment[]>([]);
   const mousePos = useRef({ x: 0, y: 0 });
   const animationFrameRef = useRef<number>();
-  const segmentCount = 15;
+  const segmentCount = 8;
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -29,7 +29,7 @@ export function DragonCursorTrail() {
             newSegments.push({
               x,
               y,
-              type: i === 0 ? 'head' : i === 8 || i === 14 ? 'fin' : 'body',
+              type: i === 0 ? 'head' : i === 4 ? 'fin' : 'body',
               index: i
             });
           }
@@ -74,7 +74,7 @@ export function DragonCursorTrail() {
             newSegments.push({
               x: newX,
               y: newY,
-              type: i === 8 || i === 14 ? 'fin' : 'body',
+              type: i === 4 ? 'fin' : 'body',
               index: i
             });
           }
@@ -149,26 +149,48 @@ export function DragonCursorTrail() {
         {/* Draw dragon segments */}
         {segments.map((segment) => {
           if (segment.type === 'head') {
+            const nextSeg = segments[1];
+            const angle = nextSeg ? Math.atan2(
+              segment.y - nextSeg.y,
+              segment.x - nextSeg.x
+            ) : 0;
+            
             return (
-              <g key={`seg-${segment.index}`}>
-                <circle
-                  cx={segment.x}
-                  cy={segment.y}
-                  r="12"
+              <g key={`seg-${segment.index}`} transform={`translate(${segment.x}, ${segment.y})`}>
+                {/* Dragon head - triangular shape */}
+                <path
+                  d="M 0,-8 L 12,0 L 0,8 Z"
                   fill="#10b981"
                   filter="url(#glow)"
+                  transform={`rotate(${(angle * 180) / Math.PI})`}
                 />
+                {/* Eyes */}
                 <circle
-                  cx={segment.x - 3}
-                  cy={segment.y - 3}
+                  cx={Math.cos(angle) * 4 + Math.sin(angle) * -3}
+                  cy={Math.sin(angle) * 4 - Math.cos(angle) * -3}
                   r="2"
                   fill="#fef08a"
                 />
                 <circle
-                  cx={segment.x + 3}
-                  cy={segment.y - 3}
+                  cx={Math.cos(angle) * 4 + Math.sin(angle) * 3}
+                  cy={Math.sin(angle) * 4 - Math.cos(angle) * 3}
                   r="2"
                   fill="#fef08a"
+                />
+                {/* Horns */}
+                <path
+                  d={`M ${Math.cos(angle) * -2 + Math.sin(angle) * -6} ${Math.sin(angle) * -2 - Math.cos(angle) * -6} L ${Math.cos(angle) * -8 + Math.sin(angle) * -8} ${Math.sin(angle) * -8 - Math.cos(angle) * -8}`}
+                  stroke="#10b981"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  filter="url(#glow)"
+                />
+                <path
+                  d={`M ${Math.cos(angle) * -2 + Math.sin(angle) * 6} ${Math.sin(angle) * -2 - Math.cos(angle) * 6} L ${Math.cos(angle) * -8 + Math.sin(angle) * 8} ${Math.sin(angle) * -8 - Math.cos(angle) * 8}`}
+                  stroke="#10b981"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  filter="url(#glow)"
                 />
               </g>
             );
@@ -179,13 +201,22 @@ export function DragonCursorTrail() {
             );
             return (
               <g key={`seg-${segment.index}`} transform={`translate(${segment.x}, ${segment.y})`}>
+                {/* Wing-like fins */}
                 <ellipse
-                  rx="18"
-                  ry="8"
+                  rx="22"
+                  ry="10"
                   fill="#10b981"
-                  opacity="0.7"
+                  opacity="0.6"
                   filter="url(#glow)"
                   transform={`rotate(${(angle * 180) / Math.PI + 90})`}
+                />
+                <ellipse
+                  rx="22"
+                  ry="10"
+                  fill="#06b6d4"
+                  opacity="0.4"
+                  filter="url(#glow)"
+                  transform={`rotate(${(angle * 180) / Math.PI - 90})`}
                 />
                 <circle
                   r="6"
@@ -195,15 +226,16 @@ export function DragonCursorTrail() {
               </g>
             );
           } else {
+            const size = 9 - segment.index * 0.8;
             return (
               <circle
                 key={`seg-${segment.index}`}
                 cx={segment.x}
                 cy={segment.y}
-                r={8 - segment.index * 0.2}
+                r={size}
                 fill="url(#dragonGradient)"
                 filter="url(#glow)"
-                opacity={0.9}
+                opacity={0.85 - segment.index * 0.05}
               />
             );
           }

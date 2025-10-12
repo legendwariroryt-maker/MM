@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          ai_response: string
+          created_at: string
+          emotion: string | null
+          id: string
+          intensity: number | null
+          user_id: string
+          user_message: string
+        }
+        Insert: {
+          ai_response: string
+          created_at?: string
+          emotion?: string | null
+          id?: string
+          intensity?: number | null
+          user_id: string
+          user_message: string
+        }
+        Update: {
+          ai_response?: string
+          created_at?: string
+          emotion?: string | null
+          id?: string
+          intensity?: number | null
+          user_id?: string
+          user_message?: string
+        }
+        Relationships: []
+      }
       parent_reports: {
         Row: {
           id: string

@@ -1,7 +1,4 @@
-// Chat Section - The core feature that took most development time (~6 hours)
-// Integrated with Ollama local AI - had to troubleshoot CORS issues for 2 hours
-// Chose local AI over OpenAI API to avoid API costs during development and demo
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,7 +6,10 @@ import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { ChatMessage, EmotionType } from "@/types";
+import { ChatMessage } from "@/types";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 // Emotion categories - researched psychology literature to choose relevant emotions for teens
 // Initially had 15+ emotions but UX testing showed 8 was optimal for quick selection
@@ -26,6 +26,7 @@ const emotions = [
 
 
 export function ChatSection() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -39,6 +40,55 @@ export function ChatSection() {
   const [userMessage, setUserMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showEmotionContext, setShowEmotionContext] = useState(false);
+
+  // Load chat history from database
+  useEffect(() => {
+    if (!user) return;
+
+    const loadChatHistory = async () => {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error loading chat history:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const loadedMessages: ChatMessage[] = data.flatMap(msg => [
+          {
+            id: `${msg.id}-user`,
+            type: 'user' as const,
+            message: msg.user_message,
+            emotion: msg.emotion || undefined,
+            intensity: msg.intensity || undefined,
+            timestamp: new Date(msg.created_at)
+          },
+          {
+            id: `${msg.id}-ai`,
+            type: 'ai' as const,
+            message: msg.ai_response,
+            timestamp: new Date(msg.created_at)
+          }
+        ]);
+        
+        setMessages([
+          {
+            id: '1',
+            type: 'ai',
+            message: "Hi there! I'm here to listen and support you.\nHow are you feeling today?",
+            timestamp: new Date()
+          },
+          ...loadedMessages
+        ]);
+      }
+    };
+
+    loadChatHistory();
+  }, [user]);
 
   const getAIResponse = async (emotion: string, userMsg: string): Promise<string> => {
     // Crisis detection - added after research on mental health app safety requirements
@@ -118,6 +168,24 @@ export function ChatSection() {
       };
 
       setMessages(prev => [...prev, aiResponse]);
+
+      // Save to database if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('chat_messages')
+          .insert({
+            user_id: user.id,
+            emotion: selectedEmotion || null,
+            intensity: intensity,
+            user_message: userMessage,
+            ai_response: aiResponseText
+          });
+
+        if (error) {
+          console.error('Error saving chat message:', error);
+          toast.error('Failed to save message');
+        }
+      }
     } catch (error) {
       console.error('Error generating AI response:', error);
       const errorResponse: ChatMessage = {
@@ -132,7 +200,21 @@ export function ChatSection() {
     }
   };
 
-  const clearChat = () => {
+  const clearChat = async () => {
+    if (user) {
+      const { error } = await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error clearing chat:', error);
+        toast.error('Failed to clear chat');
+        return;
+      }
+      toast.success('Chat cleared');
+    }
+    
     setMessages([{
       id: '1',
       type: 'ai',
