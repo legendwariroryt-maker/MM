@@ -11,7 +11,6 @@ import { AppSection } from "@/types";
 import PrivacySettings from "@/components/PrivacySettings";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
-import { DragonCursorTrail } from "@/components/ui/dragon-cursor-trail";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
@@ -72,9 +71,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 via-pink-50 to-orange-50 relative overflow-hidden">
-      {/* Dragon Cursor Trail */}
-      <DragonCursorTrail />
-      
       {/* Changed to colorful gradient background - original was too muted and made bubbles invisible */}
       <FloatingBubbles />
       
