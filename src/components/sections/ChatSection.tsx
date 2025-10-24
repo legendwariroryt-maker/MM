@@ -40,8 +40,9 @@ export function ChatSection() {
   const [userMessage, setUserMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showEmotionContext, setShowEmotionContext] = useState(false);
+  const [personalityType, setPersonalityType] = useState<string>('');
 
-  // Load chat history from database
+  // Load chat history and personality type from database
   useEffect(() => {
     if (!user) return;
 
@@ -87,7 +88,24 @@ export function ChatSection() {
       }
     };
 
+    const loadPersonalityType = async () => {
+      const { data, error } = await supabase
+        .from('mbti_results')
+        .select('personality_type')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading personality type:', error);
+      } else if (data) {
+        setPersonalityType(data.personality_type);
+      }
+    };
+
     loadChatHistory();
+    loadPersonalityType();
   }, [user]);
 
   const getAIResponse = async (emotion: string, userMsg: string): Promise<string> => {
@@ -105,14 +123,19 @@ export function ChatSection() {
     try {
       // Prompt engineering took several iterations to get the right tone
       // Tested with various emotional states to ensure appropriate responses
-      const systemPrompt = `You are a compassionate mental health companion for teenagers. The user is feeling ${emotion} with intensity ${intensity}/10. 
+      const personalityContext = personalityType 
+        ? `The user's MBTI personality type is ${personalityType}. Tailor your communication style to match their personality preferences.` 
+        : '';
+      
+      const systemPrompt = `You are a compassionate mental health companion for teenagers. The user is feeling ${emotion} with intensity ${intensity}/10. ${personalityContext}
       Provide empathetic, supportive responses that:
       - Acknowledge their feelings
       - Offer practical coping strategies
       - Use a warm, understanding tone
       - Keep responses concise (2-3 sentences)
       - Suggest specific techniques when appropriate (breathing, grounding, etc.)
-      - Avoid giving medical advice`;
+      - Avoid giving medical advice
+      ${personalityType ? `- Adapt your communication style to an ${personalityType} personality type` : ''}`;
       
       // Ollama integration - chose llama3 model for good balance of speed and quality
       // Had to configure Ollama server settings to allow CORS during development

@@ -6,6 +6,7 @@ import { EmotionsSection } from "@/components/sections/EmotionsSection";
 import { MindfulnessSection } from "@/components/sections/MindfulnessSection";
 import { JournalSection } from "@/components/sections/JournalSection";
 import { EmergencySection } from "@/components/sections/EmergencySection";
+import { MbtiSection } from "@/components/sections/MbtiSection";
 import { Brain, LogOut, LogIn } from "lucide-react";
 import { AppSection } from "@/types";
 import PrivacySettings from "@/components/PrivacySettings";
@@ -24,7 +25,7 @@ const Index = () => {
   // Handle section from URL params (useful for emergency access)
   useEffect(() => {
     const section = searchParams.get('section') as AppSection;
-    if (section && ['chat', 'emotions', 'mindfulness', 'journal', 'emergency', 'settings'].includes(section)) {
+    if (section && ['chat', 'emotions', 'mindfulness', 'journal', 'emergency', 'settings', 'mbti'].includes(section)) {
       setActiveSection(section);
     }
   }, [searchParams]);
@@ -64,6 +65,8 @@ const Index = () => {
         return <EmergencySection />;
       case 'settings':
         return <PrivacySettings />;
+      case 'mbti':
+        return <MbtiSection />;
       default:
         return <ChatSection />; // Fallback to prevent crashes
     }
@@ -173,6 +176,14 @@ const Index = () => {
             className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             🧘 Mindfulness
+          </Button>
+          <Button
+            variant={activeSection === 'mbti' ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveSection('mbti')}
+            className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            🧠 Personality Test
           </Button>
           <Button
             variant={activeSection === 'emergency' ? "default" : "outline"}

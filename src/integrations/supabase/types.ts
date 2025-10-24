@@ -44,6 +44,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mbti_results: {
+        Row: {
+          created_at: string
+          e_i_score: number
+          id: string
+          j_p_score: number
+          personality_type: string
+          s_n_score: number
+          t_f_score: number
+          test_answers: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          e_i_score: number
+          id?: string
+          j_p_score: number
+          personality_type: string
+          s_n_score: number
+          t_f_score: number
+          test_answers?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          e_i_score?: number
+          id?: string
+          j_p_score?: number
+          personality_type?: string
+          s_n_score?: number
+          t_f_score?: number
+          test_answers?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       parent_reports: {
         Row: {
           id: string
