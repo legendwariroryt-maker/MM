@@ -1,3 +1,4 @@
+// Chat Section - Integrated with Groq cloud AI with session summary feature
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-// Emotion categories - researched psychology literature to choose relevant emotions for teens
-// Initially had 15+ emotions but UX testing showed 8 was optimal for quick selection
+// Emotion categories
 const emotions = [
   { name: 'Happy', emoji: '😊' },
   { name: 'Sad', emoji: '😢' },
@@ -24,6 +24,77 @@ const emotions = [
   { name: 'Excited', emoji: '🤩' },
 ];
 
+// Session end keywords
+const SESSION_END_KEYWORDS = [
+  'end session', 'finish session', 'session over', 'that\'s all for today',
+  'goodbye for now', 'wrap up', 'conclude session', 'stop session'
+];
+
+// Get Groq API key from environment variable
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '***REMOVED***';
+
+// System prompt with personality type support
+const System_prompt = `# THERAPEUTIC COMPANION WITH MEMORY
+
+## CONVERSATION MEMORY CONTEXT
+You have access to the recent conversation history. Use this to:
+- Remember important details the user has shared
+- Maintain continuity in ongoing discussions
+- Reference past emotional patterns or concerns
+- Build on previous insights and progress
+
+## RESPONSE GUIDELINES WITH MEMORY
+
+### When You Remember Previous Context:
+- Gently reference past discussions if relevant
+- Acknowledge progress or changes
+- Connect current feelings to past patterns if appropriate
+- Maintain natural flow without forcing connections
+
+## RESPONSE LENGTH STRATEGY
+
+### Small Talk / Casual Conversations:
+- Greetings, simple questions, light topics
+- **Response: 3-6 sentences** - warm, engaging, but concise
+
+### Moderate Emotional Content:
+- Daily stressors, mild anxiety, relationship questions
+- **Response: 8-15 sentences** - thoughtful but not overwhelming
+
+### Serious Emotional Content:
+- Depression, anxiety, trauma, relationship struggles
+- Suicidal ideation, self-harm thoughts, crisis situations
+- **Response: NO LIMIT** - comprehensive, detailed, as long as needed
+
+## SESSION SUMMARY FEATURE
+When the user indicates they want to end the session (using phrases like "end session", "that's all for today", etc.):
+- Provide a comprehensive therapeutic summary
+- Highlight key insights and emotional patterns observed
+- Offer gentle observations (NOT diagnoses) about their mental state
+- Provide personalized coping strategies and next steps
+- End with warm encouragement and hope
+
+## MANDATORY DIRECTIVES:
+- **Suicidal ideation**: Immediate referral to 988 + crisis resources
+- **Self-harm**: Safety planning + professional support encouragement
+- **Abuse disclosures**: Validation + trusted adult/professional guidance
+- **Medical concerns**: Always defer to healthcare providers
+
+## PROFESSIONAL SCOPE:
+- You are a compassionate companion, NOT a therapist
+- You provide emotional support, NOT treatment
+- You offer observations, NOT diagnoses
+- You suggest resources, NOT prescriptions
+
+## PERSONALITY-BASED COMMUNICATION
+\${personalityContext}
+
+## CURRENT CONTEXT
+- User's stated emotion: \${emotion}
+- Emotional intensity: \${intensity}/10
+- Your role: Create a sanctuary where healing can begin through responsive presence
+
+Remember: The most therapeutic gift you can offer is making someone feel truly seen, heard, and understood.`;
 
 export function ChatSection() {
   const { user } = useAuth();
@@ -40,53 +111,19 @@ export function ChatSection() {
   const [userMessage, setUserMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showEmotionContext, setShowEmotionContext] = useState(false);
+  const [apiStatus, setApiStatus] = useState<string>('ready');
+  const [sessionActive, setSessionActive] = useState(true);
   const [personalityType, setPersonalityType] = useState<string>('');
+  
+  // Conversation history for memory
+  const [conversationHistory, setConversationHistory] = useState<Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>>([]);
 
-  // Load chat history and personality type from database
+  // Load personality type from database
   useEffect(() => {
     if (!user) return;
-
-    const loadChatHistory = async () => {
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
-
-      if (error) {
-        console.error('Error loading chat history:', error);
-        return;
-      }
-
-      if (data && data.length > 0) {
-        const loadedMessages: ChatMessage[] = data.flatMap(msg => [
-          {
-            id: `${msg.id}-user`,
-            type: 'user' as const,
-            message: msg.user_message,
-            emotion: msg.emotion || undefined,
-            intensity: msg.intensity || undefined,
-            timestamp: new Date(msg.created_at)
-          },
-          {
-            id: `${msg.id}-ai`,
-            type: 'ai' as const,
-            message: msg.ai_response,
-            timestamp: new Date(msg.created_at)
-          }
-        ]);
-        
-        setMessages([
-          {
-            id: '1',
-            type: 'ai',
-            message: "Hi there! I'm here to listen and support you.\nHow are you feeling today?",
-            timestamp: new Date()
-          },
-          ...loadedMessages
-        ]);
-      }
-    };
 
     const loadPersonalityType = async () => {
       const { data, error } = await supabase
@@ -101,16 +138,105 @@ export function ChatSection() {
         console.error('Error loading personality type:', error);
       } else if (data) {
         setPersonalityType(data.personality_type);
+        toast.success(`Using your MBTI type: ${data.personality_type}`);
       }
     };
 
-    loadChatHistory();
     loadPersonalityType();
   }, [user]);
 
+  const isSessionEndKeyword = (message: string): boolean => {
+    return SESSION_END_KEYWORDS.some(keyword => 
+      message.toLowerCase().includes(keyword.toLowerCase())
+    );
+  };
+
+  const generateSessionSummary = async (): Promise<string> => {
+    try {
+      setApiStatus('Generating session summary...');
+
+      const summaryPrompt = `Based on the entire conversation history below, provide a comprehensive therapeutic session summary. Please structure your response with these sections:
+
+# SESSION SUMMARY & REFLECTION
+
+## 🔍 Key Themes & Patterns Observed
+- Identify 3-4 main topics or emotional patterns that emerged
+- Note any recurring concerns or strengths demonstrated
+
+## 💭 Emotional Landscape
+- Summarize the emotional journey throughout our conversation
+- Highlight moments of insight, vulnerability, or growth
+
+## 🌱 Gentle Observations & Insights
+- Share compassionate observations about coping patterns
+- Note areas of resilience and self-awareness
+- Remember: These are observations, NOT diagnoses
+
+## 🛠️ Personalized Coping Strategies
+- Suggest 3-4 practical techniques tailored to their needs
+- Include both immediate and long-term strategies
+
+## 🌈 Moving Forward
+- Offer encouraging next steps
+- Remind them of their strengths and progress
+- Include gentle reminders about self-care
+
+## 📞 Support Resources
+- Remind about crisis resources if needed
+- Suggest when to seek professional support
+
+Please make this summary warm, compassionate, and empowering. Focus on their strengths while gently acknowledging areas for growth.
+
+Conversation History for Summary:
+${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
+
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${GROQ_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: `You are a compassionate therapeutic companion creating a session summary. Be warm, insightful, and empowering. Focus on strengths while offering gentle guidance.`
+            },
+            {
+              role: 'user',
+              content: summaryPrompt
+            }
+          ],
+          max_tokens: 1500,
+          temperature: 0.7,
+          top_p: 0.9
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setApiStatus('Summary generated');
+      return data.choices[0]?.message?.content || "Thank you for sharing with me today. Remember to be gentle with yourself and celebrate the courage it takes to explore your feelings.";
+
+    } catch (error) {
+      console.error('Error generating session summary:', error);
+      return "Thank you for our conversation today. I appreciate you sharing your thoughts and feelings. Remember that taking time for self-reflection is a beautiful act of self-care.";
+    }
+  };
+
   const getAIResponse = async (emotion: string, userMsg: string): Promise<string> => {
-    // Crisis detection - added after research on mental health app safety requirements
-    // Spent time ensuring we catch various ways people express suicidal ideation
+    // Check for session end keywords
+    if (isSessionEndKeyword(userMsg)) {
+      setSessionActive(false);
+      const summary = await generateSessionSummary();
+      return summary;
+    }
+
+    // Crisis detection
     const crisisKeywords = ['hurt myself', 'end it all', 'suicide', 'kill myself', 'want to die'];
     const hasCrisisKeyword = crisisKeywords.some(keyword => 
       userMsg.toLowerCase().includes(keyword)
@@ -120,52 +246,109 @@ export function ChatSection() {
       return "I'm very concerned about what you've shared. Please reach out to a crisis counselor immediately at 988 (Suicide & Crisis Lifeline) or go to your nearest emergency room. Your life has value and there are people who want to help you through this difficult time.";
     }
     
+    // Check if API key is properly set
+    if (!GROQ_API_KEY || GROQ_API_KEY === 'your-groq-api-key-here') {
+      setApiStatus('API key not configured');
+      return "I'm currently experiencing configuration issues. Please make sure the Groq API key is set up correctly in the environment variables.";
+    }
+    
     try {
-      // Prompt engineering took several iterations to get the right tone
-      // Tested with various emotional states to ensure appropriate responses
+      // Build personality context
       const personalityContext = personalityType 
-        ? `The user's MBTI personality type is ${personalityType}. Tailor your communication style to match their personality preferences.` 
+        ? `The user's MBTI personality type is ${personalityType}. Tailor your communication style to match their personality preferences:
+- Adapt your language, examples, and suggestions to resonate with their personality type
+- Consider their likely strengths, challenges, and communication preferences
+- Use this insight to provide more personalized and effective support` 
         : '';
-      
-      const systemPrompt = `You are a compassionate mental health companion for teenagers. The user is feeling ${emotion} with intensity ${intensity}/10. ${personalityContext}
-      Provide empathetic, supportive responses that:
-      - Acknowledge their feelings
-      - Offer practical coping strategies
-      - Use a warm, understanding tone
-      - Keep responses concise (2-3 sentences)
-      - Suggest specific techniques when appropriate (breathing, grounding, etc.)
-      - Avoid giving medical advice
-      ${personalityType ? `- Adapt your communication style to an ${personalityType} personality type` : ''}`;
-      
-      // Ollama integration - chose llama3 model for good balance of speed and quality
-      // Had to configure Ollama server settings to allow CORS during development
-      const response = await fetch('http://localhost:11434/api/generate', {
+
+      // Replace placeholders in the system prompt
+      const currentSystemPrompt = System_prompt
+        .replace('${emotion}', emotion || 'unspecified')
+        .replace('${intensity}', intensity.toString())
+        .replace('${personalityContext}', personalityContext);
+
+      setApiStatus('Sending request to Groq...');
+
+      // Groq integration
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${GROQ_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama3', // Downloaded 7B parameter model - fits on demo laptop
-          prompt: `${systemPrompt}\n\nUser message: ${userMsg}`,
-          stream: false // Disabled streaming to simplify UI state management
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: currentSystemPrompt
+            },
+            ...conversationHistory.slice(-6),
+            {
+              role: 'user',
+              content: userMsg
+            }
+          ],
+          max_tokens: 1024,
+          temperature: 0.7,
+          top_p: 0.9
         })
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error?.message || errorMessage;
+          console.error('Groq API error:', errorData);
+        } catch (e) {
+          console.error('Failed to parse error response:', e);
+        }
+        
+        if (response.status === 401) {
+          setApiStatus('Authentication failed');
+          return "Authentication failed. Please check if the Groq API key is correct.";
+        } else if (response.status === 429) {
+          setApiStatus('Rate limit exceeded');
+          return "I've reached my rate limit. Please try again in a few moments.";
+        } else if (response.status === 503) {
+          setApiStatus('Service unavailable');
+          return "The AI service is temporarily unavailable. Please try again in a few minutes.";
+        } else {
+          setApiStatus(`API error: ${response.status}`);
+          return `API error: ${errorMessage}. Please try again.`;
+        }
       }
       
       const data = await response.json();
-      return data.response || "I'm here to listen and support you. Can you tell me more about what you're going through?";
+      setApiStatus('Success');
+      
+      if (!data.choices || !data.choices[0]) {
+        throw new Error('Invalid response format from Groq');
+      }
+      
+      const responseText = data.choices[0]?.message?.content;
+      
+      if (!responseText) {
+        return "I'm here to listen and support you. Can you tell me more about what you're going through?";
+      }
+      
+      return responseText;
       
     } catch (error) {
-      console.error('Error calling Ollama:', error);
-      return "I'm having trouble connecting to my AI system right now, but I'm still here for you. Can you tell me more about what you're feeling?";
+      console.error('Error calling Groq API:', error);
+      setApiStatus('Error occurred');
+      
+      if (error.message.includes('Failed to fetch')) {
+        return "Network connection issue. Please check your internet connection and try again.";
+      }
+      
+      return "I'm having trouble connecting to my AI system right now. Please try again in a moment.";
     }
   };
 
   const handleSendMessage = async () => {
-    if (!userMessage.trim() || isLoading) return;
+    if (!userMessage.trim() || isLoading || !sessionActive) return;
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
@@ -179,6 +362,7 @@ export function ChatSection() {
     setMessages(prev => [...prev, userMsg]);
     setUserMessage('');
     setIsLoading(true);
+    setApiStatus('Processing...');
 
     try {
       const aiResponseText = await getAIResponse(selectedEmotion, userMessage);
@@ -191,53 +375,47 @@ export function ChatSection() {
       };
 
       setMessages(prev => [...prev, aiResponse]);
-
-      // Save to database if user is logged in
-      if (user) {
-        const { error } = await supabase
-          .from('chat_messages')
-          .insert({
-            user_id: user.id,
-            emotion: selectedEmotion || null,
-            intensity: intensity,
-            user_message: userMessage,
-            ai_response: aiResponseText
-          });
-
-        if (error) {
-          console.error('Error saving chat message:', error);
-          toast.error('Failed to save message');
-        }
+      
+      // Only update history if session is still active
+      if (sessionActive && !isSessionEndKeyword(userMessage)) {
+        setConversationHistory(prev => [
+          ...prev.slice(-4),
+          { role: 'user', content: userMessage },
+          { role: 'assistant', content: aiResponseText }
+        ]);
       }
+      
     } catch (error) {
       console.error('Error generating AI response:', error);
       const errorResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        message: "I'm having trouble connecting right now, but I want you to know that your feelings are valid and you're not alone.",
+        message: "I'm having trouble connecting right now, but I want you to know that your feelings are valid and you're not alone. Please try again in a moment.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorResponse]);
+      setApiStatus('Error occurred');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const clearChat = async () => {
-    if (user) {
-      const { error } = await supabase
-        .from('chat_messages')
-        .delete()
-        .eq('user_id', user.id);
+  const startNewSession = () => {
+    setSessionActive(true);
+    setMessages([{
+      id: '1',
+      type: 'ai',
+      message: "Welcome to a new session! I'm here to listen and support you.\nWhat would you like to talk about today?",
+      timestamp: new Date()
+    }]);
+    setSelectedEmotion('');
+    setIntensity(8);
+    setUserMessage('');
+    setConversationHistory([]);
+    setApiStatus('New session started');
+  };
 
-      if (error) {
-        console.error('Error clearing chat:', error);
-        toast.error('Failed to clear chat');
-        return;
-      }
-      toast.success('Chat cleared');
-    }
-    
+  const clearChat = () => {
     setMessages([{
       id: '1',
       type: 'ai',
@@ -247,19 +425,89 @@ export function ChatSection() {
     setSelectedEmotion('');
     setIntensity(8);
     setUserMessage('');
+    setConversationHistory([]);
+    setApiStatus('ready');
+    setSessionActive(true);
+  };
+
+  const testAPI = async () => {
+    setApiStatus('Testing API...');
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${GROQ_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [{ role: 'user', content: 'Hello, are you working?' }],
+          max_tokens: 50
+        })
+      });
+      
+      if (response.ok) {
+        setApiStatus('API test: SUCCESS');
+      } else {
+        setApiStatus(`API test: FAILED (${response.status})`);
+      }
+    } catch (error) {
+      setApiStatus('API test: ERROR');
+    }
   };
 
   return (
     <Card className="max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          💬 Supportive Chat
+          💬 Supportive Chat (Groq)
+          {!sessionActive && (
+            <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
+              Session Complete
+            </span>
+          )}
         </CardTitle>
         <CardDescription>
-          Chat with your AI companion for emotional support and guidance
+          {sessionActive 
+            ? "Chat with your AI companion for emotional support and guidance"
+            : "Session completed. Start a new session whenever you're ready"}
+          {personalityType && (
+            <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+              MBTI: {personalityType}
+            </span>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Debug Info */}
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs">
+          <div className="flex justify-between items-center">
+            <div>
+              <strong>Status:</strong> {apiStatus} | 
+              <strong> Session:</strong> {sessionActive ? '🟢 Active' : '🟡 Completed'} | 
+              <strong> History:</strong> {conversationHistory.length} messages
+              {personalityType && <> | <strong> MBTI:</strong> {personalityType}</>}
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={testAPI} className="text-xs h-6">
+                Test API
+              </Button>
+              {!sessionActive && (
+                <Button variant="default" size="sm" onClick={startNewSession} className="text-xs h-6 bg-green-600 hover:bg-green-700">
+                  New Session
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Session End Hint */}
+        {sessionActive && (
+          <div className="p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
+            💡 <strong>Tip:</strong> Say "end session" when you're ready to receive a comprehensive summary and insights.
+          </div>
+        )}
+
         {/* Chat Messages */}
         <ScrollArea className="h-[400px] w-full border rounded-lg p-4">
           <div className="space-y-4">
@@ -273,8 +521,13 @@ export function ChatSection() {
               >
                 {message.type === 'ai' && (
                   <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      🤗
+                    <div className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center",
+                      message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
+                        ? "bg-green-100 text-green-600"
+                        : "bg-primary/10"
+                    )}>
+                      {message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes") ? "📋" : "🤗"}
                     </div>
                   </div>
                 )}
@@ -283,10 +536,17 @@ export function ChatSection() {
                     "max-w-xs px-4 py-2 rounded-lg whitespace-pre-wrap",
                     message.type === 'user'
                       ? "bg-primary text-primary-foreground ml-auto"
+                      : message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
+                      ? "bg-green-50 border border-green-200"
                       : "bg-muted"
                   )}
                 >
                   <p className="text-sm">{message.message}</p>
+                  {(message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")) && (
+                    <div className="mt-2 pt-2 border-t border-green-200 text-xs text-green-600">
+                      📋 Session Summary
+                    </div>
+                  )}
                 </div>
                 {message.type === 'user' && (
                   <div className="flex-shrink-0">
@@ -305,86 +565,116 @@ export function ChatSection() {
                   </div>
                 </div>
                 <div className="bg-muted px-4 py-2 rounded-lg">
-                  <p className="text-sm">Thinking...</p>
+                  <p className="text-sm">Thinking... {apiStatus}</p>
                 </div>
               </div>
             )}
           </div>
         </ScrollArea>
 
+        {/* Clear Chat Button */}
+        <div className="flex justify-between">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={clearChat}
+            className="text-xs"
+          >
+            Clear Chat
+          </Button>
+          {!sessionActive && (
+            <Button 
+              variant="default" 
+              size="sm" 
+              onClick={startNewSession}
+              className="text-xs bg-green-600 hover:bg-green-700"
+            >
+              Start New Session
+            </Button>
+          )}
+        </div>
+
         {/* Emotion Context Toggle */}
-        <button
-          onClick={() => setShowEmotionContext(!showEmotionContext)}
-          className="text-sm text-primary flex items-center gap-1 hover:underline"
-        >
-          ⭐ {showEmotionContext ? 'Hide' : 'Add'} emotion context (optional)
-        </button>
+        {sessionActive && (
+          <>
+            <button
+              onClick={() => setShowEmotionContext(!showEmotionContext)}
+              className="text-sm text-primary flex items-center gap-1 hover:underline"
+            >
+              ⭐ {showEmotionContext ? 'Hide' : 'Add'} emotion context (optional)
+            </button>
 
-        {/* Emotion Selection */}
-        {showEmotionContext && (
-          <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
-            <div>
-              <p className="text-sm font-medium mb-3">How are you feeling right now?</p>
-              <div className="grid grid-cols-4 gap-2">
-                {emotions.map((emotion) => (
-                  <Button
-                    key={emotion.name}
-                    variant={selectedEmotion === emotion.name ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedEmotion(emotion.name)}
-                    className="flex flex-col items-center gap-1 h-auto py-3"
-                  >
-                    <span className="text-lg">{emotion.emoji}</span>
-                    <span className="text-xs">{emotion.name}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
+            {/* Emotion Selection */}
+            {showEmotionContext && (
+              <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium mb-3">How are you feeling right now?</p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {emotions.map((emotion) => (
+                      <Button
+                        key={emotion.name}
+                        variant={selectedEmotion === emotion.name ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedEmotion(emotion.name)}
+                        className="flex flex-col items-center gap-1 h-auto py-3"
+                      >
+                        <span className="text-lg">{emotion.emoji}</span>
+                        <span className="text-xs">{emotion.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
 
-            {/* Intensity Slider */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <Label className="text-sm font-medium">Intensity: {intensity}/10</Label>
-              </div>
-              <div className="space-y-2">
-                <Slider
-                  value={[intensity]}
-                  onValueChange={(value) => setIntensity(value[0])}
-                  max={10}
-                  min={1}
-                  step={1}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Low</span>
-                  <span>Moderate</span>
-                  <span>High</span>
+                {/* Intensity Slider */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-sm font-medium">Intensity: {intensity}/10</Label>
+                  </div>
+                  <div className="space-y-2">
+                    <Slider
+                      value={[intensity]}
+                      onValueChange={(value) => setIntensity(value[0])}
+                      max={10}
+                      min={1}
+                      step={1}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Low</span>
+                      <span>Moderate</span>
+                      <span>High</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
 
         {/* Message Input */}
         <div className="flex gap-2">
           <Textarea
-            placeholder="Share what's on your mind..."
+            placeholder={sessionActive ? "Share what's on your mind... (say 'end session' for summary)" : "Session completed - start a new session to continue"}
             value={userMessage}
             onChange={(e) => setUserMessage(e.target.value)}
             className="min-h-[60px] resize-none"
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === 'Enter' && !e.shiftKey && sessionActive) {
                 e.preventDefault();
                 handleSendMessage();
               }
             }}
+            disabled={!sessionActive}
           />
           <Button 
-            onClick={handleSendMessage} 
-            disabled={!userMessage.trim() || isLoading}
+            onClick={sessionActive ? handleSendMessage : startNewSession}
+            disabled={(!userMessage.trim() || isLoading) && sessionActive}
             className="self-end"
           >
-            {isLoading ? 'Thinking...' : 'Send'}
+            {sessionActive 
+              ? (isLoading ? 'Thinking...' : 'Send')
+              : 'New Session'
+            }
           </Button>
         </div>
       </CardContent>
