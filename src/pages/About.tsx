@@ -95,13 +95,16 @@ export default function About() {
           <CardContent className="p-8 md:p-12 relative">
             <div className="flex items-center gap-3 mb-6">
               <Target className="w-8 h-8 text-primary" />
-              <h2 className="text-3xl md:text-4xl font-bold">Our Mission</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">My Mission</h2>
             </div>
             <p className="text-lg leading-relaxed mb-6">
-              Mindful Me was born from a simple yet powerful belief: <span className="font-semibold text-primary">every young person deserves access to mental health support, career guidance, and emotional wellness tools</span> - regardless of their school's resources or geographic location.
+              I created Mindful Me because I believe in something simple but powerful: <span className="font-semibold text-primary">every young person deserves access to mental health support, career guidance, and emotional wellness tools</span> - no matter what school they go to or where they live.
             </p>
             <p className="text-lg leading-relaxed mb-6">
-              We're on a mission to bridge the mental health gap by combining cutting-edge AI technology with evidence-based therapeutic practices. Our platform empowers youth to understand their emotions, build healthy habits through journaling and mindfulness, and develop the self-awareness needed to thrive in today's complex world.
+              When I looked around, I saw the numbers - student-to-counselor ratios of 250:1, sometimes even 1000:1 in many places around the world. I saw my friends struggling with stress, anxiety, and pressure to figure out their entire future, often with nowhere to turn. That's when I realized: what if we could use AI not to replace human connection, but to make support accessible whenever someone needs it?
+            </p>
+            <p className="text-lg leading-relaxed mb-6">
+              I'm combining my passion for artificial intelligence with my deep interest in psychology to build something that actually helps. Through Mindful Me, I want to empower young people like me to understand their emotions better, build healthy habits through journaling and mindfulness, and develop the self-awareness we all need to navigate today's complex world.
             </p>
             <div className="flex flex-wrap gap-3 mt-8">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10">
@@ -170,7 +173,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Creator Section */}
+        {/* Creator Section - Written in First Person */}
         <Card className="mb-16 backdrop-blur-md bg-gradient-to-br from-primary/10 via-purple-500/10 to-pink-500/10 border-2 border-primary/30 shadow-xl">
           <CardContent className="p-8 md:p-12">
             <div className="flex flex-col md:flex-row items-center gap-8">
@@ -180,16 +183,19 @@ export default function About() {
                 </div>
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-3xl md:text-4xl font-bold mb-3">Meet the Creator</h2>
-                <h3 className="text-xl font-semibold text-primary mb-4">Arnav Pandey, Age 14</h3>
+                <h2 className="text-3xl md:text-4xl font-bold mb-3">Hi, I'm Arnav 👋</h2>
+                <h3 className="text-xl font-semibold text-primary mb-4">14 Years Old | AI Enthusiast | Psychology Explorer</h3>
                 <p className="text-lg leading-relaxed mb-4">
-                  At just 14 years old, Arnav Pandey recognized a critical gap in mental health support for young people. Combining his deep passion for artificial intelligence with his fascination for psychology and human behavior, he set out to create something that could make a real difference.
+                  I'm 14, and I built Mindful Me because I saw something that really bothered me: my friends and classmates struggling with stress, anxiety, and the overwhelming pressure to figure out their entire futures - often with no one to turn to. The numbers shocked me even more - in some places, there's one counselor for every 250 to 1000 students. That's insane.
                 </p>
                 <p className="text-lg leading-relaxed mb-4">
-                  "I saw my peers struggling with stress, anxiety, and the pressure to figure out their futures - often with no one to turn to," says Arnav. "I realized that AI could be part of the solution, not by replacing human connection, but by making support more accessible when you need it most."
+                  I've always been fascinated by two things: artificial intelligence and understanding how people think and feel. Psychology is incredible - the way our minds work, how emotions shape our decisions, why we behave the way we do. And AI? It's like magic, but it's real. I thought: what if I could combine these two passions to actually help people?
+                </p>
+                <p className="text-lg leading-relaxed mb-4">
+                  So I created Mindful Me. It's not meant to replace therapists or counselors - they're irreplaceable. But I wanted to build something that's there when you need it, at 2 AM when you can't sleep because of anxiety, or when you just need someone to listen without judgment. 
                 </p>
                 <p className="text-lg leading-relaxed">
-                  Mindful Me represents Arnav's vision of a world where technology empowers mental wellness, where every young person has a safe space to explore their emotions, and where the barriers to psychological support are dramatically reduced.
+                  This platform is my vision of making mental health support accessible to everyone, especially young people like me who are navigating the chaos of growing up in a hyperconnected world. I hope Mindful Me can be that safe space where you feel heard, understood, and supported - because you deserve that. We all do.
                 </p>
               </div>
             </div>
