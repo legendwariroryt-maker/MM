@@ -11,6 +11,7 @@ import { BreathingOrb } from "@/components/ui/breathing-orb";
 import { Heart, Mail, Lock, UserPlus, LogIn, AlertTriangle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import logoImage from "@/assets/mindful-me-logo.png";
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -107,9 +108,11 @@ export default function Auth() {
           {/* Logo and Header - matching main app styling */}
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="p-2 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 animate-gentle-bounce">
-                <Heart className="w-8 h-8 text-pink-600" />
-              </div>
+              <img 
+                src={logoImage} 
+                alt="MindfulMe Logo" 
+                className="w-12 h-12 animate-gentle-bounce"
+              />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
                 MindfulMe
               </h1>
