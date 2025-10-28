@@ -4,6 +4,7 @@ import { Mail, Heart, Brain, BookOpen, Sparkles, Target, Users, TrendingUp } fro
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
 import { useNavigate } from "react-router-dom";
+import logoImage from "@/assets/mindful-me-logo.png";
 
 export default function About() {
   const navigate = useNavigate();

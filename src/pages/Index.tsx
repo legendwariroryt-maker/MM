@@ -7,12 +7,13 @@ import { MindfulnessSection } from "@/components/sections/MindfulnessSection";
 import { JournalSection } from "@/components/sections/JournalSection";
 import { EmergencySection } from "@/components/sections/EmergencySection";
 import { MbtiSection } from "@/components/sections/MbtiSection";
-import { Brain, LogOut, LogIn } from "lucide-react";
+import { LogOut, LogIn } from "lucide-react";
 import { AppSection } from "@/types";
 import PrivacySettings from "@/components/PrivacySettings";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
 import { useAuth } from "@/hooks/useAuth";
+import logoImage from "@/assets/mindful-me-logo.png";
 
 const Index = () => {
   const { user, loading, signOut } = useAuth();
@@ -93,9 +94,11 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 animate-gentle-bounce">
-                <Brain className="w-6 h-6 text-pink-600" />
-              </div>
+              <img 
+                src={logoImage} 
+                alt="MindfulMe Logo" 
+                className="w-10 h-10 animate-gentle-bounce"
+              />
               <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent drop-shadow-sm">
                 MindfulMe
               </h1>
@@ -150,8 +153,7 @@ const Index = () => {
             onClick={() => setActiveSection('chat')}
             className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
-            <Brain className="w-4 h-4" />
-            Supportive Chat
+            💬 Supportive Chat
           </Button>
           <Button
             variant={activeSection === 'emotions' ? "default" : "outline"}
