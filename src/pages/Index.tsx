@@ -41,7 +41,7 @@ const Index = () => {
   // Show loading state while authentication is being checked
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 via-pink-50 to-orange-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center transition-colors duration-500">
         <div className="text-center space-y-4">
           <BreathingOrb size="lg" />
           <div className="text-lg text-muted-foreground animate-pulse">
@@ -77,7 +77,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 via-pink-50 to-orange-50 relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden transition-colors duration-500">
       {/* Changed to colorful gradient background - original was too muted and made bubbles invisible */}
       <FloatingBubbles />
       
@@ -93,7 +93,7 @@ const Index = () => {
       </div>
       
       {/* Header */}
-      <header className="py-6 px-4 border-b bg-card/50 backdrop-blur-sm relative z-10">
+      <header className="py-6 px-4 border-b bg-card/80 backdrop-blur-sm relative z-10 transition-colors duration-500">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
@@ -219,7 +219,7 @@ const Index = () => {
 
       {/* Main Content - Glassmorphism effect for modern look */}
       <main className="max-w-6xl mx-auto px-4 pb-8 relative z-10">
-        <div className="animate-fade-in backdrop-blur-sm bg-white/80 rounded-2xl p-6 border border-white/50 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:bg-white/90">
+        <div className="animate-fade-in backdrop-blur-sm bg-card/90 rounded-2xl p-6 border border-border shadow-2xl hover:shadow-3xl transition-all duration-500">
           {renderSection()}
         </div>
       </main>
