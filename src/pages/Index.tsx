@@ -8,7 +8,6 @@ import { JournalSection } from "@/components/sections/JournalSection";
 import { EmergencySection } from "@/components/sections/EmergencySection";
 import { MbtiSection } from "@/components/sections/MbtiSection";
 import { ThemeSelector } from "@/components/ThemeSelector";
-import { AnalyticsSection } from "@/components/sections/AnalyticsSection";
 import { OnboardingSection } from "@/components/sections/OnboardingSection";
 import { LogOut, LogIn } from "lucide-react";
 import { AppSection } from "@/types";
@@ -29,7 +28,7 @@ const Index = () => {
   // Handle section from URL params (useful for emergency access)
   useEffect(() => {
     const section = searchParams.get('section') as AppSection;
-    if (section && ['chat', 'emotions', 'mindfulness', 'journal', 'emergency', 'settings', 'mbti', 'themes', 'analytics', 'onboarding'].includes(section)) {
+    if (section && ['chat', 'emotions', 'mindfulness', 'journal', 'emergency', 'settings', 'mbti', 'themes', 'onboarding'].includes(section)) {
       setActiveSection(section);
     }
   }, [searchParams]);
@@ -73,8 +72,6 @@ const Index = () => {
         return <MbtiSection />;
       case 'themes':
         return <ThemeSelector />;
-      case 'analytics':
-        return <AnalyticsSection />;
       case 'onboarding':
         return <OnboardingSection onComplete={() => setActiveSection('chat')} />;
       default:
@@ -219,14 +216,6 @@ const Index = () => {
             className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             🎨 Themes
-          </Button>
-          <Button
-            variant={activeSection === 'analytics' ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveSection('analytics')}
-            className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-          >
-            📈 Analytics
           </Button>
           <Button
             variant={activeSection === 'onboarding' ? "default" : "outline"}
