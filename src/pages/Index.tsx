@@ -203,14 +203,6 @@ const Index = () => {
           >
             ⚙️ Privacy Settings
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/about')}
-            className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-          >
-            ℹ️ About
-          </Button>
         </div>
       </div>
 
