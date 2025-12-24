@@ -39,4 +39,4 @@ export interface MindfulnessExercise {
 
 export type EmotionType = 'happy' | 'sad' | 'angry' | 'anxious' | 'calm' | 'stressed' | 'overwhelmed' | 'excited';
 
-export type AppSection = 'chat' | 'emotions' | 'mindfulness' | 'journal' | 'emergency' | 'settings' | 'mbti';
+export type AppSection = 'chat' | 'emotions' | 'mindfulness' | 'journal' | 'emergency' | 'settings' | 'mbti' | 'themes';
