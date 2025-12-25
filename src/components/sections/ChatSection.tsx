@@ -94,9 +94,16 @@ When the user indicates they want to end the session (using phrases like "end se
 - Emotional intensity: \${intensity}/10
 - Your role: Create a sanctuary where healing can begin through responsive presence
 
-Remember: The most therapeutic gift you can offer is making someone feel truly seen, heard, and understood.`;
+Remember: The most therapeutic gift you can offer is making someone feel truly seen, heard, and understood.
 
-export function ChatSection() {
+## USER NAME
+\${userName}`;
+
+interface ChatSectionProps {
+  userName?: string;
+}
+
+export function ChatSection({ userName }: ChatSectionProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -262,10 +269,15 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         : '';
 
       // Replace placeholders in the system prompt
+      const userNameContext = userName 
+        ? `The user's name is ${userName}. Address them by name occasionally to make the conversation more personal and warm.`
+        : 'The user has not provided their name.';
+
       const currentSystemPrompt = System_prompt
         .replace('${emotion}', emotion || 'unspecified')
         .replace('${intensity}', intensity.toString())
-        .replace('${personalityContext}', personalityContext);
+        .replace('${personalityContext}', personalityContext)
+        .replace('${userName}', userNameContext);
 
       setApiStatus('Sending request to Groq...');
 
