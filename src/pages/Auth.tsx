@@ -16,11 +16,37 @@ import logoImage from "@/assets/mindful-me-logo.png";
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Handle forgot password
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password reset email sent!",
+        description: "Check your inbox for a link to reset your password.",
+      });
+      setIsForgotPassword(false);
+    } catch (error: any) {
+      setError(error.message || "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Took some time to implement proper error handling - found Supabase docs helpful
   const handleAuth = async (e: React.FormEvent) => {
@@ -43,7 +69,7 @@ export default function Auth() {
         
         toast({
           title: "Account created!",
-          description: "Please check your email to verify your account.",
+          description: "A verification link has been sent to your email. Click the link to verify your account, then come back here to sign in.",
         });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -136,7 +162,7 @@ export default function Auth() {
             <CardHeader className="text-center">
               <CardTitle className="flex items-center justify-center gap-2">
                 <Heart className="w-5 h-5 text-pink-500" />
-                {isSignUp ? "Create Account" : "Sign In"}
+                {isForgotPassword ? "Reset Password" : isSignUp ? "Create Account" : "Sign In"}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -147,68 +173,137 @@ export default function Auth() {
                 </Alert>
               )}
 
-              <form onSubmit={handleAuth} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <Button 
-                  type="submit" 
-                  className="w-full" 
-                  size="lg"
-                  disabled={isLoading}
-                  variant="wellness"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      {isSignUp ? "Creating Account..." : "Signing In..."}
+              {isForgotPassword ? (
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
                     </div>
-                  ) : (
-                    <>
-                      {isSignUp ? (
-                        <>
-                          <UserPlus className="w-4 h-4 mr-2" />
-                          Create Account
-                        </>
-                      ) : (
-                        <>
-                          <LogIn className="w-4 h-4 mr-2" />
-                          Sign In
-                        </>
+                    <p className="text-xs text-muted-foreground">
+                      We'll send you a link to reset your password.
+                    </p>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    disabled={isLoading}
+                    variant="wellness"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Sending...
+                      </div>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4 mr-2" />
+                        Send Reset Link
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="w-full"
+                    onClick={() => {
+                      setIsForgotPassword(false);
+                      setError("");
+                    }}
+                  >
+                    Back to Sign In
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleAuth} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      {!isSignUp && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsForgotPassword(true);
+                            setError("");
+                          }}
+                          className="text-xs text-primary hover:underline"
+                        >
+                          Forgot password?
+                        </button>
                       )}
-                    </>
-                  )}
-                </Button>
-              </form>
+                    </div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    disabled={isLoading}
+                    variant="wellness"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        {isSignUp ? "Creating Account..." : "Signing In..."}
+                      </div>
+                    ) : (
+                      <>
+                        {isSignUp ? (
+                          <>
+                            <UserPlus className="w-4 h-4 mr-2" />
+                            Create Account
+                          </>
+                        ) : (
+                          <>
+                            <LogIn className="w-4 h-4 mr-2" />
+                            Sign In
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Button>
+                </form>
+              )}
 
               <div className="relative">
                 <Separator />
@@ -229,34 +324,33 @@ export default function Auth() {
               </Button>
 
               {/* Toggle between Sign In/Sign Up and Emergency Access */}
-              <div className="text-center pt-4 space-y-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSignUp(!isSignUp);
-                    setError("");
-                  }}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors block"
-                >
-                  {isSignUp 
-                    ? "Already have an account? Sign in" 
-                    : "Don't have an account? Sign up"
-                  }
-                </button>
-                
-                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                  <span>Need immediate help?</span>
+              {!isForgotPassword && (
+                <div className="text-center pt-4 space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSignUp(!isSignUp);
+                      setError("");
+                    }}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors mx-auto block"
+                  >
+                    {isSignUp 
+                      ? "Already have an account? Sign in" 
+                      : "Don't have an account? Sign up"
+                    }
+                  </button>
+                  
                   <Button 
                     onClick={handleEmergencyAccess}
-                    variant="link" 
+                    variant="outline" 
                     size="sm"
-                    className="p-0 h-auto text-xs text-destructive hover:text-destructive/80"
+                    className="mx-auto flex items-center gap-2 text-destructive border-destructive/30 hover:bg-destructive/10"
                   >
-                    <AlertTriangle className="w-3 h-3 mr-1" />
-                    Crisis support
+                    <AlertTriangle className="w-4 h-4" />
+                    Need immediate help? Crisis support
                   </Button>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 

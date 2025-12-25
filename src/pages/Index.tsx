@@ -9,7 +9,7 @@ import { EmergencySection } from "@/components/sections/EmergencySection";
 import { MbtiSection } from "@/components/sections/MbtiSection";
 import { ThemeSelector } from "@/components/ThemeSelector";
 import { OnboardingSection } from "@/components/sections/OnboardingSection";
-import { LogOut, LogIn } from "lucide-react";
+import { LogOut, LogIn, User } from "lucide-react";
 import { AppSection } from "@/types";
 import PrivacySettings from "@/components/PrivacySettings";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
@@ -26,27 +26,30 @@ const Index = () => {
   // State management kept simple - considered Redux but overkill for hackathon scope
   const [activeSection, setActiveSection] = useState<AppSection>('chat');
   const [displayName, setDisplayName] = useState<string>('');
+  const [userAge, setUserAge] = useState<number | null>(null);
 
-  // Fetch user's display name from profiles
+  // Fetch user's display name and age from profiles
   useEffect(() => {
     if (!user) {
       setDisplayName('');
+      setUserAge(null);
       return;
     }
 
-    const fetchDisplayName = async () => {
+    const fetchProfile = async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('display_name')
+        .select('display_name, age')
         .eq('id', user.id)
         .maybeSingle();
 
-      if (!error && data?.display_name) {
-        setDisplayName(data.display_name);
+      if (!error && data) {
+        if (data.display_name) setDisplayName(data.display_name);
+        if (data.age) setUserAge(data.age);
       }
     };
 
-    fetchDisplayName();
+    fetchProfile();
   }, [user]);
 
   // Handle section from URL params (useful for emergency access)
@@ -81,7 +84,7 @@ const Index = () => {
   const renderSection = () => {
     switch (activeSection) {
       case 'chat':
-        return <ChatSection userName={displayName} />;
+        return <ChatSection userName={displayName} userAge={userAge} />;
       case 'emotions':
         return <EmotionsSection />;
       case 'mindfulness':
@@ -133,24 +136,37 @@ const Index = () => {
                 MindfulMe
               </h1>
             </div>
-            <Button 
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
-              onClick={user ? () => signOut() : () => navigate('/auth')}
-            >
-              {user ? (
-                <>
-                  <LogOut className="w-4 h-4" />
-                  Sign out
-                </>
-              ) : (
-                <>
-                  <LogIn className="w-4 h-4" />
-                  Sign in
-                </>
+            <div className="flex items-center gap-2">
+              {user && (
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
+                  onClick={() => navigate('/profile')}
+                >
+                  <User className="w-4 h-4" />
+                  Profile
+                </Button>
               )}
-            </Button>
+              <Button 
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
+                onClick={user ? () => signOut() : () => navigate('/auth')}
+              >
+                {user ? (
+                  <>
+                    <LogOut className="w-4 h-4" />
+                    Sign out
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4" />
+                    Sign in
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </header>

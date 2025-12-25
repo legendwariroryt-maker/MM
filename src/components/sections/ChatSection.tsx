@@ -97,13 +97,17 @@ When the user indicates they want to end the session (using phrases like "end se
 Remember: The most therapeutic gift you can offer is making someone feel truly seen, heard, and understood.
 
 ## USER NAME
-\${userName}`;
+\${userName}
+
+## USER AGE
+\${userAge}`;
 
 interface ChatSectionProps {
   userName?: string;
+  userAge?: number | null;
 }
 
-export function ChatSection({ userName }: ChatSectionProps) {
+export function ChatSection({ userName, userAge }: ChatSectionProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -273,11 +277,16 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         ? `The user's name is ${userName}. Address them by name occasionally to make the conversation more personal and warm.`
         : 'The user has not provided their name.';
 
+      const userAgeContext = userAge 
+        ? `The user is ${userAge} years old. Adapt your language, tone, and suggestions to be appropriate for their age group. Be mindful of age-appropriate topics and coping strategies.`
+        : 'The user has not provided their age.';
+
       const currentSystemPrompt = System_prompt
         .replace('${emotion}', emotion || 'unspecified')
         .replace('${intensity}', intensity.toString())
         .replace('${personalityContext}', personalityContext)
-        .replace('${userName}', userNameContext);
+        .replace('${userName}', userNameContext)
+        .replace('${userAge}', userAgeContext);
 
       setApiStatus('Sending request to Groq...');
 
