@@ -15,6 +15,7 @@ import PrivacySettings from "@/components/PrivacySettings";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/mindful-me-logo.png";
 
 const Index = () => {
@@ -24,6 +25,29 @@ const Index = () => {
   
   // State management kept simple - considered Redux but overkill for hackathon scope
   const [activeSection, setActiveSection] = useState<AppSection>('chat');
+  const [displayName, setDisplayName] = useState<string>('');
+
+  // Fetch user's display name from profiles
+  useEffect(() => {
+    if (!user) {
+      setDisplayName('');
+      return;
+    }
+
+    const fetchDisplayName = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!error && data?.display_name) {
+        setDisplayName(data.display_name);
+      }
+    };
+
+    fetchDisplayName();
+  }, [user]);
 
   // Handle section from URL params (useful for emergency access)
   useEffect(() => {
@@ -57,7 +81,7 @@ const Index = () => {
   const renderSection = () => {
     switch (activeSection) {
       case 'chat':
-        return <ChatSection />;
+        return <ChatSection userName={displayName} />;
       case 'emotions':
         return <EmotionsSection />;
       case 'mindfulness':
@@ -135,7 +159,7 @@ const Index = () => {
       <div className="max-w-4xl mx-auto px-4 py-8 text-center relative z-10 hover:scale-105 transition-transform duration-700">
         <div className="animate-fade-in">
           <h2 className="text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 via-blue-600 to-green-600 bg-clip-text text-transparent mb-4 animate-pulse-calm drop-shadow-lg">
-            {user ? `Welcome back, ${user.email?.split('@')[0]}! 💙` : 'Welcome, friend! 💙'}
+            {user ? `Welcome back, ${displayName || user.email?.split('@')[0]}! 💙` : 'Welcome, friend! 💙'}
           </h2>
           <p className="text-muted-foreground mb-8 text-lg">
             Your personal mental wellness companion
