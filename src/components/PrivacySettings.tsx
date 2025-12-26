@@ -55,7 +55,7 @@ const PrivacySettings = () => {
   }
 
   return (
-    <Card className="max-w-2xl mx-auto bg-white/90 backdrop-blur-sm border border-white/50 shadow-xl">
+    <Card className="max-w-2xl mx-auto bg-card/90 backdrop-blur-sm border border-border/50 shadow-xl">
       <CardHeader className="space-y-2">
         <div className="flex items-center gap-2">
           <Shield className="w-6 h-6 text-primary" />
@@ -70,7 +70,7 @@ const PrivacySettings = () => {
 
       <CardContent className="space-y-6">
         {/* Current Status */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border">
+        <div className="flex items-center justify-between p-4 bg-secondary rounded-lg border border-border">
           <div className="flex items-center gap-2">
             <Settings className="w-5 h-5 text-purple-600" />
             <span className="font-medium">Current Setting:</span>
@@ -167,9 +167,9 @@ const PrivacySettings = () => {
         )}
 
         {/* Info Box */}
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <h4 className="font-semibold text-amber-800 mb-2">Important Information</h4>
-          <ul className="text-sm text-amber-700 space-y-1">
+        <div className="p-4 bg-warning/20 border border-warning/30 rounded-lg">
+          <h4 className="font-semibold text-foreground mb-2">Important Information</h4>
+          <ul className="text-sm text-muted-foreground space-y-1">
             <li>• You can change these settings anytime</li>
             <li>• Reports are sent daily at 12 AM</li>
             <li>• Your data is always secure and encrypted</li>

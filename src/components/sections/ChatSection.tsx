@@ -501,7 +501,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Debug Info */}
-        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs">
+        <div className="p-3 bg-secondary border border-border rounded-lg text-xs text-foreground">
           <div className="flex justify-between items-center">
             <div>
               <strong>Status:</strong> {apiStatus} | 
@@ -524,7 +524,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
 
         {/* Session End Hint */}
         {sessionActive && (
-          <div className="p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
+          <div className="p-2 bg-warning/20 border border-warning/30 rounded text-xs text-warning-foreground">
             💡 <strong>Tip:</strong> Say "end session" when you're ready to receive a comprehensive summary and insights.
           </div>
         )}
