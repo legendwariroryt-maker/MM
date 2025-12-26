@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
 import { BreathingOrb } from "@/components/ui/breathing-orb";
-import { Heart, Mail, Lock, UserPlus, LogIn, AlertTriangle, Sparkles } from "lucide-react";
+import { Heart, Mail, Lock, UserPlus, LogIn, AlertTriangle, Sparkles, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import logoImage from "@/assets/mindful-me-logo.png";
@@ -17,13 +17,24 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Handle forgot password
+  // Check if user came from password reset link
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+    if (type === 'recovery') {
+      setIsResetPassword(true);
+    }
+  }, []);
+
+  // Handle sending forgot password email
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -38,11 +49,49 @@ export default function Auth() {
 
       toast({
         title: "Password reset email sent!",
-        description: "Check your inbox for a link to reset your password.",
+        description: "Check your inbox for a link to reset your password. Click the link, then return here to set a new password.",
       });
       setIsForgotPassword(false);
     } catch (error: any) {
       setError(error.message || "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle setting new password after clicking reset link
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password updated!",
+        description: "Your password has been successfully reset. You can now sign in.",
+      });
+      setIsResetPassword(false);
+      setPassword("");
+      setConfirmPassword("");
+      // Clear the hash from URL
+      window.history.replaceState(null, '', window.location.pathname);
+    } catch (error: any) {
+      setError(error.message || "An error occurred while resetting password");
     } finally {
       setIsLoading(false);
     }
@@ -145,12 +194,14 @@ export default function Auth() {
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-semibold text-foreground">
-                {isSignUp ? "Join Our Community" : "Welcome Back"}
+                {isResetPassword ? "Set New Password" : isSignUp ? "Join Our Community" : "Welcome Back"}
               </h2>
               <p className="text-muted-foreground">
-                {isSignUp 
-                  ? "Create your safe space for mental wellness" 
-                  : "Sign in to continue your wellness journey"
+                {isResetPassword
+                  ? "Enter your new password below"
+                  : isSignUp 
+                    ? "Create your safe space for mental wellness" 
+                    : "Sign in to continue your wellness journey"
                 }
               </p>
             </div>
@@ -162,7 +213,7 @@ export default function Auth() {
             <CardHeader className="text-center">
               <CardTitle className="flex items-center justify-center gap-2">
                 <Heart className="w-5 h-5 text-pink-500" />
-                {isForgotPassword ? "Reset Password" : isSignUp ? "Create Account" : "Sign In"}
+                {isResetPassword ? "New Password" : isForgotPassword ? "Reset Password" : isSignUp ? "Create Account" : "Sign In"}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -173,7 +224,81 @@ export default function Auth() {
                 </Alert>
               )}
 
-              {isForgotPassword ? (
+              {isResetPassword ? (
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="new-password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-10"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="pl-10"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Password must be at least 6 characters.
+                    </p>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    disabled={isLoading}
+                    variant="wellness"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Updating...
+                      </div>
+                    ) : (
+                      <>
+                        <KeyRound className="w-4 h-4 mr-2" />
+                        Set New Password
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="w-full"
+                    onClick={() => {
+                      setIsResetPassword(false);
+                      setPassword("");
+                      setConfirmPassword("");
+                      setError("");
+                      window.history.replaceState(null, '', window.location.pathname);
+                    }}
+                  >
+                    Back to Sign In
+                  </Button>
+                </form>
+              ) : isForgotPassword ? (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
