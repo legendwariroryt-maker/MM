@@ -110,7 +110,7 @@ export default function Auth() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`
+            emailRedirectTo: `${window.location.origin}/app`
           }
         });
 
@@ -132,7 +132,7 @@ export default function Auth() {
           title: "Welcome back!",
           description: "Successfully signed in to Mindful Me.",
         });
-        navigate("/");
+        navigate("/app");
       }
     } catch (error: any) {
       // Spent time debugging different error types from Supabase
@@ -144,7 +144,7 @@ export default function Auth() {
 
   // Quick guest access - useful for demos and emergency access
   const handleGuestAccess = () => {
-    navigate("/");
+    navigate("/app");
     toast({
       title: "Guest Access",
       description: "You're now browsing as a guest with full app access.",
@@ -153,7 +153,7 @@ export default function Auth() {
 
   // Emergency access - bypasses login for crisis situations
   const handleEmergencyAccess = () => {
-    navigate("/?section=emergency");
+    navigate("/app?section=emergency");
     toast({
       title: "Emergency Support Activated",
       description: "Immediate access to crisis resources and support.",
