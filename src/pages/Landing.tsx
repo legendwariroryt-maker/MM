@@ -1,0 +1,422 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { FloatingBubbles } from "@/components/ui/floating-bubbles";
+import { BreathingOrb } from "@/components/ui/breathing-orb";
+import { 
+  MessageCircle, 
+  Heart, 
+  Flower2, 
+  PenTool, 
+  Phone, 
+  Brain, 
+  Shield, 
+  Clock, 
+  Sparkles,
+  ArrowRight,
+  ChevronDown,
+  Lock,
+  Zap,
+  Users,
+  Star,
+  Palette
+} from "lucide-react";
+import logoImage from "@/assets/mindful-me-logo.png";
+
+const Landing = () => {
+  const navigate = useNavigate();
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    document.querySelectorAll(".scroll-animate").forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const features = [
+    {
+      icon: MessageCircle,
+      title: "AI Supportive Chat",
+      description: "Talk to your personal AI companion anytime. Get empathetic responses, coping strategies, and emotional support tailored just for you.",
+      color: "from-blue-500 to-cyan-500",
+      section: "chat"
+    },
+    {
+      icon: Heart,
+      title: "Emotion Analytics",
+      description: "Track your emotional patterns with beautiful visualizations. Understand your feelings better with mood history charts and insights.",
+      color: "from-pink-500 to-rose-500",
+      section: "emotions"
+    },
+    {
+      icon: PenTool,
+      title: "Wellness Journal",
+      description: "Express your thoughts in a safe, private space. Write freely and reflect on your journey with guided prompts.",
+      color: "from-amber-500 to-orange-500",
+      section: "journal"
+    },
+    {
+      icon: Flower2,
+      title: "Mindfulness Exercises",
+      description: "Calm your mind with guided breathing exercises and meditation. Find peace in the present moment.",
+      color: "from-green-500 to-emerald-500",
+      section: "mindfulness"
+    },
+    {
+      icon: Brain,
+      title: "Personality Insights",
+      description: "Discover your MBTI personality type. Understand yourself better and learn how you interact with the world.",
+      color: "from-purple-500 to-violet-500",
+      section: "mbti"
+    },
+    {
+      icon: Phone,
+      title: "Emergency Support",
+      description: "Immediate access to crisis resources and hotlines. You're never alone—help is always available.",
+      color: "from-red-500 to-pink-500",
+      section: "emergency"
+    },
+    {
+      icon: Palette,
+      title: "Customizable Themes",
+      description: "Personalize your experience with beautiful calming themes. From Ocean Breeze to Aurora Night, find your perfect aesthetic.",
+      color: "from-indigo-500 to-purple-500",
+      section: "themes"
+    },
+    {
+      icon: Shield,
+      title: "Privacy Controls",
+      description: "You're in control. Choose what to share and keep your data secure with customizable privacy settings.",
+      color: "from-teal-500 to-cyan-500",
+      section: "settings"
+    }
+  ];
+
+  const highlights = [
+    { icon: Lock, title: "100% Private", description: "Your thoughts stay yours" },
+    { icon: Clock, title: "24/7 Available", description: "Support whenever you need" },
+    { icon: Zap, title: "Completely Free", description: "No hidden costs, ever" }
+  ];
+
+  return (
+    <div className="min-h-screen bg-background relative overflow-x-hidden">
+      <FloatingBubbles />
+      
+      {/* Fixed Navigation */}
+      <nav 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrollY > 50 
+            ? "bg-card/95 backdrop-blur-lg shadow-lg border-b border-border" 
+            : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img 
+              src={logoImage} 
+              alt="MindfulMe Logo" 
+              className="w-10 h-10 animate-gentle-bounce"
+            />
+            <span className="text-xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              MindfulMe
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/auth")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Sign In
+            </Button>
+            <Button 
+              onClick={() => navigate("/auth")}
+              className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity"
+            >
+              Get Started
+            </Button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section 
+        ref={heroRef}
+        className="min-h-screen flex flex-col items-center justify-center relative px-4 pt-20"
+        style={{
+          transform: `translateY(${scrollY * 0.3}px)`,
+          opacity: 1 - scrollY / 800
+        }}
+      >
+        {/* Ambient Orbs */}
+        <div className="absolute top-20 right-20 opacity-60">
+          <BreathingOrb size="lg" />
+        </div>
+        <div className="absolute bottom-40 left-20 opacity-50">
+          <BreathingOrb size="md" />
+        </div>
+        <div className="absolute top-1/3 left-1/4 opacity-40">
+          <BreathingOrb size="sm" />
+        </div>
+
+        <div className="text-center max-w-4xl mx-auto relative z-10">
+          {/* Floating icons */}
+          <div className="flex justify-center items-center gap-6 mb-8 text-3xl">
+            <span className="animate-float" style={{ animationDelay: "0s" }}>🧘</span>
+            <span className="animate-float" style={{ animationDelay: "0.5s" }}>💫</span>
+            <span className="animate-float" style={{ animationDelay: "1s" }}>🌱</span>
+            <span className="animate-float" style={{ animationDelay: "1.5s" }}>✨</span>
+            <span className="animate-float" style={{ animationDelay: "2s" }}>🕊️</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Your Mind Matters
+            </span>
+            <br />
+            <span className="text-foreground">We're Here For You</span>
+          </h1>
+
+          <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
+            "Empowering teens to understand, express, and nurture their mental wellness"
+          </p>
+
+          <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto">
+            A safe, judgment-free space where you can talk, reflect, and grow—whenever you need it.
+          </p>
+
+          {/* Main CTA */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button 
+              size="lg"
+              onClick={() => navigate("/auth")}
+              className="text-xl px-12 py-8 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 rounded-2xl group"
+            >
+              <MessageCircle className="w-6 h-6 mr-3 group-hover:animate-pulse" />
+              Start Chatting Now
+              <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+            {highlights.map((item, i) => (
+              <div key={i} className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
+                <item.icon className="w-4 h-4 text-primary" />
+                <span className="font-medium">{item.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <ChevronDown className="w-8 h-8 text-muted-foreground" />
+        </div>
+      </section>
+
+      {/* Highlights Section */}
+      <section className="py-20 px-4 relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8">
+            {highlights.map((item, i) => (
+              <Card 
+                key={i}
+                className="scroll-animate opacity-0 translate-y-10 p-8 text-center bg-card/80 backdrop-blur-sm border-border hover:scale-105 transition-all duration-500 hover:shadow-xl"
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-muted-foreground">{item.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section ref={aboutRef} className="py-20 px-4 bg-secondary/30">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="scroll-animate opacity-0 translate-y-10 text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+            About MindfulMe
+          </h2>
+          
+          <div className="scroll-animate opacity-0 translate-y-10 space-y-6 text-lg text-muted-foreground">
+            <p>
+              MindfulMe is a teen mental health companion designed to provide a safe, judgment-free space for young people to explore and express their emotions.
+            </p>
+            <p>
+              Growing up in today's world isn't easy. Between school pressures, social challenges, and everything in between—it's completely normal to feel overwhelmed sometimes. That's why MindfulMe exists: to be your supportive friend who's always ready to listen.
+            </p>
+            <p>
+              Whether you're feeling stressed, anxious, happy, or just need someone to talk to, MindfulMe is here 24/7. Our AI companion provides empathetic support while our tools help you understand your emotions better, practice mindfulness, and build healthy coping strategies.
+            </p>
+            <p className="font-medium text-foreground">
+              Remember: It's okay to not be okay. Seeking support is a sign of strength, not weakness.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section ref={featuresRef} className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="scroll-animate opacity-0 translate-y-10 text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Everything You Need
+          </h2>
+          <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
+            Powerful tools designed with your mental wellness in mind
+          </p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, i) => (
+              <Card 
+                key={i}
+                className="scroll-animate opacity-0 translate-y-10 group p-6 bg-card/80 backdrop-blur-sm border-border hover:scale-105 transition-all duration-500 hover:shadow-xl cursor-pointer"
+                style={{ transitionDelay: `${i * 50}ms` }}
+                onClick={() => navigate(`/app?section=${feature.section}`)}
+              >
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <feature.icon className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {feature.description}
+                </p>
+                <div className="mt-4 flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                  Try it now <ArrowRight className="w-4 h-4 ml-1" />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial/Value Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/20">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="scroll-animate opacity-0 translate-y-10">
+            <Sparkles className="w-12 h-12 text-primary mx-auto mb-6" />
+            <blockquote className="text-2xl md:text-3xl font-medium text-foreground mb-8 leading-relaxed">
+              "Your mental health journey is unique, and so is our support. No judgment, no pressure—just a caring companion ready to listen whenever you need."
+            </blockquote>
+            <div className="flex justify-center gap-1 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+            <p className="text-muted-foreground">
+              Designed with love for teens who deserve support
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section ref={ctaRef} className="py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-600/10 via-purple-600/10 to-blue-600/10" />
+        
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <h2 className="scroll-animate opacity-0 translate-y-10 text-4xl md:text-5xl font-bold mb-6 text-foreground">
+            Ready to Begin Your
+            <span className="block bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Wellness Journey?
+            </span>
+          </h2>
+          
+          <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground mb-10">
+            Join thousands of teens who've found a safe space to express themselves.
+            It's free, private, and available whenever you need it.
+          </p>
+
+          <div className="scroll-animate opacity-0 translate-y-10">
+            <Button 
+              size="lg"
+              onClick={() => navigate("/auth")}
+              className="text-xl px-16 py-8 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 rounded-2xl group"
+            >
+              <Heart className="w-6 h-6 mr-3 group-hover:animate-pulse" />
+              Start Your Journey
+              <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+
+          <p className="scroll-animate opacity-0 translate-y-10 mt-8 text-sm text-muted-foreground">
+            No credit card required • No strings attached • Just support when you need it
+          </p>
+        </div>
+
+        {/* Decorative orbs */}
+        <div className="absolute bottom-10 right-10 opacity-40">
+          <BreathingOrb size="lg" />
+        </div>
+        <div className="absolute top-10 left-10 opacity-30">
+          <BreathingOrb size="md" />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 border-t border-border bg-card/50">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-2">
+            <img src={logoImage} alt="MindfulMe" className="w-8 h-8" />
+            <span className="font-semibold text-foreground">MindfulMe</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Made with 💙 for teens who matter
+          </p>
+          <div className="flex gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/app?section=emergency")}>
+              Crisis Support
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/auth")}>
+              Get Started
+            </Button>
+          </div>
+        </div>
+      </footer>
+
+      {/* CSS for scroll animations */}
+      <style>{`
+        .scroll-animate {
+          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate.animate-in {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default Landing;
