@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
@@ -18,7 +19,6 @@ import {
   ChevronDown,
   Lock,
   Zap,
-  Users,
   Star,
   Palette
 } from "lucide-react";
@@ -184,34 +184,64 @@ const Landing = () => {
           <BreathingOrb size="sm" />
         </div>
 
-        <div className="text-center max-w-4xl mx-auto relative z-10">
+        <motion.div 
+          className="text-center max-w-4xl mx-auto relative z-10"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           {/* Floating icons */}
-          <div className="flex justify-center items-center gap-6 mb-8 text-3xl">
+          <motion.div 
+            className="flex justify-center items-center gap-6 mb-8 text-3xl"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <span className="animate-float" style={{ animationDelay: "0s" }}>🧘</span>
             <span className="animate-float" style={{ animationDelay: "0.5s" }}>💫</span>
             <span className="animate-float" style={{ animationDelay: "1s" }}>🌱</span>
             <span className="animate-float" style={{ animationDelay: "1.5s" }}>✨</span>
             <span className="animate-float" style={{ animationDelay: "2s" }}>🕊️</span>
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
               Your Mind Matters
             </span>
             <br />
             <span className="text-foreground">We're Here For You</span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
+          <motion.p 
+            className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             "Empowering teens to understand, express, and nurture their mental wellness"
-          </p>
+          </motion.p>
 
-          <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto">
+          <motion.p 
+            className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
             A safe, judgment-free space where you can talk, reflect, and grow—whenever you need it.
-          </p>
+          </motion.p>
 
           {/* Main CTA */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
             <Button 
               size="lg"
               onClick={() => navigate("/auth")}
@@ -221,18 +251,28 @@ const Landing = () => {
               Start Chatting Now
               <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
             </Button>
-          </div>
+          </motion.div>
 
           {/* Trust badges */}
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+          <motion.div 
+            className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+          >
             {highlights.map((item, i) => (
-              <div key={i} className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
+              <motion.div 
+                key={i} 
+                className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <item.icon className="w-4 h-4 text-primary" />
                 <span className="font-medium">{item.title}</span>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
