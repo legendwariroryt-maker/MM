@@ -9,7 +9,7 @@ import { EmergencySection } from "@/components/sections/EmergencySection";
 import { MbtiSection } from "@/components/sections/MbtiSection";
 import { ThemeSelector } from "@/components/ThemeSelector";
 import { OnboardingSection } from "@/components/sections/OnboardingSection";
-import { LogOut, LogIn, User } from "lucide-react";
+import { LogOut, LogIn, User, Home } from "lucide-react";
 import { AppSection } from "@/types";
 import PrivacySettings from "@/components/PrivacySettings";
 import { FloatingBubbles } from "@/components/ui/floating-bubbles";
@@ -18,7 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/mindful-me-logo.png";
 
-const Index = () => {
+const Dashboard = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -137,6 +137,15 @@ const Index = () => {
               </h1>
             </div>
             <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 px-3 py-1 rounded-full hover:bg-muted/50 flex items-center gap-2"
+                onClick={() => navigate('/')}
+              >
+                <Home className="w-4 h-4" />
+                Home
+              </Button>
               {user && (
                 <Button 
                   variant="ghost"
@@ -278,4 +287,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Dashboard;
