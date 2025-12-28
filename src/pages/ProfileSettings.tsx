@@ -160,7 +160,7 @@ export default function ProfileSettings() {
               <div className="flex gap-3 pt-4">
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/app")}
                   className="flex-1"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
