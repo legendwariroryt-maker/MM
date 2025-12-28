@@ -54,11 +54,12 @@ export default function ProfileSettings() {
 
     const { error } = await supabase
       .from("profiles")
-      .update({
+      .upsert({
+        id: user.id,
         display_name: displayName.trim() || null,
         age: age ? parseInt(age, 10) : null,
-      })
-      .eq("id", user.id);
+        updated_at: new Date().toISOString(),
+      });
 
     setIsSaving(false);
 
