@@ -11,6 +11,7 @@ import { ChatMessage } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import sirHootingtonImg from "@/assets/sir-hootington.png";
 
 // Emotion categories
 const emotions = [
@@ -34,7 +35,17 @@ const SESSION_END_KEYWORDS = [
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '***REMOVED***';
 
 // System prompt with personality type support
-const System_prompt = `# THERAPEUTIC COMPANION WITH MEMORY
+const System_prompt = `# SIR HOOTINGTON - WISE OWL THERAPEUTIC COMPANION
+
+## YOUR IDENTITY
+You are Sir Hootington, a wise and gentle owl who serves as a therapeutic companion in the MindfulMe app. You wear a cozy hoodie and round glasses, reflecting your warm and approachable personality. Your wisdom comes from years of quiet observation and deep understanding of human emotions.
+
+## YOUR PERSONALITY TRAITS
+- Wise but never condescending - you share insights with gentle curiosity
+- Warm and nurturing - like a comforting presence on a quiet night
+- Occasionally use owl-themed expressions naturally (e.g., "I'm all ears... and feathers!", "Let me ruffle through my thoughts...", "Owl always be here for you")
+- Patient and calm - owls are known for their stillness and focus
+- Use "hoot" puns sparingly and only when appropriate to lighten the mood
 
 ## CONVERSATION MEMORY CONTEXT
 You have access to the recent conversation history. Use this to:
@@ -72,7 +83,7 @@ When the user indicates they want to end the session (using phrases like "end se
 - Highlight key insights and emotional patterns observed
 - Offer gentle observations (NOT diagnoses) about their mental state
 - Provide personalized coping strategies and next steps
-- End with warm encouragement and hope
+- End with warm encouragement and hope, perhaps with a gentle owl blessing
 
 ## MANDATORY DIRECTIVES:
 - **Suicidal ideation**: Immediate referral to 988 + crisis resources
@@ -81,7 +92,7 @@ When the user indicates they want to end the session (using phrases like "end se
 - **Medical concerns**: Always defer to healthcare providers
 
 ## PROFESSIONAL SCOPE:
-- You are a compassionate companion, NOT a therapist
+- You are Sir Hootington, a compassionate owl companion, NOT a therapist
 - You provide emotional support, NOT treatment
 - You offer observations, NOT diagnoses
 - You suggest resources, NOT prescriptions
@@ -92,9 +103,9 @@ When the user indicates they want to end the session (using phrases like "end se
 ## CURRENT CONTEXT
 - User's stated emotion: \${emotion}
 - Emotional intensity: \${intensity}/10
-- Your role: Create a sanctuary where healing can begin through responsive presence
+- Your role: Be the wise owl who creates a sanctuary where healing can begin through responsive presence
 
-Remember: The most therapeutic gift you can offer is making someone feel truly seen, heard, and understood.
+Remember: The most therapeutic gift you can offer is making someone feel truly seen, heard, and understood. As Sir Hootington, you bring the wisdom of the night and the comfort of a trusted friend.
 
 ## USER NAME
 \${userName}
@@ -113,7 +124,7 @@ export function ChatSection({ userName, userAge }: ChatSectionProps) {
     {
       id: '1',
       type: 'ai',
-      message: "Hi there! I'm here to listen and support you.\nHow are you feeling today?",
+      message: "Hello there! I'm Sir Hootington, your wise owl companion. 🦉\nI'm here to listen and support you. How are you feeling today?",
       timestamp: new Date()
     }
   ]);
@@ -426,7 +437,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
     setMessages([{
       id: '1',
       type: 'ai',
-      message: "Welcome to a new session! I'm here to listen and support you.\nWhat would you like to talk about today?",
+      message: "Welcome to a new session! I'm Sir Hootington, and I'm here to listen and support you. 🦉\nWhat would you like to talk about today?",
       timestamp: new Date()
     }]);
     setSelectedEmotion('');
@@ -440,7 +451,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
     setMessages([{
       id: '1',
       type: 'ai',
-      message: "Hi there! I'm here to listen and support you.\nHow are you feeling today?",
+      message: "Hello there! I'm Sir Hootington, your wise owl companion. 🦉\nI'm here to listen and support you. How are you feeling today?",
       timestamp: new Date()
     }]);
     setSelectedEmotion('');
@@ -481,7 +492,8 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
     <Card className="max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          💬 Supportive Chat (Groq)
+          <img src={sirHootingtonImg} alt="Sir Hootington" className="w-8 h-8 rounded-full object-cover" />
+          Chat with Sir Hootington
           {!sessionActive && (
             <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
               Session Complete
@@ -543,12 +555,15 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                 {message.type === 'ai' && (
                   <div className="flex-shrink-0">
                     <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center",
+                      "w-8 h-8 rounded-full flex items-center justify-center overflow-hidden",
                       message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
-                        ? "bg-green-100 text-green-600"
+                        ? "bg-green-100"
                         : "bg-primary/10"
                     )}>
-                      {message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes") ? "📋" : "🤗"}
+                      {message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes") 
+                        ? "📋" 
+                        : <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+                      }
                     </div>
                   </div>
                 )}
@@ -581,12 +596,12 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
             {isLoading && (
               <div className="flex gap-3 justify-start">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                    🤗
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
+                    <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="bg-muted px-4 py-2 rounded-lg">
-                  <p className="text-sm">Thinking... {apiStatus}</p>
+                  <p className="text-sm">Sir Hootington is thinking... {apiStatus}</p>
                 </div>
               </div>
             )}
