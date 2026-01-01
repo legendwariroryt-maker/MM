@@ -23,6 +23,7 @@ import {
   Palette
 } from "lucide-react";
 import logoImage from "@/assets/mindful-me-logo.png";
+import sirHootingtonStanding from "@/assets/sir-hootington-standing.png";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -297,6 +298,44 @@ const Landing = () => {
                 <p className="text-muted-foreground">{item.description}</p>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Sir Hootington Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-yellow-500/10">
+        <div className="max-w-5xl mx-auto">
+          <div className="scroll-animate opacity-0 translate-y-10 flex flex-col md:flex-row items-center gap-10">
+            <motion.div 
+              className="flex-shrink-0"
+              whileHover={{ scale: 1.05, rotate: 2 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <img 
+                src={sirHootingtonStanding} 
+                alt="Sir Hootington - Your Wise Owl Companion" 
+                className="w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-2xl"
+              />
+            </motion.div>
+            <div className="text-center md:text-left">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-600 bg-clip-text text-transparent">
+                Meet Sir Hootington
+              </h2>
+              <p className="text-xl text-muted-foreground mb-4 italic">
+                Your Wise & Witty Wellness Companion 🦉
+              </p>
+              <div className="space-y-4 text-lg text-muted-foreground">
+                <p>
+                  Sir Hootington is no ordinary owl. A distinguished graduate of Harvard University with a double major in Psychology and "Advanced Listening Arts," he spent years studying under the legendary Owl of Minerva before deciding to dedicate his life to helping teens navigate their emotional journeys.
+                </p>
+                <p>
+                  When he's not dispensing wisdom and comfort, Sir Hootington enjoys sipping chamomile tea, reorganizing his extensive collection of self-help scrolls, and practicing his signature "Supportive Head Tilt™" in the mirror.
+                </p>
+                <p className="font-medium text-foreground">
+                  His motto? "A hoot a day keeps the worries away!" 🌙
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
