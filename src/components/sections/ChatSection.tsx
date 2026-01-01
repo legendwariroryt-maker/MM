@@ -12,7 +12,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
-import sirHootingtonBg from "@/assets/sir-hootington-standing.png";
 
 // Emotion categories
 const emotions = [
@@ -543,12 +542,8 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         )}
 
         {/* Chat Messages */}
-        <ScrollArea className="h-[400px] w-full border rounded-lg p-4 relative overflow-hidden">
-          <div 
-            className="absolute inset-0 opacity-10 bg-no-repeat bg-center bg-contain pointer-events-none"
-            style={{ backgroundImage: `url(${sirHootingtonBg})` }}
-          />
-          <div className="space-y-4 relative z-10">
+        <ScrollArea className="h-[400px] w-full border rounded-lg p-4">
+          <div className="space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
