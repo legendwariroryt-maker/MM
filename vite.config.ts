@@ -17,17 +17,20 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "robots.txt"],
       manifest: {
-        name: "Mindful Me - Teen Mental Health Companion",
-        short_name: "Mindful Me",
-        description: "A safe space for teenagers to explore emotions, practice mindfulness, journal thoughts, and access mental health support resources.",
+        name: "Mindful Me",
+        short_name: "MindfulMe",
+        description: "Daily mindfulness exercises and mental wellness companion for teenagers.",
         start_url: "/",
         display: "standalone",
-        background_color: "#e8f4f8",
+        display_override: ["standalone", "minimal-ui"],
+        scope: "/",
+        background_color: "#FAFAFA",
         theme_color: "#2aa198",
         orientation: "portrait-primary",
+        categories: ["health", "lifestyle", "wellness"],
         icons: [
           {
-            src: "/icons/icon-48x48.png",
+            src: "/favicon.png",
             sizes: "48x48",
             type: "image/png",
             purpose: "any"
@@ -54,16 +57,21 @@ export default defineConfig(({ mode }) => ({
             src: "/icons/icon-192x192.png",
             sizes: "192x192",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
           },
           {
             src: "/icons/icon-512x512.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
+          },
+          {
+            src: "/icons/maskable-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ],
-        categories: ["health", "lifestyle", "education"],
         screenshots: []
       },
       workbox: {
