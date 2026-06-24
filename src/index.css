@@ -10,38 +10,39 @@ All colors MUST be HSL. Calming themes for teen mental health.
   /* Default: Ocean Breeze (Light) */
   :root,
   [data-theme="ocean-breeze"] {
-    --background: 195 53% 95%;
-    --foreground: 200 50% 15%;
+    /* Editorial Wellness — Blush & Lavender */
+    --background: 345 67% 94%;
+    --foreground: 280 14% 18%;
 
-    --card: 195 40% 97%;
-    --card-foreground: 200 50% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 280 14% 18%;
 
-    --popover: 195 40% 97%;
-    --popover-foreground: 200 50% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 280 14% 18%;
 
-    --primary: 187 70% 45%;
-    --primary-foreground: 187 30% 98%;
-    --primary-hover: 187 70% 38%;
+    --primary: 270 47% 63%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 270 42% 56%;
 
-    --secondary: 175 40% 88%;
-    --secondary-foreground: 175 50% 25%;
+    --secondary: 345 44% 84%;
+    --secondary-foreground: 280 18% 22%;
 
-    --muted: 195 30% 92%;
-    --muted-foreground: 195 20% 45%;
+    --muted: 345 55% 89%;
+    --muted-foreground: 280 8% 42%;
 
-    --accent: 175 50% 75%;
-    --accent-foreground: 175 60% 15%;
+    --accent: 283 45% 75%;
+    --accent-foreground: 280 22% 18%;
 
-    --destructive: 0 70% 60%;
+    --destructive: 0 60% 55%;
     --destructive-foreground: 0 20% 98%;
-    --success: 140 60% 50%;
-    --success-foreground: 140 30% 98%;
-    --warning: 45 90% 60%;
-    --warning-foreground: 45 30% 15%;
+    --success: 155 35% 48%;
+    --success-foreground: 155 30% 98%;
+    --warning: 35 75% 60%;
+    --warning-foreground: 35 30% 15%;
 
-    --border: 195 30% 88%;
-    --input: 195 30% 88%;
-    --ring: 187 70% 45%;
+    --border: 345 44% 84%;
+    --input: 345 44% 88%;
+    --ring: 270 47% 63%;
 
     --emotion-happy: 55 95% 68%;
     --emotion-sad: 220 60% 65%;
@@ -50,21 +51,21 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --emotion-calm: 160 40% 70%;
     --emotion-stressed: 30 80% 65%;
 
-    --gradient-bg: linear-gradient(135deg, hsl(195, 53%, 95%), hsl(185, 40%, 90%));
+    --gradient-bg: linear-gradient(180deg, hsl(345 67% 94%), hsl(345 55% 91%));
 
-    --shadow-soft: 0 2px 10px hsl(195, 30%, 80%);
-    --shadow-medium: 0 4px 20px hsl(195, 40%, 75%);
+    --shadow-soft: 0 1px 2px hsl(280 30% 30% / 0.04);
+    --shadow-medium: 0 8px 24px hsl(280 30% 30% / 0.08);
 
-    --radius: 0.75rem;
+    --radius: 1.25rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 345 60% 96%;
+    --sidebar-foreground: 280 12% 28%;
+    --sidebar-primary: 270 47% 63%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 345 50% 90%;
+    --sidebar-accent-foreground: 280 22% 22%;
+    --sidebar-border: 345 40% 86%;
+    --sidebar-ring: 270 47% 63%;
   }
 
   /* Lavender Mist (Light) */
