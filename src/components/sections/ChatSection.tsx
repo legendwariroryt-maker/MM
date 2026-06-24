@@ -489,23 +489,25 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
   };
 
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <img src={sirHootingtonImg} alt="Sir Hootington" className="w-8 h-8 rounded-full object-cover" />
-          Chat with Sir Hootington
+    <Card className="max-w-4xl mx-auto bg-transparent border-0 shadow-none">
+      <CardHeader className="px-0">
+        <CardTitle className="flex items-center gap-3 font-serif text-2xl font-normal text-foreground">
+          <span className="w-10 h-10 rounded-full overflow-hidden border border-border bg-secondary/40">
+            <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+          </span>
+          Mindful conversation
           {!sessionActive && (
-            <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
+            <span className="text-[10px] tracking-[0.2em] uppercase bg-success/15 text-success px-3 py-1 rounded-full font-sans font-semibold">
               Session Complete
             </span>
           )}
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="font-serif italic">
           {sessionActive 
-            ? "Chat with your AI companion for emotional support and guidance"
-            : "Session completed. Start a new session whenever you're ready"}
+            ? "Speak freely — Sir Hootington is listening."
+            : "Session complete. Begin a new one whenever you're ready."}
           {personalityType && (
-            <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+            <span className="ml-2 text-[10px] tracking-[0.2em] uppercase bg-accent/25 text-accent-foreground px-2 py-1 rounded-full font-sans not-italic font-semibold">
               MBTI: {personalityType}
             </span>
           )}
