@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FloatingBubbles } from "@/components/ui/floating-bubbles";
-import { BreathingOrb } from "@/components/ui/breathing-orb";
+// Decor stripped for premium editorial pass
 import { 
   MessageCircle, 
   Heart, 
@@ -126,8 +125,6 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden">
-      <FloatingBubbles />
-      
       {/* Fixed Navigation */}
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -141,9 +138,9 @@ const Landing = () => {
             <img 
               src={logoImage} 
               alt="MindfulMe Logo" 
-              className="w-10 h-10 animate-gentle-bounce"
+              className="w-9 h-9"
             />
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="font-serif text-xl tracking-tight text-foreground">
               MindfulMe
             </span>
           </div>
@@ -157,7 +154,7 @@ const Landing = () => {
             </Button>
             <Button 
               onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity"
+              className="bg-primary text-primary-foreground hover:bg-primary-hover rounded-full px-6"
             >
               Get Started
             </Button>
@@ -174,57 +171,39 @@ const Landing = () => {
           opacity: 1 - scrollY / 800
         }}
       >
-        {/* Ambient Orbs */}
-        <div className="absolute top-20 right-20 opacity-60">
-          <BreathingOrb size="lg" />
-        </div>
-        <div className="absolute bottom-40 left-20 opacity-50">
-          <BreathingOrb size="md" />
-        </div>
-        <div className="absolute top-1/3 left-1/4 opacity-40">
-          <BreathingOrb size="sm" />
-        </div>
-
         <motion.div 
           className="text-center max-w-4xl mx-auto relative z-10"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Floating icons */}
-          <motion.div 
-            className="flex justify-center items-center gap-6 mb-8 text-3xl"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+          <motion.p
+            className="text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <span className="animate-float" style={{ animationDelay: "0s" }}>🧘</span>
-            <span className="animate-float" style={{ animationDelay: "0.5s" }}>💫</span>
-            <span className="animate-float" style={{ animationDelay: "1s" }}>🌱</span>
-            <span className="animate-float" style={{ animationDelay: "1.5s" }}>✨</span>
-            <span className="animate-float" style={{ animationDelay: "2s" }}>🕊️</span>
-          </motion.div>
+            A Sanctuary for the Mind
+          </motion.p>
 
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            className="font-serif text-5xl md:text-7xl mb-6 leading-[1.05] text-foreground"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Your Mind Matters
-            </span>
+            Your mind matters.
             <br />
-            <span className="text-foreground">We're Here For You</span>
+            <span className="italic text-primary">We're here for you.</span>
           </motion.h1>
 
           <motion.p 
-            className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto"
+            className="font-serif italic text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
-            "Empowering teens to understand, express, and nurture their mental wellness"
+            "Empowering teens to understand, express, and nurture their mental wellness."
           </motion.p>
 
           <motion.p 
@@ -246,11 +225,11 @@ const Landing = () => {
             <Button 
               size="lg"
               onClick={() => navigate("/auth")}
-              className="text-xl px-12 py-8 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 rounded-2xl group"
+              className="text-base px-10 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full group tracking-wide"
             >
-              <MessageCircle className="w-6 h-6 mr-3 group-hover:animate-pulse" />
-              Start Chatting Now
-              <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+              <MessageCircle className="w-5 h-5 mr-3" />
+              Begin Your Journey
+              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
 
@@ -303,12 +282,12 @@ const Landing = () => {
       </section>
 
       {/* Meet Sir Hootington Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-yellow-500/10">
+      <section className="py-24 px-4 bg-secondary/30">
         <div className="max-w-5xl mx-auto">
           <div className="scroll-animate opacity-0 translate-y-10 flex flex-col md:flex-row items-center gap-10">
             <motion.div 
               className="flex-shrink-0"
-              whileHover={{ scale: 1.05, rotate: 2 }}
+              whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <img 
@@ -318,11 +297,12 @@ const Landing = () => {
               />
             </motion.div>
             <div className="text-center md:text-left">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-600 bg-clip-text text-transparent">
+              <p className="text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-4">A Wise Companion</p>
+              <h2 className="font-serif text-4xl md:text-5xl mb-4 text-foreground">
                 Meet Sir Hootington
               </h2>
-              <p className="text-xl text-muted-foreground mb-4 italic">
-                Your Wise & Witty Wellness Companion 🦉
+              <p className="font-serif italic text-xl text-muted-foreground mb-6">
+                Your wise &amp; witty wellness companion.
               </p>
               <div className="space-y-4 text-lg text-muted-foreground">
                 <p>
@@ -343,7 +323,7 @@ const Landing = () => {
       {/* About Section */}
       <section ref={aboutRef} className="py-20 px-4 bg-secondary/30">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="scroll-animate opacity-0 translate-y-10 text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <h2 className="scroll-animate opacity-0 translate-y-10 font-serif text-4xl md:text-5xl mb-8 text-foreground">
             About MindfulMe
           </h2>
           
@@ -367,7 +347,7 @@ const Landing = () => {
       {/* Features Section */}
       <section ref={featuresRef} className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="scroll-animate opacity-0 translate-y-10 text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <h2 className="scroll-animate opacity-0 translate-y-10 font-serif text-4xl md:text-5xl text-center mb-4 text-foreground">
             Everything You Need
           </h2>
           <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
@@ -425,11 +405,9 @@ const Landing = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-pink-600/10 via-purple-600/10 to-blue-600/10" />
         
         <div className="max-w-3xl mx-auto text-center relative z-10">
-          <h2 className="scroll-animate opacity-0 translate-y-10 text-4xl md:text-5xl font-bold mb-6 text-foreground">
-            Ready to Begin Your
-            <span className="block bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Wellness Journey?
-            </span>
+          <h2 className="scroll-animate opacity-0 translate-y-10 font-serif text-4xl md:text-5xl mb-6 text-foreground">
+            Ready to begin your
+            <span className="block italic text-primary">wellness journey?</span>
           </h2>
           
           <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground mb-10">
@@ -441,11 +419,11 @@ const Landing = () => {
             <Button 
               size="lg"
               onClick={() => navigate("/auth")}
-              className="text-xl px-16 py-8 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 rounded-2xl group"
+              className="text-base px-14 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full group tracking-wide"
             >
-              <Heart className="w-6 h-6 mr-3 group-hover:animate-pulse" />
+              <Heart className="w-5 h-5 mr-3" />
               Start Your Journey
-              <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
 
@@ -454,13 +432,6 @@ const Landing = () => {
           </p>
         </div>
 
-        {/* Decorative orbs */}
-        <div className="absolute bottom-10 right-10 opacity-40">
-          <BreathingOrb size="lg" />
-        </div>
-        <div className="absolute top-10 left-10 opacity-30">
-          <BreathingOrb size="md" />
-        </div>
       </section>
 
       {/* Footer */}
