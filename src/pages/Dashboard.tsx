@@ -167,7 +167,7 @@ const Dashboard = () => {
                     <button
                       key={label}
                       onClick={() => setActiveSection(target)}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/70 backdrop-blur-md border border-border/60 text-sm font-medium text-foreground/80 hover:bg-card hover:text-foreground hover:-translate-y-0.5 transition-all shadow-soft"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/30 backdrop-blur-xl border border-white/40 text-sm font-medium text-foreground/80 hover:bg-white/45 hover:text-foreground hover:-translate-y-0.5 transition-all shadow-[0_4px_20px_-8px_rgba(120,90,160,0.25)]"
                     >
                       <Icon className="w-4 h-4 text-primary" />
                       {label}
@@ -182,7 +182,7 @@ const Dashboard = () => {
                   <button
                     key={key}
                     onClick={() => setActiveSection(key)}
-                    className="group relative flex flex-col items-center text-center p-5 rounded-2xl bg-card/75 backdrop-blur-md border border-border/60 hover:bg-card hover:-translate-y-1 hover:shadow-medium transition-all"
+                    className="group relative flex flex-col items-center text-center p-5 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/40 hover:bg-white/45 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(120,90,160,0.3)] transition-all"
                   >
                     <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
                       <Icon className="w-5 h-5 text-primary" />
@@ -198,7 +198,7 @@ const Dashboard = () => {
               </div>
 
               {/* Chat preview card */}
-              <div className="bg-card/80 backdrop-blur-xl border border-border/60 rounded-[2rem] p-6 md:p-8 shadow-medium animate-fade-in">
+              <div className="bg-white/35 backdrop-blur-2xl border border-white/40 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_60px_-20px_rgba(120,90,160,0.3)] animate-fade-in">
                 <div className="flex items-center gap-3 mb-1">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
                     <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
@@ -229,7 +229,7 @@ const Dashboard = () => {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 bg-card/80 backdrop-blur-md border border-border/60 rounded-[2rem] p-4 pr-6 shadow-soft max-w-sm">
+                <div className="flex items-center gap-4 bg-white/35 backdrop-blur-xl border border-white/40 rounded-[2rem] p-4 pr-6 shadow-[0_8px_28px_-12px_rgba(120,90,160,0.25)] max-w-sm">
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
                     <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
                   </div>
@@ -244,7 +244,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-card/80 backdrop-blur-xl border border-border/60 rounded-[2rem] p-6 md:p-10 shadow-medium animate-fade-in">
+              <div className="bg-white/35 backdrop-blur-2xl border border-white/40 rounded-[2rem] p-6 md:p-10 shadow-[0_20px_60px_-20px_rgba(120,90,160,0.3)] animate-fade-in">
                 {renderSection()}
               </div>
             </section>

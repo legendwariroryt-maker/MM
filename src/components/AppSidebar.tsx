@@ -81,13 +81,13 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border/60 bg-sidebar/85 backdrop-blur-xl">
-      <SidebarHeader className="px-5 pt-6 pb-4">
+    <Sidebar collapsible="icon" className="border-none">
+      <SidebarHeader className="px-5 pt-6 pb-4 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-3 group group-data-[collapsible=icon]:justify-center"
         >
-          <img src={logoImage} alt="MindfulMe" className="w-8 h-8" />
+          <img src={logoImage} alt="MindfulMe" className="w-8 h-8 shrink-0" />
           {!collapsed && (
             <span className="font-serif text-xl tracking-tight text-foreground">
               MindfulMe
@@ -96,7 +96,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
         </button>
       </SidebarHeader>
 
-      <SidebarContent className="px-3">
+      <SidebarContent className="px-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>{primary.map(renderItem)}</SidebarMenu>
@@ -110,7 +110,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-3 border-t border-border">
+      <SidebarFooter className="p-3 border-t border-white/20 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:items-center">
         {!collapsed && (
           <div className="relative overflow-hidden px-4 py-4 rounded-2xl bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/40 border border-primary/20">
             <div className="absolute -right-2 -top-2 w-12 h-12 rounded-full bg-primary/20 blur-xl" />
@@ -122,10 +122,10 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
             </p>
           </div>
         )}
-        <div className="mt-2 flex flex-col gap-1">
+        <div className="mt-2 flex flex-col gap-1 w-full group-data-[collapsible=icon]:items-center">
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-8"
           >
             <Home className="w-4 h-4" />
             {!collapsed && <span>Home</span>}
@@ -133,7 +133,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
           {user && (
             <button
               onClick={() => navigate("/profile")}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-8"
             >
               <UserIcon className="w-4 h-4" />
               {!collapsed && <span>{displayName || "Profile"}</span>}
@@ -141,7 +141,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
           )}
           <button
             onClick={user ? onSignOut : () => navigate("/auth")}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-8"
           >
             {user ? <LogOut className="w-4 h-4" /> : <LogIn className="w-4 h-4" />}
             {!collapsed && <span>{user ? "Sign out" : "Sign in"}</span>}
