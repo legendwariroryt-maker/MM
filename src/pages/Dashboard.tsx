@@ -15,8 +15,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
+import heroBg from "@/assets/dashboard-hero-bg.jpg";
+import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart } from "lucide-react";
 
 const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtitle: string }> = {
+  home: { eyebrow: "Sanctuary", title: "Welcome back", subtitle: "Your personal mental wellness companion." },
   chat: { eyebrow: "Daily Sanctuary", title: "Mindful conversation", subtitle: "A quiet hour with Sir Hootington." },
   emotions: { eyebrow: "Reflection", title: "Emotional flow", subtitle: "Notice the colors of your week." },
   journal: { eyebrow: "Quiet Pages", title: "Wellness journal", subtitle: "Write what only you need to hear." },
@@ -31,7 +34,7 @@ const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtit
 const Dashboard = () => {
   const { user, loading, signOut } = useAuth();
   const [searchParams] = useSearchParams();
-  const [activeSection, setActiveSection] = useState<AppSection>("chat");
+  const [activeSection, setActiveSection] = useState<AppSection>("home");
   const [displayName, setDisplayName] = useState<string>("");
   const [userAge, setUserAge] = useState<number | null>(null);
 
@@ -59,7 +62,7 @@ const Dashboard = () => {
     const section = searchParams.get("section") as AppSection;
     if (
       section &&
-      ["chat", "emotions", "mindfulness", "journal", "emergency", "settings", "mbti", "themes", "onboarding"].includes(section)
+      ["home", "chat", "emotions", "mindfulness", "journal", "emergency", "settings", "mbti", "themes", "onboarding"].includes(section)
     ) {
       setActiveSection(section);
     }
@@ -103,9 +106,27 @@ const Dashboard = () => {
   const meta = sectionLabels[activeSection];
   const greetName = displayName || user?.email?.split("@")[0] || "friend";
 
+  const featureCards = [
+    { key: "chat" as AppSection, label: "Supportive Chat", desc: "Chat with Sir Hootington", Icon: MessageCircle },
+    { key: "emotions" as AppSection, label: "Emotion Analytics", desc: "Understand your emotions", Icon: BarChart3 },
+    { key: "journal" as AppSection, label: "Wellness Journal", desc: "Write and reflect daily", Icon: BookOpen },
+    { key: "mindfulness" as AppSection, label: "Mindfulness", desc: "Guided practices", Icon: Flower2 },
+    { key: "mbti" as AppSection, label: "Personality Test", desc: "Discover yourself", Icon: Brain },
+  ];
+
+  const isHome = activeSection === "home";
+
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background font-sans text-foreground">
+      <div className="min-h-screen flex w-full font-sans text-foreground relative">
+        {/* Dreamy hero background image, fixed across the viewport */}
+        <div
+          className="fixed inset-0 -z-10 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroBg})` }}
+          aria-hidden="true"
+        />
+        <div className="fixed inset-0 -z-10 bg-gradient-to-b from-background/40 via-background/30 to-background/70" aria-hidden="true" />
+
         <AppSidebar
           activeSection={activeSection}
           onSelect={setActiveSection}
@@ -115,47 +136,119 @@ const Dashboard = () => {
         />
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center justify-between px-8 lg:px-14 pt-8 pb-2">
-            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
-            <p className="text-[10px] tracking-[0.32em] uppercase text-muted-foreground/70 font-semibold">
-              {meta.eyebrow}
-            </p>
+          <header className="flex items-center justify-between px-6 lg:px-10 pt-6 pb-2">
+            <SidebarTrigger className="text-foreground/70 hover:text-foreground bg-card/60 backdrop-blur-sm rounded-xl border border-border/50" />
+            {!isHome && (
+              <p className="text-[10px] tracking-[0.32em] uppercase text-foreground/60 font-semibold">
+                {meta.eyebrow}
+              </p>
+            )}
           </header>
 
-          <section className="px-8 lg:px-14 pt-6 pb-10 max-w-6xl mx-auto w-full">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12">
-              <div>
-                <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
-                  {activeSection === "chat" ? (
-                    <>Gentle {timeOfDay()}, <span className="italic text-primary">{greetName}</span>.</>
-                  ) : (
-                    meta.title
-                  )}
+          {isHome ? (
+            <section className="px-6 lg:px-12 pb-12 pt-2 max-w-6xl mx-auto w-full">
+              {/* Hero */}
+              <div className="text-center mt-4 mb-10 animate-fade-in">
+                <h1 className="font-serif text-5xl md:text-6xl leading-tight text-foreground drop-shadow-sm">
+                  Welcome back, <span className="italic">{greetName}</span>{" "}
+                  <Heart className="inline-block w-9 h-9 md:w-11 md:h-11 text-primary fill-primary align-middle -mt-2" />
                 </h1>
-                <p className="mt-3 font-serif italic text-lg text-muted-foreground max-w-md">
-                  {meta.subtitle}
+                <p className="mt-3 text-base md:text-lg text-foreground/70">
+                  Your personal mental wellness companion
                 </p>
+
+                {/* Pills */}
+                <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                  {[
+                    { label: "Breathe", Icon: Wind, target: "mindfulness" as AppSection },
+                    { label: "Reflect", Icon: Sparkles, target: "journal" as AppSection },
+                    { label: "Grow", Icon: Sprout, target: "mbti" as AppSection },
+                  ].map(({ label, Icon, target }) => (
+                    <button
+                      key={label}
+                      onClick={() => setActiveSection(target)}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/70 backdrop-blur-md border border-border/60 text-sm font-medium text-foreground/80 hover:bg-card hover:text-foreground hover:-translate-y-0.5 transition-all shadow-soft"
+                    >
+                      <Icon className="w-4 h-4 text-primary" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center gap-4 bg-card/70 backdrop-blur-sm border border-border rounded-[2rem] p-4 pr-6 shadow-soft max-w-sm">
-                <div className="w-14 h-14 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
-                  <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+              {/* Feature cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                {featureCards.map(({ key, label, desc, Icon }) => (
+                  <button
+                    key={key}
+                    onClick={() => setActiveSection(key)}
+                    className="group relative flex flex-col items-center text-center p-5 rounded-2xl bg-card/75 backdrop-blur-md border border-border/60 hover:bg-card hover:-translate-y-1 hover:shadow-medium transition-all"
+                  >
+                    <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                      <Icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <h3 className="font-serif text-sm md:text-base text-foreground leading-snug">
+                      {label}
+                    </h3>
+                    <p className="mt-1 text-[11px] text-muted-foreground leading-snug">
+                      {desc}
+                    </p>
+                  </button>
+                ))}
+              </div>
+
+              {/* Chat preview card */}
+              <div className="bg-card/80 backdrop-blur-xl border border-border/60 rounded-[2rem] p-6 md:p-8 shadow-medium animate-fade-in">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
+                    <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <h2 className="font-serif text-xl text-foreground flex items-center gap-2">
+                      Chat with Sir Hootington <span>🦉</span>
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Your AI companion for emotional support and guidance
+                    </p>
+                  </div>
                 </div>
+                <div className="mt-4">
+                  <ChatSection userName={displayName} userAge={userAge} />
+                </div>
+              </div>
+            </section>
+          ) : (
+            <section className="px-6 lg:px-12 pt-4 pb-10 max-w-6xl mx-auto w-full">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
                 <div>
-                  <p className="font-serif italic text-sm text-foreground leading-snug">
-                    "Take the breath you've been holding."
-                  </p>
-                  <p className="mt-1 text-[9px] tracking-[0.22em] uppercase font-semibold text-primary">
-                    Sir Hootington
+                  <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
+                    {meta.title}
+                  </h1>
+                  <p className="mt-3 font-serif italic text-lg text-muted-foreground max-w-md">
+                    {meta.subtitle}
                   </p>
                 </div>
-              </div>
-            </div>
 
-            <div className="bg-card/60 backdrop-blur-sm border border-border rounded-[2rem] p-6 md:p-10 shadow-soft animate-fade-in">
-              {renderSection()}
-            </div>
-          </section>
+                <div className="flex items-center gap-4 bg-card/80 backdrop-blur-md border border-border/60 rounded-[2rem] p-4 pr-6 shadow-soft max-w-sm">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
+                    <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <p className="font-serif italic text-sm text-foreground leading-snug">
+                      "Take the breath you've been holding."
+                    </p>
+                    <p className="mt-1 text-[9px] tracking-[0.22em] uppercase font-semibold text-primary">
+                      Sir Hootington
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-card/80 backdrop-blur-xl border border-border/60 rounded-[2rem] p-6 md:p-10 shadow-medium animate-fade-in">
+                {renderSection()}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </SidebarProvider>
