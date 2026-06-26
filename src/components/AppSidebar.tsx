@@ -31,16 +31,18 @@ import { useNavigate } from "react-router-dom";
 import logoImage from "@/assets/mindful-me-logo.png";
 
 const primary: { key: AppSection; label: string; icon: any }[] = [
+  { key: "home", label: "Home", icon: Home },
   { key: "chat", label: "Chat", icon: MessageCircle },
-  { key: "emotions", label: "Emotions", icon: Heart },
+  { key: "emotions", label: "Analytics", icon: Heart },
   { key: "journal", label: "Journal", icon: PenTool },
   { key: "mindfulness", label: "Mindfulness", icon: Flower2 },
-  { key: "mbti", label: "Personality", icon: Brain },
+  { key: "mbti", label: "Personality Test", icon: Brain },
 ];
 
 const secondary: { key: AppSection; label: string; icon: any }[] = [
+  { key: "emergency", label: "Emergency Help", icon: Phone },
+  { key: "settings", label: "Settings", icon: Shield },
   { key: "themes", label: "Themes", icon: Palette },
-  { key: "settings", label: "Privacy", icon: Shield },
   { key: "onboarding", label: "Onboarding", icon: Rocket },
 ];
 
@@ -59,12 +61,17 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
 
   const renderItem = (item: { key: AppSection; label: string; icon: any }) => {
     const active = activeSection === item.key;
+    const isDanger = item.key === "emergency";
     return (
       <SidebarMenuItem key={item.key}>
         <SidebarMenuButton
           isActive={active}
           onClick={() => onSelect(item.key)}
-          className="gap-3 rounded-xl data-[active=true]:bg-secondary data-[active=true]:text-foreground"
+          className={
+            isDanger
+              ? "gap-3 rounded-xl text-destructive hover:text-destructive data-[active=true]:bg-destructive/10"
+              : "gap-3 rounded-xl data-[active=true]:bg-secondary data-[active=true]:text-foreground"
+          }
         >
           <item.icon className="w-4 h-4 opacity-70" />
           {!collapsed && <span className="font-sans">{item.label}</span>}
@@ -74,7 +81,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-sidebar">
+    <Sidebar collapsible="icon" className="border-r border-border/60 bg-sidebar/85 backdrop-blur-xl">
       <SidebarHeader className="px-5 pt-6 pb-4">
         <button
           onClick={() => navigate("/")}
@@ -91,53 +98,27 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
 
       <SidebarContent className="px-3">
         <SidebarGroup>
-          {!collapsed && (
-            <SidebarGroupLabel className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground/70 font-semibold">
-              Daily
-            </SidebarGroupLabel>
-          )}
           <SidebarGroupContent>
             <SidebarMenu>{primary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          {!collapsed && (
-            <SidebarGroupLabel className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground/70 font-semibold">
-              Account
-            </SidebarGroupLabel>
-          )}
+        <SidebarGroup className="mt-2 border-t border-border/60 pt-3">
           <SidebarGroupContent>
             <SidebarMenu>{secondary.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup className="mt-2">
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => onSelect("emergency")}
-                  isActive={activeSection === "emergency"}
-                  className="gap-3 rounded-xl text-destructive hover:text-destructive data-[active=true]:bg-destructive/10"
-                >
-                  <Phone className="w-4 h-4" />
-                  {!collapsed && <span>Emergency</span>}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="p-3 border-t border-border">
         {!collapsed && (
-          <div className="px-2 py-3 rounded-2xl bg-card/60 border border-border">
-            <p className="font-serif italic text-xs leading-relaxed text-muted-foreground">
-              "Peace is found in the pauses between heartbeats."
+          <div className="relative overflow-hidden px-4 py-4 rounded-2xl bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/40 border border-primary/20">
+            <div className="absolute -right-2 -top-2 w-12 h-12 rounded-full bg-primary/20 blur-xl" />
+            <p className="relative text-[10px] tracking-[0.22em] uppercase font-semibold text-primary/80">
+              Daily reflection
             </p>
-            <p className="mt-2 text-[9px] tracking-[0.2em] uppercase font-semibold text-primary">
-              Sir Hootington
+            <p className="relative mt-1.5 font-serif italic text-sm leading-snug text-foreground/80">
+              Take a deep breath.
             </p>
           </div>
         )}
