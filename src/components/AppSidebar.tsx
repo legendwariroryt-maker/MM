@@ -81,13 +81,13 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border/60 bg-sidebar/85 backdrop-blur-xl">
-      <SidebarHeader className="px-5 pt-6 pb-4">
+    <Sidebar collapsible="icon" className="border-none">
+      <SidebarHeader className="px-5 pt-6 pb-4 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-3 group group-data-[collapsible=icon]:justify-center"
         >
-          <img src={logoImage} alt="MindfulMe" className="w-8 h-8" />
+          <img src={logoImage} alt="MindfulMe" className="w-8 h-8 shrink-0" />
           {!collapsed && (
             <span className="font-serif text-xl tracking-tight text-foreground">
               MindfulMe
@@ -96,7 +96,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
         </button>
       </SidebarHeader>
 
-      <SidebarContent className="px-3">
+      <SidebarContent className="px-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>{primary.map(renderItem)}</SidebarMenu>
