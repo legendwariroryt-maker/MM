@@ -200,13 +200,14 @@ const Sidebar = React.forwardRef<
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
             : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
+          "group-data-[variant=floating]:m-3 group-data-[variant=floating]:h-[calc(100svh-1.5rem)] group-data-[variant=floating]:rounded-2xl",
           className,
         )}
         {...props}
       >
         <div
           data-sidebar="sidebar"
-          className="flex h-full w-full flex-col bg-sidebar/55 backdrop-blur-2xl border-r border-white/30 shadow-[0_8px_32px_-12px_rgba(80,60,120,0.18)] group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+          className="flex h-full w-full flex-col bg-sidebar/55 backdrop-blur-2xl border-r border-white/30 shadow-[0_8px_32px_-12px_rgba(80,60,120,0.18)] group-data-[variant=floating]:rounded-2xl group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
         >
           {children}
         </div>
