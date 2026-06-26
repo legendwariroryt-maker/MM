@@ -81,7 +81,7 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-none">
+    <Sidebar variant="floating" collapsible="icon" className="border-none">
       <SidebarHeader className="px-5 pt-6 pb-4 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <button
           onClick={() => navigate("/")}
@@ -99,13 +99,17 @@ export function AppSidebar({ activeSection, onSelect, user, displayName, onSignO
       <SidebarContent className="px-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>{primary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:items-center">
+              {primary.map(renderItem)}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup className="mt-2 border-t border-border/60 pt-3">
           <SidebarGroupContent>
-            <SidebarMenu>{secondary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:items-center">
+              {secondary.map(renderItem)}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
