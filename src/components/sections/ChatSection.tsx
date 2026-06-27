@@ -496,6 +496,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
 
   return (
     <Card className="max-w-4xl mx-auto bg-transparent border-0 shadow-none">
+      {!hideHeader && (
       <CardHeader className="px-0">
         <CardTitle className="flex items-center gap-3 font-serif text-2xl font-normal text-foreground">
           <span className="w-10 h-10 rounded-full overflow-hidden border border-border bg-secondary/40">
@@ -519,38 +520,10 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
           )}
         </CardDescription>
       </CardHeader>
+      )}
       <CardContent className="space-y-6">
-        {/* Debug Info */}
-        <div className="p-3 bg-secondary border border-border rounded-lg text-xs text-foreground">
-          <div className="flex justify-between items-center">
-            <div>
-              <strong>Status:</strong> {apiStatus} | 
-              <strong> Session:</strong> {sessionActive ? '🟢 Active' : '🟡 Completed'} | 
-              <strong> History:</strong> {conversationHistory.length} messages
-              {personalityType && <> | <strong> MBTI:</strong> {personalityType}</>}
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={testAPI} className="text-xs h-6">
-                Test API
-              </Button>
-              {!sessionActive && (
-                <Button variant="default" size="sm" onClick={startNewSession} className="text-xs h-6 bg-green-600 hover:bg-green-700">
-                  New Session
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Session End Hint */}
-        {sessionActive && (
-          <div className="p-2 bg-warning/20 border border-warning/30 rounded text-xs text-warning-foreground">
-            💡 <strong>Tip:</strong> Say "end session" when you're ready to receive a comprehensive summary and insights.
-          </div>
-        )}
-
         {/* Chat Messages */}
-        <ScrollArea className="h-[400px] w-full border rounded-lg p-4">
+        <ScrollArea className="h-[460px] w-full px-1">
           <div className="space-y-4">
             {messages.map((message) => (
               <div
