@@ -359,15 +359,16 @@ export function MbtiSection() {
         <h3 className="text-2xl font-semibold mb-6">{question.text}</h3>
         
         <RadioGroup
-          value={currentAnswer?.toString()}
+          key={currentQuestion}
+          value={currentAnswer !== undefined ? currentAnswer.toString() : ""}
           onValueChange={(value) => handleAnswer(parseInt(value))}
           className="space-y-4"
         >
           {question.options.map((option, index) => (
-            <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent transition-colors">
-              <RadioGroupItem value={option.value.toString()} id={`option-${index}`} />
+            <div key={`${currentQuestion}-${index}`} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent transition-colors">
+              <RadioGroupItem value={option.value.toString()} id={`q${currentQuestion}-option-${index}`} />
               <Label 
-                htmlFor={`option-${index}`}
+                htmlFor={`q${currentQuestion}-option-${index}`}
                 className="flex-1 cursor-pointer text-base"
               >
                 {option.text}
