@@ -81,7 +81,7 @@ const Dashboard = () => {
   const renderSection = () => {
     switch (activeSection) {
       case "chat":
-        return <ChatSection userName={displayName} userAge={userAge} />;
+        return <ChatSection userName={displayName} userAge={userAge} hideHeader />;
       case "emotions":
         return <EmotionsSection />;
       case "mindfulness":
@@ -213,8 +213,45 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <ChatSection userName={displayName} userAge={userAge} />
+                  <ChatSection
+                    userName={displayName}
+                    userAge={userAge}
+                    hideHeader
+                    onFirstUserMessage={() => setActiveSection("chat")}
+                  />
                 </div>
+              </div>
+            </section>
+          ) : activeSection === "chat" ? (
+            <section className="px-6 lg:px-12 pt-4 pb-10 max-w-4xl mx-auto w-full">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-6">
+                <div>
+                  <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
+                    {meta.title}
+                  </h1>
+                  <p className="mt-3 font-serif italic text-lg text-muted-foreground max-w-md">
+                    {meta.subtitle}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4 bg-white/35 backdrop-blur-xl border border-white/40 rounded-[2rem] p-4 pr-6 shadow-[0_8px_28px_-12px_rgba(120,90,160,0.25)] max-w-sm">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
+                    <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <p className="font-serif italic text-sm text-foreground leading-snug">
+                      "Take the breath you've been holding."
+                    </p>
+                    <p className="mt-1 text-[9px] tracking-[0.22em] uppercase font-semibold text-primary">
+                      Sir Hootington
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chat rendered directly on the dreamy background — no outer card */}
+              <div className="animate-fade-in">
+                {renderSection()}
               </div>
             </section>
           ) : (
