@@ -116,9 +116,11 @@ Remember: The most therapeutic gift you can offer is making someone feel truly s
 interface ChatSectionProps {
   userName?: string;
   userAge?: number | null;
+  hideHeader?: boolean;
+  onFirstUserMessage?: () => void;
 }
 
-export function ChatSection({ userName, userAge }: ChatSectionProps) {
+export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage }: ChatSectionProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -381,6 +383,10 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
 
   const handleSendMessage = async () => {
     if (!userMessage.trim() || isLoading || !sessionActive) return;
+
+    if (onFirstUserMessage) {
+      onFirstUserMessage();
+    }
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
