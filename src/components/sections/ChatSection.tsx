@@ -1,17 +1,18 @@
 // Chat Section - Integrated with Groq cloud AI with session summary feature
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { ArrowDown } from "lucide-react";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
+import { chatStore, useChatStore } from "@/stores/chatStore";
 
 // Emotion categories
 const emotions = [
@@ -122,28 +123,56 @@ interface ChatSectionProps {
 
 export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage }: ChatSectionProps) {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      type: 'ai',
-      message: "Hello there! I'm Sir Hootington, your wise owl companion. 🦉\nI'm here to listen and support you. How are you feeling today?",
-      timestamp: new Date()
-    }
-  ]);
-  const [selectedEmotion, setSelectedEmotion] = useState<string>('');
-  const [intensity, setIntensity] = useState<number>(8);
-  const [userMessage, setUserMessage] = useState('');
+  const messages = useChatStore((s) => s.messages);
+  const selectedEmotion = useChatStore((s) => s.selectedEmotion);
+  const intensity = useChatStore((s) => s.intensity);
+  const userMessage = useChatStore((s) => s.userMessage);
+  const sessionActive = useChatStore((s) => s.sessionActive);
+  const personalityType = useChatStore((s) => s.personalityType);
+  const conversationHistory = useChatStore((s) => s.conversationHistory);
+  const apiStatus = useChatStore((s) => s.apiStatus);
+  const hasUserSentMessage = useChatStore((s) => s.hasUserSentMessage);
+
+  const setSelectedEmotion = (v: string) => chatStore.setState({ selectedEmotion: v });
+  const setIntensity = (v: number) => chatStore.setState({ intensity: v });
+  const setUserMessage = (v: string) => chatStore.setState({ userMessage: v });
+  const setSessionActive = (v: boolean) => chatStore.setState({ sessionActive: v });
+  const setPersonalityType = (v: string) => chatStore.setState({ personalityType: v });
+  const setApiStatus = (v: string) => chatStore.setState({ apiStatus: v });
+
   const [isLoading, setIsLoading] = useState(false);
   const [showEmotionContext, setShowEmotionContext] = useState(false);
-  const [apiStatus, setApiStatus] = useState<string>('ready');
-  const [sessionActive, setSessionActive] = useState(true);
-  const [personalityType, setPersonalityType] = useState<string>('');
-  
-  // Conversation history for memory
-  const [conversationHistory, setConversationHistory] = useState<Array<{
-    role: 'user' | 'assistant';
-    content: string;
-  }>>([]);
+
+  // Smart auto-scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isNearBottom, setIsNearBottom] = useState(true);
+
+  const checkNearBottom = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const threshold = 100;
+    const near = el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+    setIsNearBottom(near);
+  }, []);
+
+  const scrollToBottom = useCallback((smooth = true) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  }, []);
+
+  // On mount, jump to bottom (preserves position when remounting on tab switch)
+  useEffect(() => {
+    scrollToBottom(false);
+  }, [scrollToBottom]);
+
+  useEffect(() => {
+    if (isNearBottom) scrollToBottom(true);
+  }, [messages, isLoading, isNearBottom, scrollToBottom]);
+
+  // Helpers to update store-backed message lists
+  const appendMessage = (m: ChatMessage) =>
+    chatStore.setState((s) => ({ messages: [...s.messages, m] }));
 
   // Load personality type from database
   useEffect(() => {
@@ -162,7 +191,7 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
         console.error('Error loading personality type:', error);
       } else if (data) {
         setPersonalityType(data.personality_type);
-        toast.success(`Using your MBTI type: ${data.personality_type}`);
+        if (!personalityType) toast.success(`Using your MBTI type: ${data.personality_type}`);
       }
     };
 
@@ -384,8 +413,11 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
   const handleSendMessage = async () => {
     if (!userMessage.trim() || isLoading || !sessionActive) return;
 
-    if (onFirstUserMessage) {
+    if (!hasUserSentMessage && onFirstUserMessage) {
       onFirstUserMessage();
+    }
+    if (!hasUserSentMessage) {
+      chatStore.setState({ hasUserSentMessage: true });
     }
 
     const userMsg: ChatMessage = {
@@ -397,13 +429,16 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMsg]);
+    appendMessage(userMsg);
     setUserMessage('');
     setIsLoading(true);
     setApiStatus('Processing...');
+    // Always show user's own message immediately
+    setIsNearBottom(true);
 
     try {
-      const aiResponseText = await getAIResponse(selectedEmotion, userMessage);
+      const currentMsg = userMessage;
+      const aiResponseText = await getAIResponse(selectedEmotion, currentMsg);
       
       const aiResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -412,15 +447,17 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         timestamp: new Date()
       };
 
-      setMessages(prev => [...prev, aiResponse]);
+      appendMessage(aiResponse);
       
       // Only update history if session is still active
-      if (sessionActive && !isSessionEndKeyword(userMessage)) {
-        setConversationHistory(prev => [
-          ...prev.slice(-4),
-          { role: 'user', content: userMessage },
-          { role: 'assistant', content: aiResponseText }
-        ]);
+      if (sessionActive && !isSessionEndKeyword(currentMsg)) {
+        chatStore.setState((s) => ({
+          conversationHistory: [
+            ...s.conversationHistory.slice(-4),
+            { role: "user", content: currentMsg },
+            { role: "assistant", content: aiResponseText },
+          ],
+        }));
       }
       
     } catch (error) {
@@ -431,7 +468,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         message: "I'm having trouble connecting right now, but I want you to know that your feelings are valid and you're not alone. Please try again in a moment.",
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, errorResponse]);
+      appendMessage(errorResponse);
       setApiStatus('Error occurred');
     } finally {
       setIsLoading(false);
@@ -439,33 +476,23 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
   };
 
   const startNewSession = () => {
-    setSessionActive(true);
-    setMessages([{
-      id: '1',
-      type: 'ai',
-      message: "Welcome to a new session! I'm Sir Hootington, and I'm here to listen and support you. 🦉\nWhat would you like to talk about today?",
-      timestamp: new Date()
-    }]);
-    setSelectedEmotion('');
-    setIntensity(8);
-    setUserMessage('');
-    setConversationHistory([]);
-    setApiStatus('New session started');
+    chatStore.reset();
+    chatStore.setState({
+      apiStatus: "New session started",
+      messages: [
+        {
+          id: "1",
+          type: "ai",
+          message:
+            "Welcome to a new session! I'm Sir Hootington, and I'm here to listen and support you. 🦉\nWhat would you like to talk about today?",
+          timestamp: new Date(),
+        },
+      ],
+    });
   };
 
   const clearChat = () => {
-    setMessages([{
-      id: '1',
-      type: 'ai',
-      message: "Hello there! I'm Sir Hootington, your wise owl companion. 🦉\nI'm here to listen and support you. How are you feeling today?",
-      timestamp: new Date()
-    }]);
-    setSelectedEmotion('');
-    setIntensity(8);
-    setUserMessage('');
-    setConversationHistory([]);
-    setApiStatus('ready');
-    setSessionActive(true);
+    chatStore.reset();
   };
 
   const testAPI = async () => {
