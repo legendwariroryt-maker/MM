@@ -550,13 +550,18 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
       )}
       <CardContent className="space-y-6">
         {/* Chat Messages */}
-        <ScrollArea className="h-[460px] w-full px-1">
-          <div className="space-y-4">
+        <div className="relative">
+          <div
+            ref={scrollRef}
+            onScroll={checkNearBottom}
+            className="h-[460px] w-full px-1 overflow-y-auto scroll-smooth"
+          >
+            <div className="space-y-4 pb-2">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={cn(
-                  "flex gap-3",
+                  "flex gap-3 animate-fade-in",
                   message.type === 'user' ? "justify-end" : "justify-start"
                 )}
               >
@@ -613,8 +618,19 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                 </div>
               </div>
             )}
+            </div>
           </div>
-        </ScrollArea>
+          {!isNearBottom && (
+            <button
+              onClick={() => { setIsNearBottom(true); scrollToBottom(true); }}
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-md text-xs font-medium text-foreground hover:bg-white/90 transition-all animate-fade-in"
+              aria-label="Jump to latest"
+            >
+              <ArrowDown className="w-3.5 h-3.5" />
+              Jump to latest
+            </button>
+          )}
+        </div>
 
         {/* Clear Chat Button */}
         <div className="flex justify-between">
