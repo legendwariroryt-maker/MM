@@ -16,6 +16,11 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
 import heroBg from "@/assets/dashboard-hero-bg.jpg";
+import lightMeadowBg from "@/assets/themes/light-meadow.jpg";
+import lightBlossomBg from "@/assets/themes/light-blossom.jpg";
+import darkMoonlitOceanBg from "@/assets/themes/dark-moonlit-ocean.jpg";
+import darkStarryForestBg from "@/assets/themes/dark-starry-forest.jpg";
+import darkPurpleTwilightBg from "@/assets/themes/dark-purple-twilight.jpg";
 import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart } from "lucide-react";
 
 const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtitle: string }> = {
@@ -37,6 +42,29 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState<AppSection>("home");
   const [displayName, setDisplayName] = useState<string>("");
   const [userAge, setUserAge] = useState<number | null>(null);
+  const [currentTheme, setCurrentTheme] = useState<string>(
+    () => (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) || "ocean-breeze"
+  );
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.id) setCurrentTheme(detail.id);
+    };
+    window.addEventListener("themeChange", handler);
+    return () => window.removeEventListener("themeChange", handler);
+  }, []);
+
+  const themeBackgrounds: Record<string, string> = {
+    "ocean-breeze": heroBg,
+    "lavender-mist": lightBlossomBg,
+    "morning-meadow": lightMeadowBg,
+    "midnight-calm": darkMoonlitOceanBg,
+    "aurora-night": darkPurpleTwilightBg,
+    "forest-twilight": darkStarryForestBg,
+  };
+  const activeBg = themeBackgrounds[currentTheme] || heroBg;
+  const isDarkTheme = ["midnight-calm", "aurora-night", "forest-twilight"].includes(currentTheme);
 
   useEffect(() => {
     if (!user) {
@@ -121,11 +149,20 @@ const Dashboard = () => {
       <div className="min-h-screen flex w-full font-sans text-foreground relative">
         {/* Dreamy hero background image, fixed across the viewport */}
         <div
-          className="fixed inset-0 -z-10 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroBg})` }}
+          key={currentTheme}
+          className="fixed inset-0 -z-10 bg-cover bg-center animate-fade-in"
+          style={{ backgroundImage: `url(${activeBg})`, transition: "opacity 600ms ease" }}
           aria-hidden="true"
         />
-        <div className="fixed inset-0 -z-10 bg-gradient-to-b from-background/40 via-background/30 to-background/70" aria-hidden="true" />
+        <div
+          className="fixed inset-0 -z-10"
+          style={{
+            background: isDarkTheme
+              ? "linear-gradient(180deg, hsl(var(--background)/0.35), hsl(var(--background)/0.55) 60%, hsl(var(--background)/0.7))"
+              : "linear-gradient(180deg, hsl(var(--background)/0.25), hsl(var(--background)/0.2) 60%, hsl(var(--background)/0.55))",
+          }}
+          aria-hidden="true"
+        />
 
         <AppSidebar
           activeSection={activeSection}
