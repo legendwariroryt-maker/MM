@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { ArrowDown } from "lucide-react";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
+import sirHootingtonAvatar from "@/assets/sir-hootington-avatar.png";
 import { chatStore, useChatStore } from "@/stores/chatStore";
 
 // Emotion categories
@@ -575,7 +576,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                     )}>
                       {message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes") 
                         ? "📋" 
-                        : <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+                        : <img src={sirHootingtonAvatar} alt="Sir Hootington" className="w-full h-full object-cover" />
                       }
                     </div>
                   </div>
@@ -610,7 +611,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
               <div className="flex gap-3 justify-start">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
-                    <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
+                    <img src={sirHootingtonAvatar} alt="Sir Hootington" className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="bg-muted px-4 py-2 rounded-lg">

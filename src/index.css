@@ -108,27 +108,27 @@ All colors MUST be HSL. Calming themes for teen mental health.
 
   /* Morning Meadow (Light) */
   [data-theme="morning-meadow"] {
-    --background: 140 40% 96%;
-    --foreground: 140 50% 12%;
+    --background: 150 22% 94%;
+    --foreground: 160 28% 14%;
 
-    --card: 140 35% 98%;
-    --card-foreground: 140 50% 12%;
+    --card: 150 25% 98%;
+    --card-foreground: 160 28% 14%;
 
-    --popover: 140 35% 98%;
-    --popover-foreground: 140 50% 12%;
+    --popover: 150 25% 98%;
+    --popover-foreground: 160 28% 14%;
 
-    --primary: 155 65% 42%;
+    --primary: 158 38% 40%;
     --primary-foreground: 155 30% 98%;
-    --primary-hover: 155 65% 35%;
+    --primary-hover: 158 38% 33%;
 
-    --secondary: 90 40% 88%;
-    --secondary-foreground: 90 50% 22%;
+    --secondary: 150 20% 88%;
+    --secondary-foreground: 160 30% 22%;
 
-    --muted: 140 25% 92%;
-    --muted-foreground: 140 20% 40%;
+    --muted: 150 18% 90%;
+    --muted-foreground: 160 12% 42%;
 
-    --accent: 85 55% 65%;
-    --accent-foreground: 85 60% 12%;
+    --accent: 95 30% 70%;
+    --accent-foreground: 95 40% 14%;
 
     --destructive: 0 70% 60%;
     --destructive-foreground: 0 20% 98%;
@@ -137,11 +137,20 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --warning: 45 90% 60%;
     --warning-foreground: 45 30% 15%;
 
-    --border: 140 25% 88%;
-    --input: 140 25% 88%;
-    --ring: 155 65% 42%;
+    --border: 150 18% 86%;
+    --input: 150 18% 90%;
+    --ring: 158 38% 40%;
 
-    --gradient-bg: linear-gradient(135deg, hsl(140, 40%, 96%), hsl(120, 35%, 92%));
+    --gradient-bg: linear-gradient(135deg, hsl(150, 22%, 94%), hsl(140, 18%, 90%));
+
+    --sidebar-background: 150 22% 95%;
+    --sidebar-foreground: 160 22% 22%;
+    --sidebar-primary: 158 38% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 150 18% 90%;
+    --sidebar-accent-foreground: 160 28% 18%;
+    --sidebar-border: 150 18% 86%;
+    --sidebar-ring: 158 38% 40%;
   }
 
   /* Midnight Calm (Dark) */
@@ -243,27 +252,27 @@ All colors MUST be HSL. Calming themes for teen mental health.
   /* Forest Twilight (Dark) */
   [data-theme="forest-twilight"],
   .dark[data-theme="forest-twilight"] {
-    --background: 160 30% 6%;
-    --foreground: 140 15% 88%;
+    --background: 222 45% 7%;
+    --foreground: 220 20% 90%;
 
-    --card: 160 25% 10%;
-    --card-foreground: 140 15% 88%;
+    --card: 222 38% 11%;
+    --card-foreground: 220 20% 90%;
 
-    --popover: 160 25% 10%;
-    --popover-foreground: 140 15% 88%;
+    --popover: 222 38% 11%;
+    --popover-foreground: 220 20% 90%;
 
-    --primary: 155 55% 45%;
-    --primary-foreground: 155 25% 98%;
-    --primary-hover: 155 55% 38%;
+    --primary: 215 70% 62%;
+    --primary-foreground: 220 30% 98%;
+    --primary-hover: 215 70% 55%;
 
-    --secondary: 150 25% 18%;
-    --secondary-foreground: 150 20% 78%;
+    --secondary: 222 30% 20%;
+    --secondary-foreground: 220 20% 80%;
 
-    --muted: 160 18% 14%;
-    --muted-foreground: 160 12% 52%;
+    --muted: 222 28% 16%;
+    --muted-foreground: 220 14% 60%;
 
-    --accent: 175 55% 45%;
-    --accent-foreground: 175 20% 95%;
+    --accent: 195 70% 55%;
+    --accent-foreground: 195 30% 98%;
 
     --destructive: 0 55% 50%;
     --destructive-foreground: 0 20% 95%;
@@ -272,20 +281,20 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --warning: 45 80% 55%;
     --warning-foreground: 45 20% 15%;
 
-    --border: 160 18% 14%;
-    --input: 160 18% 14%;
-    --ring: 155 55% 45%;
+    --border: 222 28% 16%;
+    --input: 222 28% 16%;
+    --ring: 215 70% 62%;
 
-    --gradient-bg: linear-gradient(135deg, hsl(160, 30%, 6%), hsl(145, 35%, 10%));
+    --gradient-bg: linear-gradient(135deg, hsl(222, 45%, 7%), hsl(230, 50%, 11%));
 
-    --sidebar-background: 160 25% 8%;
-    --sidebar-foreground: 140 15% 88%;
-    --sidebar-primary: 155 55% 45%;
+    --sidebar-background: 222 40% 9%;
+    --sidebar-foreground: 220 18% 90%;
+    --sidebar-primary: 215 70% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 160 18% 14%;
-    --sidebar-accent-foreground: 140 15% 88%;
-    --sidebar-border: 160 18% 14%;
-    --sidebar-ring: 155 55% 45%;
+    --sidebar-accent: 222 28% 16%;
+    --sidebar-accent-foreground: 220 18% 90%;
+    --sidebar-border: 222 28% 18%;
+    --sidebar-ring: 215 70% 62%;
   }
 
   /* Legacy dark mode fallback */
@@ -372,4 +381,14 @@ button, a, input, textarea, select {
               box-shadow 0.3s ease,
               transform 0.2s ease,
               opacity 0.2s ease;
+}
+
+/* Slow, premium section enter animation (home <-> chat etc.) */
+@keyframes section-enter {
+  from { opacity: 0; transform: translateY(14px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.section-enter {
+  animation: section-enter 750ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform, filter;
 }
