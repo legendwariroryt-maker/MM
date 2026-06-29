@@ -183,7 +183,7 @@ const Dashboard = () => {
           </header>
 
           {isHome ? (
-            <section className="px-6 lg:px-12 pb-12 pt-2 max-w-6xl mx-auto w-full">
+            <section key="home" className="px-6 lg:px-12 pb-12 pt-2 max-w-6xl mx-auto w-full section-enter">
               {/* Hero */}
               <div className="text-center mt-4 mb-10 animate-fade-in">
                 <h1 className="font-serif text-5xl md:text-6xl leading-tight text-foreground drop-shadow-sm">
@@ -260,7 +260,7 @@ const Dashboard = () => {
               </div>
             </section>
           ) : activeSection === "chat" ? (
-            <section className="px-6 lg:px-12 pt-4 pb-10 max-w-4xl mx-auto w-full">
+            <section key="chat" className="px-6 lg:px-12 pt-4 pb-10 max-w-4xl mx-auto w-full section-enter">
               <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-6">
                 <div>
                   <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
@@ -292,7 +292,7 @@ const Dashboard = () => {
               </div>
             </section>
           ) : (
-            <section className="px-6 lg:px-12 pt-4 pb-10 max-w-6xl mx-auto w-full">
+            <section key={activeSection} className="px-6 lg:px-12 pt-4 pb-10 max-w-6xl mx-auto w-full section-enter">
               <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
                 <div>
                   <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
