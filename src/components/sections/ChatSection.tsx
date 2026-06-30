@@ -11,9 +11,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { ArrowDown } from "lucide-react";
-import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
-import sirHootingtonAvatar from "@/assets/sir-hootington-avatar.png";
 import { chatStore, useChatStore } from "@/stores/chatStore";
+import { useThemeAvatar } from "@/lib/themeAvatars";
+import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
 
 // Emotion categories
 const emotions = [
@@ -124,6 +124,7 @@ interface ChatSectionProps {
 
 export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage }: ChatSectionProps) {
   const { user } = useAuth();
+  const sirHootingtonAvatar = useThemeAvatar();
   const messages = useChatStore((s) => s.messages);
   const selectedEmotion = useChatStore((s) => s.selectedEmotion);
   const intensity = useChatStore((s) => s.intensity);
