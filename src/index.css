@@ -410,3 +410,22 @@ button, a, input, textarea, select {
 .chat-enter-soft {
   animation: chat-enter-soft 1200ms 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .section-enter,
+  .chat-enter,
+  .chat-enter-soft,
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

@@ -14,13 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
-import heroBg from "@/assets/dashboard-hero-bg.jpg";
-import lightMeadowBg from "@/assets/themes/light-meadow.jpg";
-import lightBlossomBg from "@/assets/themes/light-blossom.jpg";
-import darkMoonlitOceanBg from "@/assets/themes/dark-moonlit-ocean.jpg";
-import darkStarryForestBg from "@/assets/themes/dark-starry-forest.jpg";
-import darkPurpleTwilightBg from "@/assets/themes/dark-purple-twilight.jpg";
+import { themeBackgrounds, themeAvatars } from "@/lib/themeAvatars";
 import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart } from "lucide-react";
 
 const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtitle: string }> = {
@@ -55,15 +49,8 @@ const Dashboard = () => {
     return () => window.removeEventListener("themeChange", handler);
   }, []);
 
-  const themeBackgrounds: Record<string, string> = {
-    "ocean-breeze": heroBg,
-    "lavender-mist": lightBlossomBg,
-    "morning-meadow": lightMeadowBg,
-    "midnight-calm": darkMoonlitOceanBg,
-    "aurora-night": darkPurpleTwilightBg,
-    "forest-twilight": darkStarryForestBg,
-  };
-  const activeBg = themeBackgrounds[currentTheme] || heroBg;
+  const activeBg = themeBackgrounds[currentTheme] || themeBackgrounds["ocean-breeze"];
+  const sirHootingtonImg = themeAvatars[currentTheme] || themeAvatars["ocean-breeze"];
   const isDarkTheme = ["midnight-calm", "aurora-night", "forest-twilight"].includes(currentTheme);
 
   useEffect(() => {

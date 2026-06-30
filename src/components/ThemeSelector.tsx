@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { themeBackgrounds } from "@/lib/themeAvatars";
 
 type ThemeOption = {
   id: string;
@@ -120,6 +121,7 @@ export const ThemeSelector = () => {
 
   const ThemePreviewCard = ({ theme }: { theme: ThemeOption }) => {
     const isSelected = selectedTheme === theme.id;
+    const previewBg = themeBackgrounds[theme.id];
     
     return (
       <Card
@@ -128,25 +130,22 @@ export const ThemeSelector = () => {
           isSelected ? "ring-2 ring-primary ring-offset-2 border-primary" : "border-transparent"
         }`}
       >
-        {/* Preview panel */}
-        <div className={`h-36 bg-gradient-to-br ${theme.colors.bg} p-3 relative overflow-hidden`}>
+        {/* Preview panel — real background image */}
+        <div
+          className="h-36 p-3 relative overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: `url(${previewBg})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           {/* Decorative circles */}
-          <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full ${theme.colors.accent} opacity-30`}></div>
-          <div className={`absolute -bottom-2 -left-2 w-12 h-12 rounded-full ${theme.colors.primary} opacity-20`}></div>
-          
-          {/* Mini header */}
-          <div className={`${theme.colors.card} rounded-lg p-2 mb-2 backdrop-blur-sm shadow-sm`}>
+          <div className="relative bg-white/40 backdrop-blur-md rounded-lg p-2 mb-2 shadow-sm border border-white/40">
             <div className="flex items-center gap-2">
-              <div className={`h-3 w-3 ${theme.colors.primary} rounded-full`}></div>
-              <div className={`h-2 w-14 ${theme.colors.primary} rounded-full opacity-60`}></div>
+              <div className="h-3 w-3 bg-white/80 rounded-full" />
+              <div className="h-2 w-14 bg-white/70 rounded-full" />
             </div>
           </div>
-          
-          {/* Mini content */}
-          <div className={`${theme.colors.card} rounded-lg p-2 backdrop-blur-sm shadow-sm`}>
-            <div className={`h-2 w-16 ${theme.colors.accent} rounded-full mb-2`}></div>
-            <div className={`h-1.5 w-full ${theme.colors.primary} rounded-full opacity-40`}></div>
-            <div className={`h-1.5 w-3/4 ${theme.colors.primary} rounded-full opacity-30 mt-1`}></div>
+          <div className="relative bg-white/40 backdrop-blur-md rounded-lg p-2 shadow-sm border border-white/40">
+            <div className="h-1.5 w-full bg-white/70 rounded-full mb-1" />
+            <div className="h-1.5 w-3/4 bg-white/60 rounded-full" />
           </div>
         </div>
         
