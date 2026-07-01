@@ -6,7 +6,7 @@ export interface ChatState {
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>;
   sessionActive: boolean;
   selectedEmotion: string;
-  intensity: number;
+  intensity: number | null;
   userMessage: string;
   apiStatus: string;
   personalityType: string;
@@ -26,7 +26,7 @@ let state: ChatState = {
   conversationHistory: [],
   sessionActive: true,
   selectedEmotion: "",
-  intensity: 8,
+  intensity: null,
   userMessage: "",
   apiStatus: "ready",
   personalityType: "",
@@ -56,7 +56,7 @@ export const chatStore = {
       conversationHistory: [],
       sessionActive: true,
       selectedEmotion: "",
-      intensity: 8,
+      intensity: null,
       userMessage: "",
       apiStatus: "ready",
       personalityType: state.personalityType,

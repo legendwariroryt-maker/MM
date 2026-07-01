@@ -39,6 +39,7 @@ const Dashboard = () => {
   const [currentTheme, setCurrentTheme] = useState<string>(
     () => (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) || "ocean-breeze"
   );
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -132,7 +133,7 @@ const Dashboard = () => {
   const isHome = activeSection === "home";
 
   return (
-    <SidebarProvider>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <div className="min-h-screen flex w-full font-sans text-foreground relative">
         {/* Dreamy hero background image, fixed across the viewport */}
         <div
@@ -241,7 +242,10 @@ const Dashboard = () => {
                     userName={displayName}
                     userAge={userAge}
                     hideHeader
-                    onFirstUserMessage={() => setActiveSection("chat")}
+                    onFirstUserMessage={() => {
+                      setActiveSection("chat");
+                      setSidebarOpen(false);
+                    }}
                   />
                 </div>
               </div>
