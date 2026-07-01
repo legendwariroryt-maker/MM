@@ -136,7 +136,7 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
   const hasUserSentMessage = useChatStore((s) => s.hasUserSentMessage);
 
   const setSelectedEmotion = (v: string) => chatStore.setState({ selectedEmotion: v });
-  const setIntensity = (v: number) => chatStore.setState({ intensity: v });
+  const setIntensity = (v: number | null) => chatStore.setState({ intensity: v });
   const setUserMessage = (v: string) => chatStore.setState({ userMessage: v });
   const setSessionActive = (v: boolean) => chatStore.setState({ sessionActive: v });
   const setPersonalityType = (v: string) => chatStore.setState({ personalityType: v });
@@ -327,7 +327,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
 
       const currentSystemPrompt = System_prompt
         .replace('${emotion}', emotion || 'unspecified')
-        .replace('${intensity}', intensity.toString())
+        .replace('${intensity}', intensity != null ? intensity.toString() : 'unspecified')
         .replace('${personalityContext}', personalityContext)
         .replace('${userName}', userNameContext)
         .replace('${userAge}', userAgeContext);
@@ -427,7 +427,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
       type: 'user',
       message: userMessage,
       emotion: selectedEmotion,
-      intensity: intensity,
+      intensity: intensity ?? undefined,
       timestamp: new Date()
     };
 
@@ -690,16 +690,27 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                 {/* Intensity Slider */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-medium">Intensity: {intensity}/10</Label>
+                    <Label className="text-sm font-medium">
+                      Intensity: {intensity != null ? `${intensity}/10` : "Not set"}
+                    </Label>
+                    {intensity != null && (
+                      <button
+                        type="button"
+                        onClick={() => setIntensity(null)}
+                        className="text-xs text-muted-foreground hover:text-foreground underline"
+                      >
+                        Clear
+                      </button>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Slider
-                      value={[intensity]}
+                      value={[intensity ?? 5]}
                       onValueChange={(value) => setIntensity(value[0])}
                       max={10}
                       min={1}
                       step={1}
-                      className="w-full"
+                      className={cn("w-full", intensity == null && "opacity-60")}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>Low</span>
