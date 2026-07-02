@@ -14,6 +14,14 @@ import { ArrowDown } from "lucide-react";
 import { chatStore, useChatStore } from "@/stores/chatStore";
 import { useThemeAvatar } from "@/lib/themeAvatars";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, History, Ghost, Plus, Trash2 } from "lucide-react";
+
+interface ConversationSummary {
+  id: string;
+  title: string;
+  updated_at: string;
+}
 
 // Emotion categories
 const emotions = [
@@ -134,6 +142,8 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
   const conversationHistory = useChatStore((s) => s.conversationHistory);
   const apiStatus = useChatStore((s) => s.apiStatus);
   const hasUserSentMessage = useChatStore((s) => s.hasUserSentMessage);
+  const currentConversationId = useChatStore((s) => s.currentConversationId);
+  const isTemporary = useChatStore((s) => s.isTemporary);
 
   const setSelectedEmotion = (v: string) => chatStore.setState({ selectedEmotion: v });
   const setIntensity = (v: number | null) => chatStore.setState({ intensity: v });
@@ -144,6 +154,146 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
 
   const [isLoading, setIsLoading] = useState(false);
   const [showEmotionContext, setShowEmotionContext] = useState(false);
+  const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+  const [historyOpen, setHistoryOpen] = useState(false);
+
+  // Load conversations list
+  const loadConversations = useCallback(async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("chat_conversations")
+      .select("id, title, updated_at")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false });
+    if (!error && data) setConversations(data);
+  }, [user]);
+
+  useEffect(() => {
+    loadConversations();
+  }, [loadConversations]);
+
+  const loadConversation = async (conversationId: string) => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: true });
+    if (error || !data) {
+      toast.error("Could not load that conversation.");
+      return;
+    }
+    const loaded: ChatMessage[] = [];
+    const history: Array<{ role: "user" | "assistant"; content: string }> = [];
+    data.forEach((row, i) => {
+      loaded.push({
+        id: `${row.id}-u`,
+        type: "user",
+        message: row.user_message,
+        emotion: row.emotion ?? undefined,
+        intensity: row.intensity ?? undefined,
+        timestamp: new Date(row.created_at),
+      });
+      loaded.push({
+        id: `${row.id}-a`,
+        type: "ai",
+        message: row.ai_response,
+        timestamp: new Date(row.created_at),
+      });
+      history.push({ role: "user", content: row.user_message });
+      history.push({ role: "assistant", content: row.ai_response });
+    });
+    chatStore.setState({
+      messages: loaded.length ? loaded : chatStore.getState().messages,
+      conversationHistory: history.slice(-6),
+      currentConversationId: conversationId,
+      isTemporary: false,
+      hasUserSentMessage: true,
+      sessionActive: true,
+    });
+    setHistoryOpen(false);
+  };
+
+  const deleteConversation = async (conversationId: string) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("chat_conversations")
+      .delete()
+      .eq("id", conversationId)
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Could not delete conversation.");
+      return;
+    }
+    setConversations((prev) => prev.filter((c) => c.id !== conversationId));
+    if (currentConversationId === conversationId) {
+      chatStore.reset();
+    }
+    toast.success("Conversation deleted.");
+  };
+
+  const persistExchange = async (
+    userMsg: string,
+    aiMsg: string,
+    emotion: string,
+    intensityVal: number | null,
+  ): Promise<string | null> => {
+    if (!user || isTemporary) return null;
+    let convId = currentConversationId;
+    if (!convId) {
+      const title = userMsg.trim().slice(0, 60) || "New conversation";
+      const { data, error } = await supabase
+        .from("chat_conversations")
+        .insert({ user_id: user.id, title })
+        .select("id")
+        .single();
+      if (error || !data) {
+        console.error("Failed to create conversation", error);
+        return null;
+      }
+      convId = data.id;
+      chatStore.setState({ currentConversationId: convId });
+    } else {
+      // bump updated_at
+      await supabase
+        .from("chat_conversations")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", convId);
+    }
+    const { error: insertErr } = await supabase.from("chat_messages").insert({
+      user_id: user.id,
+      conversation_id: convId,
+      user_message: userMsg,
+      ai_response: aiMsg,
+      emotion: emotion || null,
+      intensity: intensityVal ?? null,
+    });
+    if (insertErr) console.error("Failed to save message", insertErr);
+    loadConversations();
+    return convId;
+  };
+
+  const startTemporaryChat = () => {
+    chatStore.reset();
+    chatStore.setState({
+      isTemporary: true,
+      currentConversationId: null,
+      messages: [
+        {
+          id: "1",
+          type: "ai",
+          message:
+            "This is a temporary chat 👻 — nothing here will be saved. Talk freely, and it vanishes when you leave.",
+          timestamp: new Date(),
+        },
+      ],
+    });
+  };
+
+  const startFreshConversation = () => {
+    chatStore.reset();
+  };
 
   // Smart auto-scroll
   const scrollRef = useRef<HTMLDivElement>(null);
