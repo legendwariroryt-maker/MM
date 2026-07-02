@@ -14,9 +14,34 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           ai_response: string
+          conversation_id: string | null
           created_at: string
           emotion: string | null
           id: string
@@ -26,6 +51,7 @@ export type Database = {
         }
         Insert: {
           ai_response: string
+          conversation_id?: string | null
           created_at?: string
           emotion?: string | null
           id?: string
@@ -35,6 +61,7 @@ export type Database = {
         }
         Update: {
           ai_response?: string
+          conversation_id?: string | null
           created_at?: string
           emotion?: string | null
           id?: string
@@ -42,7 +69,15 @@ export type Database = {
           user_id?: string
           user_message?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mbti_results: {
         Row: {
