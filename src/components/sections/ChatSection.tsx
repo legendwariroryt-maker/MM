@@ -15,7 +15,8 @@ import { chatStore, useChatStore } from "@/stores/chatStore";
 import { useThemeAvatar } from "@/lib/themeAvatars";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, History, Ghost, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, History, Ghost, Plus, Trash2, Pencil, Check, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface ConversationSummary {
   id: string;
@@ -156,6 +157,8 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
   const [showEmotionContext, setShowEmotionContext] = useState(false);
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
 
   // Load conversations list
   const loadConversations = useCallback(async () => {
@@ -231,6 +234,27 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
       chatStore.reset();
     }
     toast.success("Conversation deleted.");
+  };
+
+  const startRenaming = (c: ConversationSummary) => {
+    setRenamingId(c.id);
+    setRenameValue(c.title);
+  };
+
+  const saveRename = async (conversationId: string) => {
+    if (!user) return;
+    const title = renameValue.trim().slice(0, 80) || "Untitled";
+    const { error } = await supabase
+      .from("chat_conversations")
+      .update({ title })
+      .eq("id", conversationId)
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Could not rename.");
+      return;
+    }
+    setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, title } : c)));
+    setRenamingId(null);
   };
 
   const persistExchange = async (
