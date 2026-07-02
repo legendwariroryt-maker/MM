@@ -600,7 +600,10 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
       };
 
       appendMessage(aiResponse);
-      
+
+      // Persist to Supabase unless in temporary mode
+      await persistExchange(currentMsg, aiResponseText, selectedEmotion, intensity);
+
       // Only update history if session is still active
       if (sessionActive && !isSessionEndKeyword(currentMsg)) {
         chatStore.setState((s) => ({
