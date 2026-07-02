@@ -15,7 +15,8 @@ import { chatStore, useChatStore } from "@/stores/chatStore";
 import { useThemeAvatar } from "@/lib/themeAvatars";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, History, Ghost, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, History, Ghost, Plus, Trash2, Pencil, Check, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface ConversationSummary {
   id: string;
@@ -156,6 +157,8 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
   const [showEmotionContext, setShowEmotionContext] = useState(false);
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
 
   // Load conversations list
   const loadConversations = useCallback(async () => {
@@ -231,6 +234,27 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
       chatStore.reset();
     }
     toast.success("Conversation deleted.");
+  };
+
+  const startRenaming = (c: ConversationSummary) => {
+    setRenamingId(c.id);
+    setRenameValue(c.title);
+  };
+
+  const saveRename = async (conversationId: string) => {
+    if (!user) return;
+    const title = renameValue.trim().slice(0, 80) || "Untitled";
+    const { error } = await supabase
+      .from("chat_conversations")
+      .update({ title })
+      .eq("id", conversationId)
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Could not rename.");
+      return;
+    }
+    setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, title } : c)));
+    setRenamingId(null);
   };
 
   const persistExchange = async (
@@ -739,27 +763,65 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                             : "bg-white/30 border-white/40 hover:bg-white/50",
                         )}
                       >
-                        <button
-                          onClick={() => loadConversation(c.id)}
-                          className="flex-1 min-w-0 text-left"
-                        >
-                          <p className="text-sm text-foreground truncate">{c.title}</p>
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                            {new Date(c.updated_at).toLocaleString(undefined, {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </button>
-                        <button
-                          onClick={() => deleteConversation(c.id)}
-                          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                          aria-label="Delete conversation"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        {renamingId === c.id ? (
+                          <>
+                            <Input
+                              autoFocus
+                              value={renameValue}
+                              onChange={(e) => setRenameValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") saveRename(c.id);
+                                if (e.key === "Escape") setRenamingId(null);
+                              }}
+                              className="h-8 text-sm flex-1"
+                            />
+                            <button
+                              onClick={() => saveRename(c.id)}
+                              className="p-1.5 rounded-md text-primary hover:bg-primary/10"
+                              aria-label="Save name"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setRenamingId(null)}
+                              className="p-1.5 rounded-md text-muted-foreground hover:bg-muted"
+                              aria-label="Cancel rename"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => loadConversation(c.id)}
+                              className="flex-1 min-w-0 text-left"
+                            >
+                              <p className="text-sm text-foreground truncate">{c.title}</p>
+                              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                {new Date(c.updated_at).toLocaleString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                })}
+                              </p>
+                            </button>
+                            <button
+                              onClick={() => startRenaming(c)}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                              aria-label="Rename conversation"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => deleteConversation(c.id)}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                              aria-label="Delete conversation"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     ))
                   )}
