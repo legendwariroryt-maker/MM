@@ -704,6 +704,99 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
       </CardHeader>
       )}
       <CardContent className="space-y-6">
+        {/* History + Temporary chat controls */}
+        {user && (
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Collapsible open={historyOpen} onOpenChange={setHistoryOpen} className="flex-1 min-w-0">
+                <CollapsibleTrigger asChild>
+                  <button
+                    className="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-xl bg-white/40 backdrop-blur-md border border-white/50 text-sm font-medium text-foreground hover:bg-white/55 transition-all"
+                  >
+                    <span className="flex items-center gap-2">
+                      <History className="w-4 h-4 text-primary" />
+                      Chat history
+                      <span className="text-xs text-muted-foreground">({conversations.length})</span>
+                    </span>
+                    <ChevronDown
+                      className={cn("w-4 h-4 transition-transform", historyOpen && "rotate-180")}
+                    />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-2 space-y-1 max-h-64 overflow-y-auto pr-1">
+                  {conversations.length === 0 ? (
+                    <p className="text-xs text-muted-foreground px-3 py-2 italic">
+                      Your saved conversations will appear here.
+                    </p>
+                  ) : (
+                    conversations.map((c) => (
+                      <div
+                        key={c.id}
+                        className={cn(
+                          "group flex items-center gap-2 px-3 py-2 rounded-lg border transition-all",
+                          currentConversationId === c.id
+                            ? "bg-primary/15 border-primary/40"
+                            : "bg-white/30 border-white/40 hover:bg-white/50",
+                        )}
+                      >
+                        <button
+                          onClick={() => loadConversation(c.id)}
+                          className="flex-1 min-w-0 text-left"
+                        >
+                          <p className="text-sm text-foreground truncate">{c.title}</p>
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {new Date(c.updated_at).toLocaleString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </button>
+                        <button
+                          onClick={() => deleteConversation(c.id)}
+                          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                          aria-label="Delete conversation"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Button
+                type="button"
+                variant={isTemporary ? "default" : "outline"}
+                size="sm"
+                onClick={isTemporary ? startFreshConversation : startTemporaryChat}
+                className="gap-1.5"
+                title={isTemporary ? "Exit temporary chat" : "Start a temporary chat that won't be saved"}
+              >
+                <Ghost className="w-4 h-4" />
+                {isTemporary ? "Temporary: On" : "Temporary chat"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={startFreshConversation}
+                className="gap-1.5"
+                title="Start a new saved conversation"
+              >
+                <Plus className="w-4 h-4" />
+                New
+              </Button>
+            </div>
+            {isTemporary && (
+              <p className="text-xs text-muted-foreground italic px-1">
+                👻 Temporary chat — nothing here is being saved.
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Chat Messages */}
         <div className="relative">
           <div
