@@ -763,27 +763,65 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                             : "bg-white/30 border-white/40 hover:bg-white/50",
                         )}
                       >
-                        <button
-                          onClick={() => loadConversation(c.id)}
-                          className="flex-1 min-w-0 text-left"
-                        >
-                          <p className="text-sm text-foreground truncate">{c.title}</p>
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                            {new Date(c.updated_at).toLocaleString(undefined, {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </button>
-                        <button
-                          onClick={() => deleteConversation(c.id)}
-                          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                          aria-label="Delete conversation"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        {renamingId === c.id ? (
+                          <>
+                            <Input
+                              autoFocus
+                              value={renameValue}
+                              onChange={(e) => setRenameValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") saveRename(c.id);
+                                if (e.key === "Escape") setRenamingId(null);
+                              }}
+                              className="h-8 text-sm flex-1"
+                            />
+                            <button
+                              onClick={() => saveRename(c.id)}
+                              className="p-1.5 rounded-md text-primary hover:bg-primary/10"
+                              aria-label="Save name"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setRenamingId(null)}
+                              className="p-1.5 rounded-md text-muted-foreground hover:bg-muted"
+                              aria-label="Cancel rename"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => loadConversation(c.id)}
+                              className="flex-1 min-w-0 text-left"
+                            >
+                              <p className="text-sm text-foreground truncate">{c.title}</p>
+                              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                {new Date(c.updated_at).toLocaleString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                })}
+                              </p>
+                            </button>
+                            <button
+                              onClick={() => startRenaming(c)}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                              aria-label="Rename conversation"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => deleteConversation(c.id)}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                              aria-label="Delete conversation"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     ))
                   )}
