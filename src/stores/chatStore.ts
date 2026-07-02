@@ -11,6 +11,8 @@ export interface ChatState {
   apiStatus: string;
   personalityType: string;
   hasUserSentMessage: boolean;
+  currentConversationId: string | null;
+  isTemporary: boolean;
 }
 
 const initialMessage: ChatMessage = {
@@ -31,6 +33,8 @@ let state: ChatState = {
   apiStatus: "ready",
   personalityType: "",
   hasUserSentMessage: false,
+  currentConversationId: null,
+  isTemporary: false,
 };
 
 const listeners = new Set<() => void>();
@@ -61,6 +65,8 @@ export const chatStore = {
       apiStatus: "ready",
       personalityType: state.personalityType,
       hasUserSentMessage: false,
+      currentConversationId: null,
+      isTemporary: state.isTemporary,
     };
     emit();
   },
