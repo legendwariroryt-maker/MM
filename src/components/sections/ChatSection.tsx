@@ -317,6 +317,7 @@ export function ChatSection({ userName, userAge, hideHeader, onFirstUserMessage 
 
   const startFreshConversation = () => {
     chatStore.reset();
+    chatStore.setState({ isTemporary: false, currentConversationId: null });
   };
 
   // Smart auto-scroll

@@ -66,7 +66,7 @@ export const chatStore = {
       personalityType: state.personalityType,
       hasUserSentMessage: false,
       currentConversationId: null,
-      isTemporary: state.isTemporary,
+      isTemporary: false,
     };
     emit();
   },
