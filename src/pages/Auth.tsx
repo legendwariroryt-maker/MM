@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,11 @@ export default function Auth() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextParam = searchParams.get("next");
+  const safeNext =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : null;
+  const postAuthTarget = safeNext ?? "/app";
   const { toast } = useToast();
 
   // Check if user came from password reset link
@@ -110,7 +115,7 @@ export default function Auth() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/app`
+            emailRedirectTo: `${window.location.origin}${postAuthTarget}`
           }
         });
 
@@ -132,7 +137,7 @@ export default function Auth() {
           title: "Welcome back!",
           description: "Successfully signed in to Mindful Me.",
         });
-        navigate("/app");
+        navigate(postAuthTarget);
       }
     } catch (error: any) {
       // Spent time debugging different error types from Supabase
