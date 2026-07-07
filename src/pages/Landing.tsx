@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 // Decor stripped for premium editorial pass
@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import logoImage from "@/assets/mindful-me-logo.png";
 import sirHootingtonStanding from "@/assets/sir-hootington-standing.png";
+import owlVideo from "@/assets/owl-hero.mp4.asset.json";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -31,6 +32,33 @@ const Landing = () => {
   const featuresRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const videoSectionRef = useRef<HTMLDivElement>(null);
+  const videoElRef = useRef<HTMLVideoElement>(null);
+
+  const { scrollYProgress: videoProgress } = useScroll({
+    target: videoSectionRef,
+    offset: ["start end", "end start"],
+  });
+  const videoScale = useTransform(videoProgress, [0, 0.5, 1], [0.82, 1, 1.05]);
+  const videoRadius = useTransform(videoProgress, [0, 0.5, 1], ["2.5rem", "1rem", "2.5rem"]);
+  const overlayOpacity = useTransform(videoProgress, [0, 0.4, 0.7, 1], [0.7, 0.2, 0.2, 0.7]);
+  const captionY = useTransform(videoProgress, [0.2, 0.6], [60, 0]);
+  const captionOpacity = useTransform(videoProgress, [0.2, 0.45], [0, 1]);
+
+  // Play video only when in view (perf + battery)
+  useEffect(() => {
+    const el = videoElRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) el.play().catch(() => {});
+        else el.pause();
+      },
+      { threshold: 0.15 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -278,6 +306,58 @@ const Landing = () => {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Cinematic Video Showcase */}
+      <section
+        ref={videoSectionRef}
+        className="relative h-[220vh] px-4"
+      >
+        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+          <motion.div
+            style={{ scale: videoScale, borderRadius: videoRadius }}
+            className="relative w-[min(1200px,92vw)] h-[82vh] overflow-hidden shadow-[0_30px_120px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/10"
+          >
+            <video
+              ref={videoElRef}
+              src={owlVideo.url}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Cinematic gradient overlays */}
+            <motion.div
+              style={{ opacity: overlayOpacity }}
+              className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-accent/20 mix-blend-overlay pointer-events-none" />
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[inherit] pointer-events-none" />
+
+            {/* Caption */}
+            <motion.div
+              style={{ y: captionY, opacity: captionOpacity }}
+              className="absolute inset-x-0 bottom-0 p-8 md:p-14 text-center"
+            >
+              <p className="text-[10px] tracking-[0.32em] uppercase text-white/70 font-semibold mb-3">
+                A little wisdom, always with you
+              </p>
+              <h2 className="font-serif text-4xl md:text-6xl text-white leading-[1.05] drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+                Meet the friend who <span className="italic text-primary-foreground/90">listens</span>.
+              </h2>
+              <p className="mt-4 text-white/80 max-w-xl mx-auto font-serif italic text-lg">
+                Sir Hootington is watching over your journey — soft, patient, and never asleep.
+              </p>
+            </motion.div>
+
+            {/* Corner ornament */}
+            <div className="absolute top-5 left-5 flex items-center gap-2 bg-black/30 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/15">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-[10px] tracking-[0.24em] uppercase text-white/90 font-semibold">Live • Sanctuary</span>
+            </div>
+          </motion.div>
         </div>
       </section>
 
