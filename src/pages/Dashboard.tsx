@@ -16,6 +16,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { themeBackgrounds, themeAvatars } from "@/lib/themeAvatars";
 import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart } from "lucide-react";
+import { ThemeQuickSwitcher } from "@/components/ThemeQuickSwitcher";
 
 const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtitle: string }> = {
   home: { eyebrow: "Sanctuary", title: "Welcome back", subtitle: "Your personal mental wellness companion." },
@@ -161,8 +162,11 @@ const Dashboard = () => {
         />
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center justify-between px-6 lg:px-10 pt-6 pb-2">
-            <SidebarTrigger className="text-foreground/70 hover:text-foreground bg-card/60 backdrop-blur-sm rounded-xl border border-border/50" />
+          <header className="flex items-start justify-between px-6 lg:px-10 pt-6 pb-2">
+            <div className="flex flex-col items-start gap-2">
+              <SidebarTrigger className="text-foreground/70 hover:text-foreground bg-card/60 backdrop-blur-sm rounded-xl border border-border/50" />
+              <ThemeQuickSwitcher />
+            </div>
             {!isHome && (
               <p className="text-[10px] tracking-[0.32em] uppercase text-foreground/60 font-semibold">
                 {meta.eyebrow}
@@ -192,7 +196,7 @@ const Dashboard = () => {
                     <button
                       key={label}
                       onClick={() => setActiveSection(target)}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/30 backdrop-blur-xl border border-white/40 text-sm font-medium text-foreground/80 hover:bg-white/45 hover:text-foreground hover:-translate-y-0.5 transition-all shadow-[0_4px_20px_-8px_rgba(120,90,160,0.25)]"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/55 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/15 text-sm font-medium text-foreground/85 hover:bg-white/70 dark:hover:bg-white/20 hover:text-foreground hover:-translate-y-0.5 transition-all shadow-[0_4px_20px_-8px_rgba(120,90,160,0.3)]"
                     >
                       <Icon className="w-4 h-4 text-primary" />
                       {label}
@@ -207,15 +211,15 @@ const Dashboard = () => {
                   <button
                     key={key}
                     onClick={() => setActiveSection(key)}
-                    className="group relative flex flex-col items-center text-center p-5 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/40 hover:bg-white/45 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(120,90,160,0.3)] transition-all"
+                    className="group relative flex flex-col items-center text-center p-5 rounded-2xl bg-white/55 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/15 hover:bg-white/70 dark:hover:bg-white/20 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(120,90,160,0.35)] transition-all"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                    <div className="w-11 h-11 rounded-xl bg-primary/15 dark:bg-primary/25 flex items-center justify-center mb-3 group-hover:bg-primary/25 dark:group-hover:bg-primary/35 transition-colors">
                       <Icon className="w-5 h-5 text-primary" />
                     </div>
                     <h3 className="font-serif text-sm md:text-base text-foreground leading-snug">
                       {label}
                     </h3>
-                    <p className="mt-1 text-[11px] text-muted-foreground leading-snug">
+                    <p className="mt-1 text-[11px] text-foreground/70 leading-snug">
                       {desc}
                     </p>
                   </button>
@@ -223,7 +227,7 @@ const Dashboard = () => {
               </div>
 
               {/* Chat preview card */}
-              <div className="bg-white/35 backdrop-blur-2xl border border-white/40 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_60px_-20px_rgba(120,90,160,0.3)] animate-fade-in">
+              <div className="bg-white/60 dark:bg-slate-900/55 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_60px_-20px_rgba(120,90,160,0.35)] animate-fade-in">
                 <div className="flex items-center gap-3 mb-1">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-secondary/50 border border-border shrink-0">
                     <img src={sirHootingtonImg} alt="Sir Hootington" className="w-full h-full object-cover" />
