@@ -16,6 +16,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { themeBackgrounds, themeAvatars } from "@/lib/themeAvatars";
 import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart } from "lucide-react";
+import { ThemeQuickSwitcher } from "@/components/ThemeQuickSwitcher";
 
 const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtitle: string }> = {
   home: { eyebrow: "Sanctuary", title: "Welcome back", subtitle: "Your personal mental wellness companion." },
@@ -161,8 +162,11 @@ const Dashboard = () => {
         />
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center justify-between px-6 lg:px-10 pt-6 pb-2">
-            <SidebarTrigger className="text-foreground/70 hover:text-foreground bg-card/60 backdrop-blur-sm rounded-xl border border-border/50" />
+          <header className="flex items-start justify-between px-6 lg:px-10 pt-6 pb-2">
+            <div className="flex flex-col items-start gap-2">
+              <SidebarTrigger className="text-foreground/70 hover:text-foreground bg-card/60 backdrop-blur-sm rounded-xl border border-border/50" />
+              <ThemeQuickSwitcher />
+            </div>
             {!isHome && (
               <p className="text-[10px] tracking-[0.32em] uppercase text-foreground/60 font-semibold">
                 {meta.eyebrow}
