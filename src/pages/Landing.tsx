@@ -24,6 +24,16 @@ import {
 import logoImage from "@/assets/mindful-me-logo.png";
 import sirHootingtonStanding from "@/assets/sir-hootington-standing.png";
 import owlVideo from "@/assets/owl-hero.mp4.asset.json";
+import StarfieldBackground from "@/components/landing/StarfieldBackground";
+import {
+  SquiggleUnderline,
+  RoughRing,
+  SketchCircle,
+  DoodleStar,
+  DashFlank,
+  CornerFlourish,
+  WobblyStar,
+} from "@/components/landing/Sketch";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -179,7 +189,9 @@ const Landing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative overflow-x-hidden">
+    <div className="min-h-screen bg-background relative overflow-x-hidden font-jakarta">
+      {/* Living nocturnal background — sits behind everything */}
+      <StarfieldBackground />
       {/* Fixed Navigation */}
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -195,7 +207,7 @@ const Landing = () => {
               alt="MindfulMe Logo" 
               className="w-9 h-9"
             />
-            <span className="font-serif text-xl tracking-tight text-foreground">
+            <span className="font-display font-semibold text-xl tracking-tight text-foreground">
               MindfulMe
             </span>
           </div>
@@ -261,27 +273,32 @@ const Landing = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.p
-            className="text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-8"
+            className="inline-flex items-center gap-3 text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            <DashFlank className="w-8 h-2 text-primary/70" />
             A Sanctuary for the Mind
+            <DashFlank className="w-8 h-2 text-primary/70 -scale-x-100" />
           </motion.p>
 
           <motion.h1 
-            className="font-serif text-5xl md:text-7xl mb-6 leading-[1.05] text-foreground"
+            className="font-display font-semibold text-5xl md:text-7xl mb-6 leading-[1.02] tracking-[-0.02em] text-foreground"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             Your mind matters.
             <br />
-            <span className="italic text-primary">We're here for you.</span>
+            <span className="italic font-medium text-primary relative inline-block">
+              We're here for you.
+              <SquiggleUnderline className="absolute -bottom-3 left-0 w-full h-3 text-primary/70" />
+            </span>
           </motion.h1>
 
           <motion.p 
-            className="font-serif italic text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto"
+            className="font-display italic text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
@@ -290,7 +307,7 @@ const Landing = () => {
           </motion.p>
 
           <motion.p 
-            className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto"
+            className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto font-jakarta"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
@@ -305,15 +322,19 @@ const Landing = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
           >
-            <Button 
-              size="lg"
-              onClick={() => navigate("/auth")}
-              className="text-base px-10 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full group tracking-wide"
-            >
-              <MessageCircle className="w-5 h-5 mr-3" />
-              Begin Your Journey
-              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <div className="relative group">
+              <RoughRing className="absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -rotate-1" />
+              <DoodleStar className="absolute -top-3 -right-3 w-5 h-5 text-primary opacity-0 group-hover:opacity-100 group-hover:rotate-12 transition-all duration-300" />
+              <Button
+                size="lg"
+                onClick={() => navigate("/auth")}
+                className="relative text-base px-10 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full tracking-wide font-display font-semibold group-hover:-rotate-[0.5deg]"
+              >
+                <MessageCircle className="w-5 h-5 mr-3" />
+                Begin Your Journey
+                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
           </motion.div>
 
           {/* Trust badges */}
@@ -324,14 +345,20 @@ const Landing = () => {
             transition={{ duration: 0.6, delay: 0.9 }}
           >
             {highlights.map((item, i) => (
-              <motion.div 
-                key={i} 
-                className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border"
-                whileHover={{ scale: 1.05 }}
+              <motion.div
+                key={i}
+                className="relative group"
+                whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? -1 : 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <item.icon className="w-4 h-4 text-primary" />
-                <span className="font-medium">{item.title}</span>
+                <RoughRing className="absolute inset-0 w-full h-full text-primary/40 group-hover:text-primary/70 transition-colors" />
+                <div className="relative flex items-center gap-2.5 bg-card/60 dark:bg-slate-900/50 backdrop-blur-xl px-5 py-2.5 rounded-full">
+                  <span className="relative flex items-center justify-center w-6 h-6">
+                    <SketchCircle className="absolute inset-0 w-full h-full text-primary/60" />
+                    <item.icon className="relative w-3.5 h-3.5 text-primary" />
+                  </span>
+                  <span className="font-display font-semibold text-sm tracking-tight">{item.title}</span>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -351,14 +378,21 @@ const Landing = () => {
             {highlights.map((item, i) => (
               <Card 
                 key={i}
-                className="scroll-animate opacity-0 translate-y-10 p-8 text-center bg-card/80 backdrop-blur-sm border-border hover:scale-105 transition-all duration-500 hover:shadow-xl"
+                className="scroll-animate opacity-0 translate-y-10 relative group p-8 text-center bg-card/70 dark:bg-slate-900/50 backdrop-blur-xl border-border hover:scale-105 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-8 h-8 text-primary-foreground" />
+                <CornerFlourish className="absolute top-3 right-3 w-8 h-8 text-primary/40 group-hover:text-primary/70 group-hover:rotate-12 transition-all duration-500" />
+                <div className="relative w-20 h-20 mx-auto mb-5">
+                  <SketchCircle className="absolute inset-0 w-full h-full text-primary/50 group-hover:-rotate-6 transition-transform duration-500" />
+                  <div className="absolute inset-2 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                    <item.icon className="w-7 h-7 text-primary-foreground" />
+                  </div>
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
+                <h3 className="font-display font-bold text-2xl text-foreground mb-1 relative inline-block">
+                  {item.title}
+                  <SquiggleUnderline className="absolute -bottom-2 left-0 w-full h-2 text-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </h3>
+                <p className="text-muted-foreground mt-3">{item.description}</p>
               </Card>
             ))}
           </div>
@@ -433,11 +467,15 @@ const Landing = () => {
               />
             </motion.div>
             <div className="text-center md:text-left">
-              <p className="text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-4">A Wise Companion</p>
-              <h2 className="font-serif text-4xl md:text-5xl mb-4 text-foreground">
+              <p className="inline-flex items-center gap-3 text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-4">
+                <DashFlank className="w-8 h-2 text-primary/70" />
+                A Wise Companion
+                <DashFlank className="w-8 h-2 text-primary/70 -scale-x-100" />
+              </p>
+              <h2 className="font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl mb-4 text-foreground">
                 Meet Sir Hootington
               </h2>
-              <p className="font-serif italic text-xl text-muted-foreground mb-6">
+              <p className="font-display italic text-xl text-muted-foreground mb-6">
                 Your wise &amp; witty wellness companion.
               </p>
               <div className="space-y-4 text-lg text-muted-foreground">
@@ -459,8 +497,8 @@ const Landing = () => {
       {/* About Section */}
       <section ref={aboutRef} className="py-20 px-4 bg-secondary/30">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="scroll-animate opacity-0 translate-y-10 font-serif text-4xl md:text-5xl mb-8 text-foreground">
-            About MindfulMe
+          <h2 className="scroll-animate opacity-0 translate-y-10 font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl mb-8 text-foreground">
+            About <span className="italic text-primary">MindfulMe</span>
           </h2>
           
           <div className="scroll-animate opacity-0 translate-y-10 space-y-6 text-lg text-muted-foreground">
@@ -483,8 +521,8 @@ const Landing = () => {
       {/* Features Section */}
       <section ref={featuresRef} className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="scroll-animate opacity-0 translate-y-10 font-serif text-4xl md:text-5xl text-center mb-4 text-foreground">
-            Everything You Need
+          <h2 className="scroll-animate opacity-0 translate-y-10 font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl text-center mb-4 text-foreground">
+            Everything <span className="italic text-primary">You Need</span>
           </h2>
           <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
             Powerful tools designed with your mental wellness in mind
@@ -494,21 +532,26 @@ const Landing = () => {
             {features.map((feature, i) => (
               <Card 
                 key={i}
-                className="scroll-animate opacity-0 translate-y-10 group p-6 bg-card/80 backdrop-blur-sm border-border hover:scale-105 transition-all duration-500 hover:shadow-xl cursor-pointer"
+                className="scroll-animate opacity-0 translate-y-10 group relative p-6 bg-card/70 dark:bg-slate-900/50 backdrop-blur-xl border-border hover:scale-[1.03] hover:-rotate-[0.5deg] transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 cursor-pointer"
                 style={{ transitionDelay: `${i * 50}ms` }}
                 onClick={() => navigate(`/app?section=${feature.section}`)}
               >
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <feature.icon className="w-7 h-7 text-white" />
+                <CornerFlourish className="absolute top-3 right-3 w-6 h-6 text-primary/30 group-hover:text-primary/70 group-hover:rotate-12 transition-all duration-500" />
+                <div className="relative w-16 h-16 mb-4">
+                  <SketchCircle className="absolute inset-0 w-full h-full text-primary/50 group-hover:-rotate-12 transition-transform duration-500" />
+                  <div className={`absolute inset-2 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <h3 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-primary transition-colors relative inline-block">
                   {feature.title}
+                  <SquiggleUnderline className="absolute -bottom-1.5 left-0 w-full h-2 text-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
                 <div className="mt-4 flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                  Try it now <ArrowRight className="w-4 h-4 ml-1" />
+                  Try it now <ArrowRight className="w-4 h-4 ml-1" /> <DoodleStar className="w-3 h-3 ml-1" />
                 </div>
               </Card>
             ))}
@@ -520,13 +563,16 @@ const Landing = () => {
       <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/20">
         <div className="max-w-4xl mx-auto text-center">
           <div className="scroll-animate opacity-0 translate-y-10">
-            <Sparkles className="w-12 h-12 text-primary mx-auto mb-6" />
-            <blockquote className="text-2xl md:text-3xl font-medium text-foreground mb-8 leading-relaxed">
+            <div className="relative w-16 h-16 mx-auto mb-6">
+              <SketchCircle className="absolute inset-0 w-full h-full text-primary/60" />
+              <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary" />
+            </div>
+            <blockquote className="font-display italic text-2xl md:text-3xl font-medium text-foreground mb-8 leading-relaxed">
               "Your mental health journey is unique, and so is our support. No judgment, no pressure—just a caring companion ready to listen whenever you need."
             </blockquote>
             <div className="flex justify-center gap-1 mb-4">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                <WobblyStar key={i} className="w-6 h-6 text-yellow-400" />
               ))}
             </div>
             <p className="text-muted-foreground">
@@ -541,9 +587,12 @@ const Landing = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-pink-600/10 via-purple-600/10 to-blue-600/10" />
         
         <div className="max-w-3xl mx-auto text-center relative z-10">
-          <h2 className="scroll-animate opacity-0 translate-y-10 font-serif text-4xl md:text-5xl mb-6 text-foreground">
+          <h2 className="scroll-animate opacity-0 translate-y-10 font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl mb-6 text-foreground">
             Ready to begin your
-            <span className="block italic text-primary">wellness journey?</span>
+            <span className="block italic font-medium text-primary relative">
+              wellness journey?
+              <SquiggleUnderline className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-64 max-w-full h-3 text-primary/60" />
+            </span>
           </h2>
           
           <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground mb-10">
@@ -552,15 +601,19 @@ const Landing = () => {
           </p>
 
           <div className="scroll-animate opacity-0 translate-y-10">
-            <Button 
-              size="lg"
-              onClick={() => navigate("/auth")}
-              className="text-base px-14 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full group tracking-wide"
-            >
-              <Heart className="w-5 h-5 mr-3" />
-              Start Your Journey
-              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <div className="relative inline-block group">
+              <RoughRing className="absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rotate-1" />
+              <DoodleStar className="absolute -top-3 -left-3 w-5 h-5 text-primary opacity-0 group-hover:opacity-100 group-hover:-rotate-12 transition-all duration-300" />
+              <Button
+                size="lg"
+                onClick={() => navigate("/auth")}
+                className="relative text-base px-14 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full tracking-wide font-display font-semibold group-hover:rotate-[0.5deg]"
+              >
+                <Heart className="w-5 h-5 mr-3" />
+                Start Your Journey
+                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
           </div>
 
           <p className="scroll-animate opacity-0 translate-y-10 mt-8 text-sm text-muted-foreground">
