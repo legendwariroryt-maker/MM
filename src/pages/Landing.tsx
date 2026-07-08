@@ -220,7 +220,10 @@ const Landing = () => {
       {/* Hero Section */}
       <div ref={bgSectionRef} className="relative">
         {/* Fixed scroll-scrubbed background video */}
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div
+          className="pointer-events-none fixed inset-0 -z-10 overflow-hidden transition-opacity duration-300"
+          style={{ opacity: Math.max(0, 1 - scrollY / 900) }}
+        >
           <video
             ref={bgVideoRef}
             src={owlVideo.url}
