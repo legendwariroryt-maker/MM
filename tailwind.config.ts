@@ -16,6 +16,8 @@ export default {
       fontFamily: {
         serif: ['Lora', 'ui-serif', 'Georgia', 'serif'],
         sans: ['"Nunito Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Syne', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        jakarta: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
