@@ -1,87 +1,52 @@
-## Chosen direction
+## Living background: nocturnal starfield
 
-Direction **v2 — Refined Editorial Wellness**. Quiet hotel-spa energy: persistent sidebar shell, serif headings on Lora, soft white/blush surfaces with 1px lavender borders, Sir Hootington presented as a small framed quote portrait (not a cartoon overlay), generous whitespace, restrained motion.
+Replace the current static hero background with a real animated night sky that lives behind every section of the landing page (fixed, behind the scroll-scrubbed owl video). Three parallax layers:
 
-## Design tokens (locked across every page)
+1. **Deep field** — canvas-drawn stars (~250) with subtle twinkle (opacity + radius sine wave), very slow drift.
+2. **Mid field** — larger stars + occasional shooting star that arcs across every ~8-12s.
+3. **Foreground** — 2 soft glowing moons/orbs that drift slowly with a mouse-parallax offset, plus a slow-moving low-opacity nebula gradient (conic-gradient, `animate-spin` at 120s).
 
-Update `src/index.css` and `tailwind.config.ts` to install these as the new defaults — no hardcoded colors in components.
+The starfield sits at `fixed inset-0 -z-20`, the owl video stays at `-z-10`, hero content on top. Fades gently to `background` at the bottom via a mask so lower sections keep readability.
 
-- Background: `#f8e8ee` (blush)
-- Surface: `#ffffff` at 40–60% opacity over blush
-- Surface-strong: `#e8c5d0` (rose)
-- Accent: `#c9a0dc` (soft lavender)
-- Primary: `#9b72cf` (lavender)
-- Foreground: `#2a2530` / muted `#6b6470`
-- Border: `#e8c5d0` and `#c9a0dc/30`
-- Radius: cards `2rem`, pills `9999px`
-- Shadow: barely-there `0 1px 2px hsl(280 30% 30% / 0.04)`, hover `0 8px 24px hsl(280 30% 30% / 0.08)`
-- Motion: 200–400ms `ease-out`, subtle hover translate-y, breathing dot only
+Implementation: one lightweight `<StarfieldBackground />` component using `<canvas>` + `requestAnimationFrame` (no three.js — keeps bundle small; the "silk WebGL" option was not picked). Respects `prefers-reduced-motion` (freezes animation).
 
-## Typography
+## Typography: Syne + Plus Jakarta Sans
 
-Install via `@fontsource/lora` and `@fontsource/nunito-sans`, import in `src/main.tsx`, register in `tailwind.config.ts`:
+- Install `@fontsource/syne` and `@fontsource/plus-jakarta-sans` via bun, import in `src/main.tsx`.
+- Add `font-display: Syne` (headings) and `font-sans: Plus Jakarta Sans` (body) to `tailwind.config.ts`.
+- Replace every `font-serif` on `Landing.tsx` with `font-display`. Headings get tight tracking (`tracking-[-0.02em]`) and Syne's geometric weight; the italic accent phrases (`Your mind matters.` / `We're here for you.`) switch to Syne italic weight 600.
+- Body copy and eyebrows use Plus Jakarta Sans.
 
-- `font-serif` → Lora — all headings, hero, quotes, italic accents
-- `font-sans` → Nunito Sans — body, UI, labels (uppercase tracked for eyebrows)
+## Hand-drawn / sketchy UI accents
 
-Remove the current gradient text on the wordmark and welcome heading.
+A cohesive whimsical layer that ties into Sir Hootington:
 
-## Shell redesign (applies to every dashboard view)
+- **Trust badges** ("100% Private", "24/7 Available", "Completely Free"): replace the plain pill with a hand-drawn SVG rough-border wrapper (wobbly stroke, `stroke-dasharray` doodle underline on hover). Icons get a small sketched circle behind them.
+- **Feature cards**: add a subtle inline SVG squiggle underline under each title, a rough hand-drawn corner flourish (top-right), and swap the solid gradient icon tile for a sketched circle outline + gradient fill with a slight rotation on hover (`hover:-rotate-3`).
+- **Buttons** ("Begin Your Journey", "Start Your Journey"): keep the primary fill but add an animated sketched outline that draws itself on hover (`stroke-dasharray` + `stroke-dashoffset` transition), plus a tiny doodle star that pops next to the arrow on hover.
+- **Section eyebrows** ("A Sanctuary for the Mind", etc.): flank with two small hand-drawn dashes/asterisks SVGs.
+- **Star ratings & Sparkles**: swap lucide `Star` for a wobbly SVG star to match the sketch language.
 
-Replace the tab-button row in `src/pages/Dashboard.tsx` with a shadcn Sidebar shell:
+All sketch SVGs are inline components in a new `src/components/landing/Sketch.tsx` (SquiggleUnderline, RoughPill, DoodleStar, CornerFlourish, DashFlank) so they're reusable and themed via `currentColor`.
 
-```text
-┌──────────┬──────────────────────────────────────┐
-│ MindfulMe│ DAILY SANCTUARY                      │
-│ ● Dash   │ Gentle morning, {name}.              │
-│   Chat   │                  ┌──Sir Hootington──┐│
-│   Journal│                  │ 🦉 "quote..."    ││
-│   Mindful│                  └──────────────────┘│
-│   MBTI   │ ┌─ Conversation ─┐ ┌─ Emotions ─┐   │
-│   Emotions│ │                │ │ bars       │   │
-│ ───────  │ └────────────────┘ └────────────┘   │
-│   Themes │ ┌ Journal ┐ ┌ Practice ┐ ┌ Compass ┐│
-│   Settings│└─────────┘ └──────────┘ └─────────┘│
-│ ─ Emergency                                     │
-│ [user pill]                                     │
-└──────────┴──────────────────────────────────────┘
-```
+## Color & dark-mode polish
 
-- New `src/components/AppSidebar.tsx` using `Sidebar`, `SidebarGroup`, `SidebarMenu`, `NavLink` active state pill (rose bg + lavender dot).
-- New `src/components/layout/AppShell.tsx` wraps `SidebarProvider` + main area with header + outlet. Dashboard becomes a routed shell.
-- Header shows eyebrow label + serif greeting + Sir Hootington quote card (uses existing `sir-hootington-sitting.png`).
-- Remove `FloatingBubbles`, the 3 floating `BreathingOrb`s, the emoji row, the gradient backdrop, and the heavy glassmorphism wrapper. Keep one optional breathing dot in the Mindfulness section only.
+Nocturnal palette leans on the existing tokens; add two CSS variables in `src/index.css`:
+- `--star: 220 40% 96%` (light) / `220 30% 92%` (dark)
+- `--nebula-a` / `--nebula-b` for the drifting conic gradient
 
-## Per-section refresh (no logic changes)
+Trust pills and cards bump to `bg-card/70 dark:bg-slate-900/50 backdrop-blur-xl` so the starfield reads through without hurting contrast.
 
-Each section component gets a presentational pass only — same props, same data, same handlers.
+## Files touched
 
-- **ChatSection** — editorial chat surface: serif title "Mindful Conversation", session status pill, white message bubbles with rose tail for owl / lavender for user, pill input with circular send button, owl avatar small and quiet. Remove "standing" background image.
-- **EmotionsSection** — "Emotional Flow" card: emoji + label + thin progress bar in lavender/accent, outline "Log Current Mood" CTA. Replace any saturated chart colors with token-based ones.
-- **JournalSection** — "Daily Journal" serif italic header, entry cards as blush tiles with a 4px lavender left rule, muted timestamp.
-- **MindfulnessSection** — "Practice" grid of square white tiles; single centered `BreathingOrb` recolored to lavender; tracked uppercase labels.
-- **MbtiSection** — "Inner Compass" dark accent card (deep plum surface) with lavender glow, serif heading, uppercase CTA with arrow.
-- **EmergencySection** — sober tone: serif heading, red kept only as a thin underline accent and a single primary call button; resource list as bordered rows.
-- **PrivacySettings / ThemeSelector / OnboardingSection / ProfileSettings / Auth / NotFound** — same token + typography pass: serif headings, Nunito body, blush background, rounded-3xl cards, lavender primary buttons.
-- **Landing** — restyle hero, features grid, and Sir Hootington section with the same tokens and typography so the marketing page matches the app.
-
-## Sir Hootington integration
-
-- Keep `sir-hootington-sitting.png` as the chat avatar and as the framed portrait in the dashboard header quote card.
-- Drop the large standing illustration from in-app pages (still allowed on the Landing About section).
-- Replace cartoon-styled wrappers with a circular rose-tinted frame, 1px lavender border.
-
-## Implementation order
-
-1. Tokens + fonts: `index.css`, `tailwind.config.ts`, `main.tsx` font imports, install `@fontsource/lora` and `@fontsource/nunito-sans`.
-2. `AppSidebar` + `AppShell`, refactor `Dashboard.tsx` to use them; remove bubble/orb/emoji decor and gradient text.
-3. Header greeting + Sir Hootington quote card component.
-4. Section-by-section presentational pass (Chat → Emotions → Journal → Mindfulness → MBTI → Emergency → Privacy → Themes → Onboarding).
-5. Apply same tokens/typography to Landing, Auth, ProfileSettings, NotFound.
-6. Visual check via Playwright screenshot on `/` and each section.
+- `src/components/landing/StarfieldBackground.tsx` (new) — canvas + orbs + nebula.
+- `src/components/landing/Sketch.tsx` (new) — reusable sketchy SVGs.
+- `src/pages/Landing.tsx` — mount starfield, swap `font-serif` → `font-display`, apply sketch accents to badges/cards/buttons/eyebrows, bump card opacity.
+- `src/main.tsx` — font imports.
+- `tailwind.config.ts` — add `display: ["Syne", ...]`, `sans: ["Plus Jakarta Sans", ...]`, star/nebula colors.
+- `src/index.css` — new tokens.
+- `package.json` — `@fontsource/syne`, `@fontsource/plus-jakarta-sans`.
 
 ## Out of scope
 
-- No changes to data models, Supabase, edge functions, auth, PWA config, or business logic.
-- No new features or removed features.
-- No dark mode flip; current light blush remains default.
+Not touching the owl video section (user liked it), Dashboard/app-shell typography, or any non-landing pages.
