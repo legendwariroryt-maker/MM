@@ -34,6 +34,33 @@ const Landing = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const videoSectionRef = useRef<HTMLDivElement>(null);
   const videoElRef = useRef<HTMLVideoElement>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const bgSectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll-scrubbed background video (advances currentTime as user scrolls)
+  const { scrollYProgress: bgProgress } = useScroll({
+    target: bgSectionRef,
+    offset: ["start start", "end start"],
+  });
+  useEffect(() => {
+    const v = bgVideoRef.current;
+    if (!v) return;
+    const setReady = () => {
+      // ensure metadata loaded
+    };
+    v.addEventListener("loadedmetadata", setReady);
+    const unsub = bgProgress.on("change", (p) => {
+      if (!v.duration || isNaN(v.duration)) return;
+      const t = Math.min(v.duration - 0.05, Math.max(0, p * v.duration));
+      try {
+        v.currentTime = t;
+      } catch {}
+    });
+    return () => {
+      v.removeEventListener("loadedmetadata", setReady);
+      unsub();
+    };
+  }, [bgProgress]);
 
   const { scrollYProgress: videoProgress } = useScroll({
     target: videoSectionRef,
@@ -191,12 +218,37 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section 
+      <div ref={bgSectionRef} className="relative">
+        {/* Fixed scroll-scrubbed background video */}
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <video
+            ref={bgVideoRef}
+            src={owlVideo.url}
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover scale-110"
+          />
+          {/* Atmospheric layers for premium feel */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/90" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background)/0.85)_75%)]" />
+          <div
+            className="absolute inset-0 opacity-[0.15] mix-blend-overlay"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.7'/></svg>\")",
+            }}
+          />
+          {/* Floating orbs */}
+          <div className="absolute top-1/4 -left-24 w-96 h-96 rounded-full bg-primary/20 blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 -right-24 w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+        </div>
+
+      <section
         ref={heroRef}
         className="min-h-screen flex flex-col items-center justify-center relative px-4 pt-20"
         style={{
-          transform: `translateY(${scrollY * 0.3}px)`,
-          opacity: 1 - scrollY / 800
+          opacity: Math.max(0, 1 - scrollY / 800),
         }}
       >
         <motion.div 
@@ -287,6 +339,7 @@ const Landing = () => {
           <ChevronDown className="w-8 h-8 text-muted-foreground" />
         </div>
       </section>
+      </div>
 
       {/* Highlights Section */}
       <section className="py-20 px-4 relative">
