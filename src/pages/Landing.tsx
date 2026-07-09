@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-// Decor stripped for premium editorial pass
 import { 
   MessageCircle, 
   Heart, 
@@ -18,22 +17,11 @@ import {
   ChevronDown,
   Lock,
   Zap,
-  Star,
   Palette
 } from "lucide-react";
 import logoImage from "@/assets/mindful-me-logo.png";
 import sirHootingtonStanding from "@/assets/sir-hootington-standing.png";
 import owlVideo from "@/assets/owl-hero.mp4.asset.json";
-import StarfieldBackground from "@/components/landing/StarfieldBackground";
-import {
-  SquiggleUnderline,
-  RoughRing,
-  SketchCircle,
-  DoodleStar,
-  DashFlank,
-  CornerFlourish,
-  WobblyStar,
-} from "@/components/landing/Sketch";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -44,33 +32,6 @@ const Landing = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const videoSectionRef = useRef<HTMLDivElement>(null);
   const videoElRef = useRef<HTMLVideoElement>(null);
-  const bgVideoRef = useRef<HTMLVideoElement>(null);
-  const bgSectionRef = useRef<HTMLDivElement>(null);
-
-  // Scroll-scrubbed background video (advances currentTime as user scrolls)
-  const { scrollYProgress: bgProgress } = useScroll({
-    target: bgSectionRef,
-    offset: ["start start", "end start"],
-  });
-  useEffect(() => {
-    const v = bgVideoRef.current;
-    if (!v) return;
-    const setReady = () => {
-      // ensure metadata loaded
-    };
-    v.addEventListener("loadedmetadata", setReady);
-    const unsub = bgProgress.on("change", (p) => {
-      if (!v.duration || isNaN(v.duration)) return;
-      const t = Math.min(v.duration - 0.05, Math.max(0, p * v.duration));
-      try {
-        v.currentTime = t;
-      } catch {}
-    });
-    return () => {
-      v.removeEventListener("loadedmetadata", setReady);
-      unsub();
-    };
-  }, [bgProgress]);
 
   const { scrollYProgress: videoProgress } = useScroll({
     target: videoSectionRef,
@@ -189,210 +150,186 @@ const Landing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative overflow-x-hidden font-jakarta">
-      {/* Living nocturnal background — sits behind everything */}
-      <StarfieldBackground />
+    <div className="min-h-screen bg-background relative overflow-x-hidden font-sans text-foreground">
+      {/* Ambient editorial background — soft blush & lavender */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 overflow-hidden">
+        <div className="absolute inset-0" style={{ background: "var(--gradient-bg)" }} />
+        <div className="absolute -top-40 -left-32 w-[42rem] h-[42rem] rounded-full bg-primary/25 blur-[140px] animate-pulse-calm" />
+        <div className="absolute top-1/3 -right-40 w-[38rem] h-[38rem] rounded-full bg-accent/25 blur-[140px] animate-pulse-calm" style={{ animationDelay: "1.5s" }} />
+        <div className="absolute bottom-0 left-1/3 w-[30rem] h-[30rem] rounded-full bg-secondary/40 blur-[120px] animate-pulse-calm" style={{ animationDelay: "3s" }} />
+        <div
+          className="absolute inset-0 opacity-[0.06] mix-blend-multiply"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+          }}
+        />
+      </div>
+
       {/* Fixed Navigation */}
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrollY > 50 
-            ? "bg-card/95 backdrop-blur-lg shadow-lg border-b border-border" 
+            ? "bg-card/70 backdrop-blur-2xl shadow-[0_1px_0_hsl(var(--border))]"
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <img 
               src={logoImage} 
               alt="MindfulMe Logo" 
-              className="w-9 h-9"
+              className="w-9 h-9 drop-shadow-sm"
             />
-            <span className="font-display font-semibold text-xl tracking-tight text-foreground">
-              MindfulMe
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="font-serif text-xl tracking-tight text-foreground">MindfulMe</span>
+              <span className="text-[9px] tracking-[0.32em] uppercase text-muted-foreground">Quiet Care</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
               onClick={() => navigate("/auth")}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground rounded-full"
             >
               Sign In
             </Button>
             <Button 
               onClick={() => navigate("/auth")}
-              className="bg-primary text-primary-foreground hover:bg-primary-hover rounded-full px-6"
+              className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-sm"
             >
               Get Started
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div ref={bgSectionRef} className="relative">
-        {/* Fixed scroll-scrubbed background video */}
-        <div
-          className="pointer-events-none fixed inset-0 -z-10 overflow-hidden transition-opacity duration-300"
-          style={{ opacity: Math.max(0, 1 - scrollY / 900) }}
-        >
-          <video
-            ref={bgVideoRef}
-            src={owlVideo.url}
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full object-cover scale-110"
-          />
-          {/* Atmospheric layers for premium feel */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/90" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background)/0.85)_75%)]" />
-          <div
-            className="absolute inset-0 opacity-[0.15] mix-blend-overlay"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.7'/></svg>\")",
-            }}
-          />
-          {/* Floating orbs */}
-          <div className="absolute top-1/4 -left-24 w-96 h-96 rounded-full bg-primary/20 blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 -right-24 w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
-        </div>
-
+      {/* Hero — editorial split with soft mascot */}
       <section
         ref={heroRef}
-        className="min-h-screen flex flex-col items-center justify-center relative px-4 pt-20"
-        style={{
-          opacity: Math.max(0, 1 - scrollY / 800),
-        }}
+        className="min-h-screen flex items-center relative px-6 pt-28 pb-20"
       >
-        <motion.div 
-          className="text-center max-w-4xl mx-auto relative z-10"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <motion.p
-            className="inline-flex items-center gap-3 text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <DashFlank className="w-8 h-2 text-primary/70" />
-            A Sanctuary for the Mind
-            <DashFlank className="w-8 h-2 text-primary/70 -scale-x-100" />
-          </motion.p>
-
-          <motion.h1 
-            className="font-display font-semibold text-5xl md:text-7xl mb-6 leading-[1.02] tracking-[-0.02em] text-foreground"
-            initial={{ opacity: 0, y: 20 }}
+        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-[1.15fr_1fr] gap-14 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
-            Your mind matters.
-            <br />
-            <span className="italic font-medium text-primary relative inline-block">
-              We're here for you.
-              <SquiggleUnderline className="absolute -bottom-3 left-0 w-full h-3 text-primary/70" />
-            </span>
-          </motion.h1>
+            <div className="inline-flex items-center gap-3 mb-8">
+              <span className="h-px w-10 bg-foreground/40" />
+              <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground font-medium">
+                A Sanctuary for the Mind
+              </span>
+            </div>
 
-          <motion.p 
-            className="font-display italic text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
-            "Empowering teens to understand, express, and nurture their mental wellness."
-          </motion.p>
+            <h1 className="font-serif text-[3.25rem] md:text-[5rem] leading-[0.98] tracking-[-0.02em] text-foreground mb-8">
+              A quiet place
+              <br />
+              to feel
+              <span className="italic text-primary"> understood</span>.
+            </h1>
 
-          <motion.p 
-            className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto font-jakarta"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            A safe, judgment-free space where you can talk, reflect, and grow—whenever you need it.
-          </motion.p>
+            <p className="font-serif italic text-xl md:text-2xl text-muted-foreground max-w-xl mb-4 leading-relaxed">
+              "Empowering teens to understand, express, and nurture their mental wellness."
+            </p>
+            <p className="text-base text-muted-foreground max-w-lg mb-10 leading-relaxed">
+              A safe, judgment-free space where you can talk, reflect, and grow — whenever you need it.
+            </p>
 
-          {/* Main CTA */}
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-          >
-            <div className="relative group">
-              <RoughRing className="absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -rotate-1" />
-              <DoodleStar className="absolute -top-3 -right-3 w-5 h-5 text-primary opacity-0 group-hover:opacity-100 group-hover:rotate-12 transition-all duration-300" />
+            <div className="flex flex-wrap items-center gap-4 mb-14">
               <Button
                 size="lg"
                 onClick={() => navigate("/auth")}
-                className="relative text-base px-10 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full tracking-wide font-display font-semibold group-hover:-rotate-[0.5deg]"
+                className="group text-base px-8 py-6 bg-foreground text-background hover:bg-foreground/90 rounded-full shadow-medium"
               >
-                <MessageCircle className="w-5 h-5 mr-3" />
-                Begin Your Journey
-                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+                Begin your journey
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
+              <Button
+                size="lg"
+                variant="ghost"
+                onClick={() => aboutRef.current?.scrollIntoView({ behavior: "smooth" })}
+                className="text-base px-6 py-6 text-foreground hover:bg-foreground/5 rounded-full"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Meet Sir Hootington
+              </Button>
+            </div>
+
+            {/* Trust row — inline hairline */}
+            <div className="flex flex-wrap gap-x-8 gap-y-4">
+              {highlights.map((item, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="flex items-center justify-center w-9 h-9 rounded-full bg-card/70 backdrop-blur-md border border-border">
+                    <item.icon className="w-4 h-4 text-primary" />
+                  </span>
+                  <div className="leading-tight">
+                    <div className="font-serif text-sm text-foreground">{item.title}</div>
+                    <div className="text-[11px] text-muted-foreground">{item.description}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
-          {/* Trust badges */}
-          <motion.div 
-            className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
+          {/* Mascot portrait card */}
+          <motion.div
+            className="relative hidden lg:block"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           >
-            {highlights.map((item, i) => (
-              <motion.div
-                key={i}
-                className="relative group"
-                whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? -1 : 1 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <RoughRing className="absolute inset-0 w-full h-full text-primary/40 group-hover:text-primary/70 transition-colors" />
-                <div className="relative flex items-center gap-2.5 bg-card/60 dark:bg-slate-900/50 backdrop-blur-xl px-5 py-2.5 rounded-full">
-                  <span className="relative flex items-center justify-center w-6 h-6">
-                    <SketchCircle className="absolute inset-0 w-full h-full text-primary/60" />
-                    <item.icon className="relative w-3.5 h-3.5 text-primary" />
-                  </span>
-                  <span className="font-display font-semibold text-sm tracking-tight">{item.title}</span>
+            <div className="absolute -inset-6 rounded-[3rem] bg-gradient-to-br from-primary/25 via-accent/20 to-secondary/40 blur-3xl" />
+            <div className="relative rounded-[2.5rem] bg-card/60 backdrop-blur-2xl border border-border p-10 shadow-medium overflow-hidden">
+              <div className="absolute top-6 right-6 text-[10px] tracking-[0.32em] uppercase text-muted-foreground">
+                Vol. 01
+              </div>
+              <img
+                src={sirHootingtonStanding}
+                alt="Sir Hootington"
+                className="relative w-full h-[420px] object-contain drop-shadow-2xl animate-float"
+              />
+              <div className="mt-6 pt-6 border-t border-border/60 flex items-center justify-between">
+                <div>
+                  <div className="font-serif italic text-lg text-foreground">Sir Hootington</div>
+                  <div className="text-[11px] tracking-[0.24em] uppercase text-muted-foreground">Wellness Companion</div>
                 </div>
-              </motion.div>
-            ))}
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+            </div>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-8 h-8 text-muted-foreground" />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground">
+          <span className="text-[10px] tracking-[0.32em] uppercase">Scroll</span>
+          <ChevronDown className="w-4 h-4 animate-gentle-bounce" />
         </div>
       </section>
-      </div>
 
-      {/* Highlights Section */}
-      <section className="py-20 px-4 relative">
+      {/* Editorial pillars */}
+      <section className="py-24 px-6 relative">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="text-center mb-14 scroll-animate opacity-0 translate-y-6">
+            <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">Our promise</span>
+            <h2 className="font-serif text-4xl md:text-5xl mt-3 tracking-[-0.02em]">
+              Three <span className="italic text-primary">quiet</span> commitments.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
             {highlights.map((item, i) => (
               <Card 
                 key={i}
-                className="scroll-animate opacity-0 translate-y-10 relative group p-8 text-center bg-card/70 dark:bg-slate-900/50 backdrop-blur-xl border-border hover:scale-105 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+                className="scroll-animate opacity-0 translate-y-6 relative group p-10 bg-card/60 backdrop-blur-2xl border-border rounded-3xl transition-all duration-500 hover:-translate-y-1 hover:shadow-medium"
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
-                <CornerFlourish className="absolute top-3 right-3 w-8 h-8 text-primary/40 group-hover:text-primary/70 group-hover:rotate-12 transition-all duration-500" />
-                <div className="relative w-20 h-20 mx-auto mb-5">
-                  <SketchCircle className="absolute inset-0 w-full h-full text-primary/50 group-hover:-rotate-6 transition-transform duration-500" />
-                  <div className="absolute inset-2 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    <item.icon className="w-7 h-7 text-primary-foreground" />
-                  </div>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="font-serif italic text-3xl text-primary/80">0{i + 1}</span>
+                  <span className="h-px flex-1 bg-border" />
+                  <item.icon className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <h3 className="font-display font-bold text-2xl text-foreground mb-1 relative inline-block">
-                  {item.title}
-                  <SquiggleUnderline className="absolute -bottom-2 left-0 w-full h-2 text-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </h3>
-                <p className="text-muted-foreground mt-3">{item.description}</p>
+                <h3 className="font-serif text-2xl text-foreground mb-2">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </Card>
             ))}
           </div>
@@ -404,10 +341,13 @@ const Landing = () => {
         ref={videoSectionRef}
         className="relative h-[220vh] px-4"
       >
-        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+          <div className="text-center mb-6">
+            <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">A little wisdom, always with you</span>
+          </div>
           <motion.div
             style={{ scale: videoScale, borderRadius: videoRadius }}
-            className="relative w-[min(1200px,92vw)] h-[82vh] overflow-hidden shadow-[0_30px_120px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/10"
+            className="relative w-[min(1200px,92vw)] h-[74vh] overflow-hidden shadow-[0_40px_140px_-20px_hsl(var(--primary)/0.35)] ring-1 ring-border"
           >
             <video
               ref={videoElRef}
@@ -424,15 +364,15 @@ const Landing = () => {
               className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-accent/20 mix-blend-overlay pointer-events-none" />
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[inherit] pointer-events-none" />
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/15 rounded-[inherit] pointer-events-none" />
 
             {/* Caption */}
             <motion.div
               style={{ y: captionY, opacity: captionOpacity }}
               className="absolute inset-x-0 bottom-0 p-8 md:p-14 text-center"
             >
-              <p className="text-[10px] tracking-[0.32em] uppercase text-white/70 font-semibold mb-3">
-                A little wisdom, always with you
+              <p className="text-[10px] tracking-[0.32em] uppercase text-white/70 font-medium mb-3">
+                Chapter I
               </p>
               <h2 className="font-serif text-4xl md:text-6xl text-white leading-[1.05] drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
                 Meet the friend who <span className="italic text-primary-foreground/90">listens</span>.
@@ -443,49 +383,44 @@ const Landing = () => {
             </motion.div>
 
             {/* Corner ornament */}
-            <div className="absolute top-5 left-5 flex items-center gap-2 bg-black/30 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/15">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-[10px] tracking-[0.24em] uppercase text-white/90 font-semibold">Live • Sanctuary</span>
+            <div className="absolute top-5 left-5 flex items-center gap-2 bg-black/25 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/15">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/90" />
+              <span className="text-[10px] tracking-[0.24em] uppercase text-white/90">Sanctuary</span>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Meet Sir Hootington Section */}
-      <section className="py-24 px-4 bg-secondary/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="scroll-animate opacity-0 translate-y-10 flex flex-col md:flex-row items-center gap-10">
-            <motion.div 
-              className="flex-shrink-0"
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <img 
-                src={sirHootingtonStanding} 
-                alt="Sir Hootington - Your Wise Owl Companion" 
-                className="w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-2xl"
-              />
-            </motion.div>
-            <div className="text-center md:text-left">
-              <p className="inline-flex items-center gap-3 text-[10px] tracking-[0.32em] uppercase text-primary font-semibold mb-4">
-                <DashFlank className="w-8 h-2 text-primary/70" />
-                A Wise Companion
-                <DashFlank className="w-8 h-2 text-primary/70 -scale-x-100" />
-              </p>
-              <h2 className="font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl mb-4 text-foreground">
+      <section ref={aboutRef} className="py-28 px-6 relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="scroll-animate opacity-0 translate-y-6 grid md:grid-cols-[auto_1fr] items-center gap-14">
+            <div className="relative flex-shrink-0 mx-auto">
+              <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-primary/30 via-accent/20 to-transparent blur-3xl" />
+              <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full bg-card/60 backdrop-blur-2xl border border-border flex items-center justify-center overflow-hidden">
+                <img
+                  src={sirHootingtonStanding}
+                  alt="Sir Hootington"
+                  className="w-[85%] h-[85%] object-contain drop-shadow-2xl animate-float"
+                />
+              </div>
+            </div>
+            <div>
+              <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">A Wise Companion</span>
+              <h2 className="font-serif text-4xl md:text-5xl mt-3 mb-5 tracking-[-0.02em] text-foreground">
                 Meet Sir Hootington
               </h2>
-              <p className="font-display italic text-xl text-muted-foreground mb-6">
+              <p className="font-serif italic text-xl text-muted-foreground mb-6">
                 Your wise &amp; witty wellness companion.
               </p>
-              <div className="space-y-4 text-lg text-muted-foreground">
+              <div className="space-y-4 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
                 <p>
-                  Sir Hootington is no ordinary owl. A distinguished graduate of Harvard University with a double major in Psychology and "Advanced Listening Arts," he spent years studying under the legendary Owl of Minerva before deciding to dedicate his life to helping teens navigate their emotional journeys.
+                  Sir Hootington is no ordinary owl. A distinguished graduate of Harvard with a double major in Psychology and "Advanced Listening Arts," he studied under the legendary Owl of Minerva before devoting his life to helping teens navigate their emotional journeys.
                 </p>
                 <p>
-                  When he's not dispensing wisdom and comfort, Sir Hootington enjoys sipping chamomile tea, reorganizing his extensive collection of self-help scrolls, and practicing his signature "Supportive Head Tilt™" in the mirror.
+                  When he isn't dispensing wisdom, he sips chamomile tea, reorganises his collection of self-help scrolls, and practises his signature "Supportive Head Tilt™" in the mirror.
                 </p>
-                <p className="font-medium text-foreground">
+                <p className="font-serif italic text-foreground">
                   His motto? "A hoot a day keeps the worries away!" 🌙
                 </p>
               </div>
@@ -494,64 +429,62 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* About Section */}
-      <section ref={aboutRef} className="py-20 px-4 bg-secondary/30">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="scroll-animate opacity-0 translate-y-10 font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl mb-8 text-foreground">
-            About <span className="italic text-primary">MindfulMe</span>
-          </h2>
-          
-          <div className="scroll-animate opacity-0 translate-y-10 space-y-6 text-lg text-muted-foreground">
-            <p>
-              MindfulMe is a teen mental health companion designed to provide a safe, judgment-free space for young people to explore and express their emotions.
+      {/* Editorial manifesto */}
+      <section className="py-28 px-6 relative">
+        <div className="max-w-4xl mx-auto">
+          <div className="scroll-animate opacity-0 translate-y-6 rounded-[2.5rem] bg-card/60 backdrop-blur-2xl border border-border p-10 md:p-16 shadow-medium">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-px w-10 bg-foreground/40" />
+              <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">On MindfulMe</span>
+            </div>
+            <p className="font-serif text-2xl md:text-3xl leading-[1.4] text-foreground">
+              Growing up isn't easy. Between school, friendships, and the quiet noise of your own thoughts, it's okay to feel overwhelmed. MindfulMe is a
+              <span className="italic text-primary"> supportive friend</span> that listens — without judgement, without pressure, and always at your pace.
             </p>
-            <p>
-              Growing up in today's world isn't easy. Between school pressures, social challenges, and everything in between—it's completely normal to feel overwhelmed sometimes. That's why MindfulMe exists: to be your supportive friend who's always ready to listen.
-            </p>
-            <p>
-              Whether you're feeling stressed, anxious, happy, or just need someone to talk to, MindfulMe is here 24/7. Our AI companion provides empathetic support while our tools help you understand your emotions better, practice mindfulness, and build healthy coping strategies.
-            </p>
-            <p className="font-medium text-foreground">
-              Remember: It's okay to not be okay. Seeking support is a sign of strength, not weakness.
+            <p className="mt-6 text-muted-foreground text-lg leading-relaxed">
+              It's okay to not be okay. Seeking support is a sign of strength, not weakness.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section ref={featuresRef} className="py-20 px-4">
+      {/* Features */}
+      <section ref={featuresRef} className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="scroll-animate opacity-0 translate-y-10 font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl text-center mb-4 text-foreground">
-            Everything <span className="italic text-primary">You Need</span>
-          </h2>
-          <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
-            Powerful tools designed with your mental wellness in mind
-          </p>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 scroll-animate opacity-0 translate-y-6">
+            <div>
+              <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">The Collection</span>
+              <h2 className="font-serif text-4xl md:text-5xl mt-3 tracking-[-0.02em]">
+                Everything <span className="italic text-primary">you need</span>.
+              </h2>
+            </div>
+            <p className="text-muted-foreground max-w-sm">
+              Eight quiet tools, thoughtfully designed for teenage minds — soft on the eyes, gentle on the heart.
+            </p>
+          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {features.map((feature, i) => (
               <Card 
                 key={i}
-                className="scroll-animate opacity-0 translate-y-10 group relative p-6 bg-card/70 dark:bg-slate-900/50 backdrop-blur-xl border-border hover:scale-[1.03] hover:-rotate-[0.5deg] transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 cursor-pointer"
+                className="scroll-animate opacity-0 translate-y-6 group relative p-7 bg-card/60 backdrop-blur-2xl border-border rounded-3xl transition-all duration-500 hover:-translate-y-1 hover:shadow-medium cursor-pointer overflow-hidden"
                 style={{ transitionDelay: `${i * 50}ms` }}
                 onClick={() => navigate(`/app?section=${feature.section}`)}
               >
-                <CornerFlourish className="absolute top-3 right-3 w-6 h-6 text-primary/30 group-hover:text-primary/70 group-hover:rotate-12 transition-all duration-500" />
-                <div className="relative w-16 h-16 mb-4">
-                  <SketchCircle className="absolute inset-0 w-full h-full text-primary/50 group-hover:-rotate-12 transition-transform duration-500" />
-                  <div className={`absolute inset-2 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
+                <span className="absolute top-5 right-6 font-serif italic text-sm text-muted-foreground/70">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="w-12 h-12 mb-6 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 border border-border flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                  <feature.icon className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-primary transition-colors relative inline-block">
+                <h3 className="font-serif text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
                   {feature.title}
-                  <SquiggleUnderline className="absolute -bottom-1.5 left-0 w-full h-2 text-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
-                <div className="mt-4 flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                  Try it now <ArrowRight className="w-4 h-4 ml-1" /> <DoodleStar className="w-3 h-3 ml-1" />
+                <div className="mt-5 pt-5 border-t border-border/60 flex items-center text-primary text-xs tracking-wide">
+                  Enter <ArrowRight className="w-3.5 h-3.5 ml-1.5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Card>
             ))}
@@ -559,85 +492,83 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Testimonial/Value Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/20">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="scroll-animate opacity-0 translate-y-10">
-            <div className="relative w-16 h-16 mx-auto mb-6">
-              <SketchCircle className="absolute inset-0 w-full h-full text-primary/60" />
-              <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary" />
-            </div>
-            <blockquote className="font-display italic text-2xl md:text-3xl font-medium text-foreground mb-8 leading-relaxed">
-              "Your mental health journey is unique, and so is our support. No judgment, no pressure—just a caring companion ready to listen whenever you need."
-            </blockquote>
-            <div className="flex justify-center gap-1 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <WobblyStar key={i} className="w-6 h-6 text-yellow-400" />
-              ))}
-            </div>
-            <p className="text-muted-foreground">
-              Designed with love for teens who deserve support
-            </p>
+      {/* Pull-quote */}
+      <section className="py-24 px-6">
+        <div className="max-w-4xl mx-auto text-center scroll-animate opacity-0 translate-y-6">
+          <Sparkles className="w-6 h-6 text-primary mx-auto mb-8" />
+          <blockquote className="font-serif italic text-3xl md:text-4xl text-foreground leading-[1.35]">
+            "Your mental health journey is unique, and so is our support. No judgement, no pressure — just a caring companion ready to listen whenever you need."
+          </blockquote>
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <span className="h-px w-10 bg-border" />
+            <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">Made for teens who matter</span>
+            <span className="h-px w-10 bg-border" />
           </div>
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section ref={ctaRef} className="py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-600/10 via-purple-600/10 to-blue-600/10" />
-        
-        <div className="max-w-3xl mx-auto text-center relative z-10">
-          <h2 className="scroll-animate opacity-0 translate-y-10 font-display font-semibold tracking-[-0.02em] text-4xl md:text-5xl mb-6 text-foreground">
-            Ready to begin your
-            <span className="block italic font-medium text-primary relative">
-              wellness journey?
-              <SquiggleUnderline className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-64 max-w-full h-3 text-primary/60" />
-            </span>
-          </h2>
-          
-          <p className="scroll-animate opacity-0 translate-y-10 text-xl text-muted-foreground mb-10">
-            Join thousands of teens who've found a safe space to express themselves.
-            It's free, private, and available whenever you need it.
-          </p>
-
-          <div className="scroll-animate opacity-0 translate-y-10">
-            <div className="relative inline-block group">
-              <RoughRing className="absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rotate-1" />
-              <DoodleStar className="absolute -top-3 -left-3 w-5 h-5 text-primary opacity-0 group-hover:opacity-100 group-hover:-rotate-12 transition-all duration-300" />
-              <Button
-                size="lg"
-                onClick={() => navigate("/auth")}
-                className="relative text-base px-14 py-7 bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-300 rounded-full tracking-wide font-display font-semibold group-hover:rotate-[0.5deg]"
-              >
-                <Heart className="w-5 h-5 mr-3" />
-                Start Your Journey
-                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
-              </Button>
+      {/* Final CTA */}
+      <section ref={ctaRef} className="py-28 px-6 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto scroll-animate opacity-0 translate-y-6">
+          <div className="relative rounded-[2.5rem] overflow-hidden border border-border bg-card/60 backdrop-blur-2xl p-12 md:p-20 text-center shadow-medium">
+            <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/25 blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent/25 blur-3xl" />
+            <div className="relative">
+              <span className="text-[10px] tracking-[0.36em] uppercase text-muted-foreground">Begin</span>
+              <h2 className="font-serif text-4xl md:text-6xl mt-4 mb-6 tracking-[-0.02em] text-foreground leading-[1.05]">
+                Ready for a quieter,
+                <br />
+                <span className="italic text-primary">softer</span> chapter?
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
+                It's free, private, and always available. A safe place to talk, reflect, and grow.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/auth")}
+                  className="group text-base px-10 py-6 bg-foreground text-background hover:bg-foreground/90 rounded-full shadow-medium"
+                >
+                  <Heart className="w-4 h-4 mr-2" />
+                  Start your journey
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="ghost"
+                  onClick={() => navigate("/app?section=emergency")}
+                  className="text-base px-6 py-6 rounded-full hover:bg-foreground/5"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Crisis support
+                </Button>
+              </div>
+              <p className="mt-8 text-xs tracking-wide text-muted-foreground">
+                No credit card • No strings attached • Just support when you need it
+              </p>
             </div>
           </div>
-
-          <p className="scroll-animate opacity-0 translate-y-10 mt-8 text-sm text-muted-foreground">
-            No credit card required • No strings attached • Just support when you need it
-          </p>
         </div>
-
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border bg-card/50">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
+      <footer className="py-10 px-6 border-t border-border/60 bg-card/40 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-3">
             <img src={logoImage} alt="MindfulMe" className="w-8 h-8" />
-            <span className="font-semibold text-foreground">MindfulMe</span>
+            <div className="leading-tight">
+              <div className="font-serif text-foreground">MindfulMe</div>
+              <div className="text-[9px] tracking-[0.32em] uppercase text-muted-foreground">Quiet Care</div>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Made with 💙 for teens who matter
+          <p className="font-serif italic text-sm text-muted-foreground">
+            Made with care for teens who matter.
           </p>
-          <div className="flex gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/app?section=emergency")}>
+          <div className="flex gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/app?section=emergency")} className="rounded-full">
               Crisis Support
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/auth")}>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="rounded-full">
               Get Started
             </Button>
           </div>
@@ -647,7 +578,7 @@ const Landing = () => {
       {/* CSS for scroll animations */}
       <style>{`
         .scroll-animate {
-          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+          transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .scroll-animate.animate-in {
           opacity: 1 !important;
