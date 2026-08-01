@@ -1034,30 +1034,36 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         )}
 
         {/* Message Input */}
-        <div className="flex gap-2">
-          <Textarea
-            placeholder={sessionActive ? "Share what's on your mind... (say 'end session' for summary)" : "Session completed - start a new session to continue"}
-            value={userMessage}
-            onChange={(e) => setUserMessage(e.target.value)}
-            className="min-h-[60px] resize-none"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && sessionActive) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
-            disabled={!sessionActive}
-          />
-          <Button 
-            onClick={sessionActive ? handleSendMessage : startNewSession}
-            disabled={(!userMessage.trim() || isLoading) && sessionActive}
-            className="self-end"
-          >
-            {sessionActive 
-              ? (isLoading ? 'Thinking...' : 'Send')
-              : 'New Session'
-            }
-          </Button>
+        <div className="px-2 md:px-0">
+          <div className="relative flex items-center rounded-full bg-card/70 dark:bg-card/50 backdrop-blur-xl border border-border/60 shadow-[0_10px_30px_-14px_hsl(var(--primary)/0.45)] transition-colors focus-within:border-primary/50">
+            <Textarea
+              placeholder={sessionActive ? "Share what's on your mind…" : "Session completed — start a new session"}
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              className="min-h-[56px] max-h-40 resize-none rounded-full border-0 bg-transparent px-6 py-4 pr-16 text-base leading-6 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/70"
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey && sessionActive) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
+              disabled={!sessionActive}
+            />
+            <Button
+              onClick={sessionActive ? handleSendMessage : startNewSession}
+              disabled={(!userMessage.trim() || isLoading) && sessionActive}
+              size="icon"
+              aria-label={sessionActive ? 'Send message' : 'Start new session'}
+              className="absolute right-2 h-10 w-10 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40 shadow-md"
+            >
+              {isLoading && sessionActive ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ArrowUp className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
