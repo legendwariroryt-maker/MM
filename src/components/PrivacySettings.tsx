@@ -59,7 +59,7 @@ const PrivacySettings = () => {
       <CardHeader className="space-y-2">
         <div className="flex items-center gap-2">
           <Shield className="w-6 h-6 text-primary" />
-          <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Parent Reporting Settings
           </CardTitle>
         </div>
@@ -72,7 +72,7 @@ const PrivacySettings = () => {
         {/* Current Status */}
         <div className="flex items-center justify-between p-4 bg-secondary rounded-lg border border-border">
           <div className="flex items-center gap-2">
-            <Settings className="w-5 h-5 text-purple-600" />
+            <Settings className="w-5 h-5 text-primary" />
             <span className="font-medium">Current Setting:</span>
           </div>
           <Badge variant={preferences.privacy_level === 'none' ? 'secondary' : 'default'}>
@@ -90,54 +90,54 @@ const PrivacySettings = () => {
           
           <RadioGroup value={privacyLevel} onValueChange={(value: PrivacyLevel) => setPrivacyLevel(value)}>
             {/* Share All */}
-            <div className="flex items-start space-x-3 p-4 rounded-lg border-2 border-green-200 bg-green-50/50 hover:bg-green-50 transition-colors">
+            <div className="flex items-start space-x-3 p-4 rounded-lg border-2 border-success/30 bg-success/10 hover:bg-success/15 transition-colors">
               <RadioGroupItem value="all" id="all" className="mt-1" />
               <div className="space-y-2 flex-1">
                 <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-green-600" />
-                  <Label htmlFor="all" className="font-semibold text-green-800">Share Everything</Label>
+                  <Eye className="w-4 h-4 text-success" />
+                  <Label htmlFor="all" className="font-semibold text-success">Share Everything</Label>
                 </div>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-foreground/80">
                   Daily emails include: emotion tracking, journal entries, chat conversations, and mindfulness exercises.
                   Perfect for families with open communication.
                 </p>
-                <div className="text-xs text-green-600 font-medium">
+                <div className="text-xs text-foreground/70 font-medium">
                   📧 Daily reports • 📊 Complete wellness data • 💬 Chat summaries
                 </div>
               </div>
             </div>
 
             {/* Share Some */}
-            <div className="flex items-start space-x-3 p-4 rounded-lg border-2 border-blue-200 bg-blue-50/50 hover:bg-blue-50 transition-colors">
+            <div className="flex items-start space-x-3 p-4 rounded-lg border-2 border-primary/30 bg-primary/10 hover:bg-primary/15 transition-colors">
               <RadioGroupItem value="some" id="some" className="mt-1" />
               <div className="space-y-2 flex-1">
                 <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-blue-600" />
-                  <Label htmlFor="some" className="font-semibold text-blue-800">Limited Sharing</Label>
+                  <Heart className="w-4 h-4 text-primary" />
+                  <Label htmlFor="some" className="font-semibold text-primary">Limited Sharing</Label>
                 </div>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-foreground/80">
                   Daily emails include: emotion patterns, exercise completion, and wellness trends.
                   Your private thoughts in journals and chats stay private.
                 </p>
-                <div className="text-xs text-blue-600 font-medium">
+                <div className="text-xs text-foreground/70 font-medium">
                   📊 Emotion summaries • 🧘 Exercise tracking • 🔒 Private journals & chats
                 </div>
               </div>
             </div>
 
             {/* Share None */}
-            <div className="flex items-start space-x-3 p-4 rounded-lg border-2 border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+            <div className="flex items-start space-x-3 p-4 rounded-lg border-2 border-muted-foreground/25 bg-muted hover:bg-muted/80 transition-colors">
               <RadioGroupItem value="none" id="none" className="mt-1" />
               <div className="space-y-2 flex-1">
                 <div className="flex items-center gap-2">
-                  <EyeOff className="w-4 h-4 text-gray-600" />
-                  <Label htmlFor="none" className="font-semibold text-gray-800">Complete Privacy</Label>
+                  <EyeOff className="w-4 h-4 text-muted-foreground" />
+                  <Label htmlFor="none" className="font-semibold text-foreground">Complete Privacy</Label>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-foreground/80">
                   No emails sent to parents. Your wellness journey stays completely private.
                   You have full control over your mental health data.
                 </p>
-                <div className="text-xs text-gray-600 font-medium">
+                <div className="text-xs text-muted-foreground font-medium">
                   🔒 Completely private • 📱 Just for you • 🚫 No parent emails
                 </div>
               </div>
@@ -182,7 +182,7 @@ const PrivacySettings = () => {
           <Button 
             onClick={handleSave} 
             disabled={saving}
-            className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white px-8"
+            className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white px-8"
           >
             {saving ? (
               <div className="flex items-center gap-2">

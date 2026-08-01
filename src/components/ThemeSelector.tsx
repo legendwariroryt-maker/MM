@@ -137,15 +137,15 @@ export const ThemeSelector = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           {/* Decorative circles */}
-          <div className="relative bg-white/40 backdrop-blur-md rounded-lg p-2 mb-2 shadow-sm border border-white/40">
+          <div className="relative bg-white/55 dark:bg-white/15 backdrop-blur-md rounded-lg p-2 mb-2 shadow-sm border border-white/60 dark:border-white/20">
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 bg-white/80 rounded-full" />
-              <div className="h-2 w-14 bg-white/70 rounded-full" />
+              <div className="h-3 w-3 bg-white/85 dark:bg-white/40 rounded-full" />
+              <div className="h-2 w-14 bg-white/75 dark:bg-white/30 rounded-full" />
             </div>
           </div>
-          <div className="relative bg-white/40 backdrop-blur-md rounded-lg p-2 shadow-sm border border-white/40">
-            <div className="h-1.5 w-full bg-white/70 rounded-full mb-1" />
-            <div className="h-1.5 w-3/4 bg-white/60 rounded-full" />
+          <div className="relative bg-white/55 dark:bg-white/15 backdrop-blur-md rounded-lg p-2 shadow-sm border border-white/60 dark:border-white/20">
+            <div className="h-1.5 w-full bg-white/75 dark:bg-white/30 rounded-full mb-1" />
+            <div className="h-1.5 w-3/4 bg-white/65 dark:bg-white/25 rounded-full" />
           </div>
         </div>
         

@@ -736,7 +736,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
               <Collapsible open={historyOpen} onOpenChange={setHistoryOpen} className="flex-1 min-w-0">
                 <CollapsibleTrigger asChild>
                   <button
-                    className="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-xl bg-white/40 backdrop-blur-md border border-white/50 text-sm font-medium text-foreground hover:bg-white/55 transition-all"
+                    className="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-xl bg-white/55 dark:bg-card/60 backdrop-blur-md border border-white/60 dark:border-border/60 text-sm font-medium text-foreground hover:bg-white/70 dark:hover:bg-card/75 transition-all"
                   >
                     <span className="flex items-center gap-2">
                       <History className="w-4 h-4 text-primary" />
@@ -761,7 +761,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                           "group flex items-center gap-2 px-3 py-2 rounded-lg border transition-all",
                           currentConversationId === c.id
                             ? "bg-primary/15 border-primary/40"
-                            : "bg-white/30 border-white/40 hover:bg-white/50",
+                            : "bg-white/40 dark:bg-card/50 border-white/50 dark:border-border/50 hover:bg-white/55 dark:hover:bg-card/65",
                         )}
                       >
                         {renamingId === c.id ? (
@@ -881,11 +881,11 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center overflow-hidden",
                       message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
-                        ? "bg-green-100"
+                        ? "bg-success/20"
                         : "bg-primary/10"
                     )}>
-                      {message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes") 
-                        ? "📋" 
+                      {message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
+                        ? "📋"
                         : <img src={sirHootingtonAvatar} alt="Sir Hootington" className="w-full h-full object-cover" />
                       }
                     </div>
@@ -897,13 +897,13 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                     message.type === 'user'
                       ? "bg-primary text-primary-foreground ml-auto"
                       : message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
-                      ? "bg-green-50 border border-green-200"
+                      ? "bg-success/15 border border-success/30"
                       : "bg-muted"
                   )}
                 >
                   <p className="text-sm">{message.message}</p>
                   {(message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")) && (
-                    <div className="mt-2 pt-2 border-t border-green-200 text-xs text-green-600">
+                    <div className="mt-2 pt-2 border-t border-success/30 text-xs text-success">
                       📋 Session Summary
                     </div>
                   )}
@@ -934,7 +934,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
           {!isNearBottom && (
             <button
               onClick={() => { setIsNearBottom(true); scrollToBottom(true); }}
-              className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-md text-xs font-medium text-foreground hover:bg-white/90 transition-all animate-fade-in"
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 dark:bg-card/70 backdrop-blur-md border border-white/60 dark:border-border/60 shadow-md text-xs font-medium text-foreground hover:bg-white/90 dark:hover:bg-card/85 transition-all animate-fade-in"
               aria-label="Jump to latest"
             >
               <ArrowDown className="w-3.5 h-3.5" />
@@ -958,7 +958,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
               variant="default" 
               size="sm" 
               onClick={startNewSession}
-              className="text-xs bg-green-600 hover:bg-green-700"
+              className="text-xs bg-success hover:bg-success/90 text-success-foreground"
             >
               Start New Session
             </Button>

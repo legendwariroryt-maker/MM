@@ -66,6 +66,9 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --sidebar-accent-foreground: 280 22% 22%;
     --sidebar-border: 345 40% 86%;
     --sidebar-ring: 270 47% 63%;
+
+    --glass-bg: 0 0% 100% / 0.55;
+    --glass-border: 0 0% 100% / 0.6;
   }
 
   /* Lavender Mist (Light) */
@@ -103,7 +106,31 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --input: 280 25% 88%;
     --ring: 270 60% 60%;
 
+    --emotion-happy: 55 95% 68%;
+    --emotion-sad: 220 60% 65%;
+    --emotion-angry: 0 70% 65%;
+    --emotion-anxious: 280 50% 70%;
+    --emotion-calm: 160 40% 70%;
+    --emotion-stressed: 30 80% 65%;
+
     --gradient-bg: linear-gradient(135deg, hsl(280, 40%, 96%), hsl(330, 35%, 93%));
+
+    --shadow-soft: 0 1px 2px hsl(280 30% 30% / 0.04);
+    --shadow-medium: 0 8px 24px hsl(280 30% 30% / 0.08);
+
+    --radius: 1.25rem;
+
+    --sidebar-background: 280 35% 97%;
+    --sidebar-foreground: 280 50% 25%;
+    --sidebar-primary: 270 60% 60%;
+    --sidebar-primary-foreground: 270 30% 98%;
+    --sidebar-accent: 280 25% 92%;
+    --sidebar-accent-foreground: 280 50% 25%;
+    --sidebar-border: 280 25% 88%;
+    --sidebar-ring: 270 60% 60%;
+
+    --glass-bg: 280 35% 98% / 0.55;
+    --glass-border: 280 25% 90% / 0.6;
   }
 
   /* Morning Meadow (Light) */
@@ -141,7 +168,19 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --input: 150 18% 90%;
     --ring: 158 38% 40%;
 
+    --emotion-happy: 55 90% 62%;
+    --emotion-sad: 215 55% 60%;
+    --emotion-angry: 0 65% 60%;
+    --emotion-anxious: 280 45% 65%;
+    --emotion-calm: 160 40% 65%;
+    --emotion-stressed: 30 75% 60%;
+
     --gradient-bg: linear-gradient(135deg, hsl(150, 22%, 94%), hsl(140, 18%, 90%));
+
+    --shadow-soft: 0 1px 2px hsl(160 30% 30% / 0.04);
+    --shadow-medium: 0 8px 24px hsl(160 30% 30% / 0.08);
+
+    --radius: 1.25rem;
 
     --sidebar-background: 150 22% 95%;
     --sidebar-foreground: 160 22% 22%;
@@ -151,150 +190,198 @@ All colors MUST be HSL. Calming themes for teen mental health.
     --sidebar-accent-foreground: 160 28% 18%;
     --sidebar-border: 150 18% 86%;
     --sidebar-ring: 158 38% 40%;
+
+    --glass-bg: 150 25% 98% / 0.6;
+    --glass-border: 150 18% 88% / 0.6;
   }
 
-  /* Midnight Calm (Dark) */
+  /* Midnight Calm (Dark) — moonlit ocean */
   [data-theme="midnight-calm"],
   .dark[data-theme="midnight-calm"] {
-    --background: 230 30% 8%;
-    --foreground: 220 20% 90%;
+    --background: 230 40% 6%;
+    --foreground: 220 25% 92%;
 
-    --card: 230 25% 12%;
-    --card-foreground: 220 20% 90%;
+    --card: 230 35% 10%;
+    --card-foreground: 220 25% 92%;
 
-    --popover: 230 25% 12%;
-    --popover-foreground: 220 20% 90%;
+    --popover: 230 35% 10%;
+    --popover-foreground: 220 25% 92%;
 
-    --primary: 240 60% 60%;
+    --primary: 240 70% 68%;
     --primary-foreground: 240 30% 98%;
-    --primary-hover: 240 60% 52%;
+    --primary-hover: 240 70% 60%;
 
     --secondary: 250 30% 22%;
-    --secondary-foreground: 250 25% 80%;
+    --secondary-foreground: 220 30% 88%;
 
-    --muted: 230 20% 18%;
-    --muted-foreground: 230 15% 55%;
+    --muted: 230 25% 15%;
+    --muted-foreground: 220 18% 68%;
 
-    --accent: 270 50% 55%;
-    --accent-foreground: 270 20% 95%;
+    --accent: 215 60% 60%;
+    --accent-foreground: 215 30% 98%;
 
-    --destructive: 0 55% 50%;
+    --destructive: 0 60% 52%;
     --destructive-foreground: 0 20% 95%;
-    --success: 140 50% 45%;
-    --success-foreground: 140 20% 95%;
-    --warning: 45 80% 55%;
-    --warning-foreground: 45 20% 15%;
+    --success: 155 55% 50%;
+    --success-foreground: 155 25% 96%;
+    --warning: 42 85% 60%;
+    --warning-foreground: 42 25% 12%;
 
-    --border: 230 20% 18%;
-    --input: 230 20% 18%;
-    --ring: 240 60% 60%;
+    --border: 230 28% 16%;
+    --input: 230 28% 16%;
+    --ring: 240 70% 68%;
 
-    --gradient-bg: linear-gradient(135deg, hsl(230, 30%, 8%), hsl(250, 35%, 12%));
+    --emotion-happy: 50 90% 65%;
+    --emotion-sad: 220 55% 68%;
+    --emotion-angry: 0 65% 65%;
+    --emotion-anxious: 270 55% 70%;
+    --emotion-calm: 195 50% 65%;
+    --emotion-stressed: 30 80% 65%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --gradient-bg: linear-gradient(135deg, hsl(230, 40%, 6%), hsl(250, 45%, 10%));
+
+    --shadow-soft: 0 1px 2px hsl(230 50% 4% / 0.4);
+    --shadow-medium: 0 8px 24px hsl(230 50% 4% / 0.5);
+
+    --radius: 1.25rem;
+
+    --sidebar-background: 232 38% 8%;
+    --sidebar-foreground: 220 25% 90%;
+    --sidebar-primary: 240 70% 68%;
+    --sidebar-primary-foreground: 240 30% 98%;
+    --sidebar-accent: 230 28% 16%;
+    --sidebar-accent-foreground: 220 25% 90%;
+    --sidebar-border: 230 28% 18%;
+    --sidebar-ring: 240 70% 68%;
+
+    --glass-bg: 230 38% 11% / 0.6;
+    --glass-border: 220 45% 70% / 0.18;
   }
 
-  /* Aurora Night (Dark) */
+  /* Aurora Night (Dark) — purple twilight */
   [data-theme="aurora-night"],
   .dark[data-theme="aurora-night"] {
-    --background: 280 35% 6%;
-    --foreground: 280 15% 90%;
+    --background: 280 42% 4%;
+    --foreground: 285 22% 92%;
 
-    --card: 280 30% 10%;
-    --card-foreground: 280 15% 90%;
+    --card: 285 35% 8%;
+    --card-foreground: 285 22% 92%;
 
-    --popover: 280 30% 10%;
-    --popover-foreground: 280 15% 90%;
+    --popover: 285 35% 8%;
+    --popover-foreground: 285 22% 92%;
 
-    --primary: 300 65% 55%;
+    --primary: 300 75% 62%;
     --primary-foreground: 300 25% 98%;
-    --primary-hover: 300 65% 48%;
+    --primary-hover: 300 75% 55%;
 
-    --secondary: 290 25% 20%;
-    --secondary-foreground: 290 20% 80%;
+    --secondary: 290 30% 22%;
+    --secondary-foreground: 290 25% 88%;
 
-    --muted: 280 20% 15%;
-    --muted-foreground: 280 12% 55%;
+    --muted: 285 25% 13%;
+    --muted-foreground: 285 18% 70%;
 
-    --accent: 185 65% 50%;
-    --accent-foreground: 185 20% 95%;
+    --accent: 320 70% 65%;
+    --accent-foreground: 320 25% 98%;
 
-    --destructive: 0 55% 50%;
-    --destructive-foreground: 0 20% 95%;
-    --success: 140 50% 45%;
-    --success-foreground: 140 20% 95%;
-    --warning: 45 80% 55%;
-    --warning-foreground: 45 20% 15%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 20% 96%;
+    --success: 155 55% 50%;
+    --success-foreground: 155 25% 96%;
+    --warning: 42 85% 60%;
+    --warning-foreground: 42 25% 12%;
 
-    --border: 280 20% 15%;
-    --input: 280 20% 15%;
-    --ring: 300 65% 55%;
+    --border: 285 28% 14%;
+    --input: 285 28% 14%;
+    --ring: 300 75% 62%;
 
-    --gradient-bg: linear-gradient(135deg, hsl(280, 35%, 6%), hsl(260, 40%, 10%));
+    --emotion-happy: 50 90% 65%;
+    --emotion-sad: 220 60% 70%;
+    --emotion-angry: 0 70% 68%;
+    --emotion-anxious: 300 55% 70%;
+    --emotion-calm: 280 50% 68%;
+    --emotion-stressed: 30 80% 65%;
 
-    --sidebar-background: 280 25% 8%;
-    --sidebar-foreground: 280 15% 90%;
-    --sidebar-primary: 300 65% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 280 20% 15%;
-    --sidebar-accent-foreground: 280 15% 90%;
-    --sidebar-border: 280 20% 15%;
-    --sidebar-ring: 300 65% 55%;
+    --gradient-bg: linear-gradient(135deg, hsl(280, 42%, 4%), hsl(260, 45%, 8%));
+
+    --shadow-soft: 0 1px 2px hsl(280 60% 2% / 0.4);
+    --shadow-medium: 0 8px 24px hsl(280 60% 2% / 0.5);
+
+    --radius: 1.25rem;
+
+    --sidebar-background: 285 38% 6%;
+    --sidebar-foreground: 285 22% 90%;
+    --sidebar-primary: 300 75% 62%;
+    --sidebar-primary-foreground: 300 25% 98%;
+    --sidebar-accent: 285 28% 14%;
+    --sidebar-accent-foreground: 285 22% 90%;
+    --sidebar-border: 285 28% 16%;
+    --sidebar-ring: 300 75% 62%;
+
+    --glass-bg: 285 35% 9% / 0.6;
+    --glass-border: 300 55% 75% / 0.22;
   }
 
-  /* Forest Twilight (Dark) */
+  /* Forest Twilight (Dark) — starry forest */
   [data-theme="forest-twilight"],
   .dark[data-theme="forest-twilight"] {
-    --background: 222 45% 7%;
-    --foreground: 220 20% 90%;
+    --background: 222 50% 5%;
+    --foreground: 215 25% 92%;
 
-    --card: 222 38% 11%;
-    --card-foreground: 220 20% 90%;
+    --card: 222 42% 9%;
+    --card-foreground: 215 25% 92%;
 
-    --popover: 222 38% 11%;
-    --popover-foreground: 220 20% 90%;
+    --popover: 222 42% 9%;
+    --popover-foreground: 215 25% 92%;
 
-    --primary: 215 70% 62%;
+    --primary: 215 80% 68%;
     --primary-foreground: 220 30% 98%;
-    --primary-hover: 215 70% 55%;
+    --primary-hover: 215 80% 60%;
 
-    --secondary: 222 30% 20%;
-    --secondary-foreground: 220 20% 80%;
+    --secondary: 222 32% 22%;
+    --secondary-foreground: 215 25% 88%;
 
-    --muted: 222 28% 16%;
-    --muted-foreground: 220 14% 60%;
+    --muted: 222 30% 14%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 195 70% 55%;
+    --accent: 195 75% 60%;
     --accent-foreground: 195 30% 98%;
 
-    --destructive: 0 55% 50%;
-    --destructive-foreground: 0 20% 95%;
-    --success: 140 50% 45%;
-    --success-foreground: 140 20% 95%;
-    --warning: 45 80% 55%;
-    --warning-foreground: 45 20% 15%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 20% 96%;
+    --success: 155 55% 50%;
+    --success-foreground: 155 25% 96%;
+    --warning: 42 85% 60%;
+    --warning-foreground: 42 25% 12%;
 
-    --border: 222 28% 16%;
-    --input: 222 28% 16%;
-    --ring: 215 70% 62%;
+    --border: 222 32% 16%;
+    --input: 222 32% 16%;
+    --ring: 215 80% 68%;
 
-    --gradient-bg: linear-gradient(135deg, hsl(222, 45%, 7%), hsl(230, 50%, 11%));
+    --emotion-happy: 50 90% 65%;
+    --emotion-sad: 220 60% 70%;
+    --emotion-angry: 0 70% 68%;
+    --emotion-anxious: 270 55% 70%;
+    --emotion-calm: 195 65% 65%;
+    --emotion-stressed: 30 80% 65%;
 
-    --sidebar-background: 222 40% 9%;
-    --sidebar-foreground: 220 18% 90%;
-    --sidebar-primary: 215 70% 62%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 28% 16%;
-    --sidebar-accent-foreground: 220 18% 90%;
-    --sidebar-border: 222 28% 18%;
-    --sidebar-ring: 215 70% 62%;
+    --gradient-bg: linear-gradient(135deg, hsl(222, 50%, 5%), hsl(230, 55%, 9%));
+
+    --shadow-soft: 0 1px 2px hsl(222 60% 2% / 0.4);
+    --shadow-medium: 0 8px 24px hsl(222 60% 2% / 0.5);
+
+    --radius: 1.25rem;
+
+    --sidebar-background: 222 42% 7%;
+    --sidebar-foreground: 215 25% 90%;
+    --sidebar-primary: 215 80% 68%;
+    --sidebar-primary-foreground: 220 30% 98%;
+    --sidebar-accent: 222 32% 16%;
+    --sidebar-accent-foreground: 215 25% 90%;
+    --sidebar-border: 222 32% 18%;
+    --sidebar-ring: 215 80% 68%;
+
+    --glass-bg: 222 38% 10% / 0.6;
+    --glass-border: 195 55% 75% / 0.22;
   }
 
   /* Legacy dark mode fallback */

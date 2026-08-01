@@ -47,7 +47,7 @@ export function ThemeQuickSwitcher() {
         side="right"
         align="start"
         sideOffset={10}
-        className="w-64 p-3 rounded-2xl border border-white/40 dark:border-white/10 bg-white/70 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0_20px_60px_-20px_rgba(120,90,160,0.35)]"
+        className="w-64 p-3 rounded-2xl border border-white/60 dark:border-border/60 bg-white/70 dark:bg-card/75 backdrop-blur-2xl shadow-[0_20px_60px_-20px_rgba(120,90,160,0.35)]"
       >
         <div className="flex items-center justify-between mb-3 px-1">
           <p className="text-[10px] tracking-[0.22em] uppercase font-semibold text-foreground/70">
@@ -66,7 +66,7 @@ export function ThemeQuickSwitcher() {
                 className={`group relative flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all hover:-translate-y-0.5 ${
                   active
                     ? "border-primary bg-primary/10 shadow-[0_4px_18px_-6px_hsl(var(--primary)/0.5)]"
-                    : "border-white/50 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-primary/50"
+                    : "border-white/55 dark:border-border/55 bg-white/55 dark:bg-card/55 hover:border-primary/50"
                 }`}
               >
                 <div className="relative w-full h-8 rounded-lg overflow-hidden flex">
