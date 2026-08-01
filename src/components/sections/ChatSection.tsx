@@ -10,7 +10,7 @@ import { ChatMessage } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ArrowUp, Loader2 } from "lucide-react";
 import { chatStore, useChatStore } from "@/stores/chatStore";
 import { useThemeAvatar } from "@/lib/themeAvatars";
 import sirHootingtonImg from "@/assets/sir-hootington-sitting.png";
