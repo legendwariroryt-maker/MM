@@ -893,7 +893,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
                 )}
                 <div
                   className={cn(
-                    "max-w-xs px-4 py-2 rounded-lg whitespace-pre-wrap",
+                    "max-w-[85%] md:max-w-xs px-4 py-2 rounded-lg whitespace-pre-wrap",
                     message.type === 'user'
                       ? "bg-primary text-primary-foreground ml-auto"
                       : message.message.includes("SESSION SUMMARY") || message.message.includes("Key Themes")
