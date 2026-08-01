@@ -43,7 +43,7 @@ const SESSION_END_KEYWORDS = [
 ];
 
 // Get Groq API key from environment variable
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '***REMOVED***';
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
 
 // System prompt with personality type support
 const System_prompt = `# SIR HOOTINGTON - WISE OWL THERAPEUTIC COMPANION
