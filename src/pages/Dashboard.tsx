@@ -15,7 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { themeBackgrounds, themeAvatars } from "@/lib/themeAvatars";
-import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart } from "lucide-react";
+import { MessageCircle, BarChart3, BookOpen, Flower2, Brain, Wind, Sparkles, Sprout, Heart, Palette } from "lucide-react";
 import { ThemeQuickSwitcher } from "@/components/ThemeQuickSwitcher";
 
 const sectionLabels: Record<AppSection, { eyebrow: string; title: string; subtitle: string }> = {
@@ -186,8 +186,8 @@ const Dashboard = () => {
                   Your personal mental wellness companion
                 </p>
 
-                {/* Pills */}
-                <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                {/* Pills — hidden on mobile to keep chat within reach */}
+                <div className="mt-7 hidden md:flex flex-wrap items-center justify-center gap-3">
                   {[
                     { label: "Breathe", Icon: Wind, target: "mindfulness" as AppSection },
                     { label: "Reflect", Icon: Sparkles, target: "journal" as AppSection },
@@ -205,8 +205,8 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Feature cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+              {/* Feature cards — hidden on mobile */}
+              <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
                 {featureCards.map(({ key, label, desc, Icon }) => (
                   <button
                     key={key}
@@ -224,6 +224,21 @@ const Dashboard = () => {
                     </p>
                   </button>
                 ))}
+                {/* Tablet-only quick access to Themes */}
+                <button
+                  onClick={() => setActiveSection("themes")}
+                  className="group relative hidden md:flex lg:hidden flex-col items-center text-center p-5 rounded-2xl bg-white/55 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/15 hover:bg-white/70 dark:hover:bg-white/20 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(120,90,160,0.35)] transition-all"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-primary/15 dark:bg-primary/25 flex items-center justify-center mb-3 group-hover:bg-primary/25 dark:group-hover:bg-primary/35 transition-colors">
+                    <Palette className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-serif text-sm md:text-base text-foreground leading-snug">
+                    Themes
+                  </h3>
+                  <p className="mt-1 text-[11px] text-foreground/70 leading-snug">
+                    Switch the mood
+                  </p>
+                </button>
               </div>
 
               {/* Chat preview card */}
