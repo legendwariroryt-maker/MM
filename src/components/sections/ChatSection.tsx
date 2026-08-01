@@ -728,7 +728,7 @@ ${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
         </CardDescription>
       </CardHeader>
       )}
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 px-0 md:px-6">
         {/* History + Temporary chat controls */}
         {user && (
           <div className="space-y-3">
