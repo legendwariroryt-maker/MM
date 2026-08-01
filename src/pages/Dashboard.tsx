@@ -270,8 +270,8 @@ const Dashboard = () => {
               </div>
             </section>
           ) : activeSection === "chat" ? (
-            <section key="chat" className="px-6 lg:px-12 pt-4 pb-10 max-w-4xl mx-auto w-full chat-enter">
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-6">
+            <section key="chat" className="px-0 md:px-6 lg:px-12 pt-4 pb-10 max-w-4xl mx-auto w-full chat-enter">
+              <div className="px-6 md:px-0 flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-6">
                 <div>
                   <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
                     {meta.title}
