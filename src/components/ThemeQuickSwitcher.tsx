@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Palette, Check } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { useThemeId } from "@/lib/themeAvatars";
@@ -29,13 +30,15 @@ function applyTheme(id: string) {
 
 export function ThemeQuickSwitcher() {
   const currentTheme = useThemeId();
+  const [open, setOpen] = useState(false);
 
   return (
-    <HoverCard openDelay={80} closeDelay={120}>
+    <HoverCard open={open} onOpenChange={setOpen} openDelay={80} closeDelay={120}>
       <HoverCardTrigger asChild>
         <button
           aria-label="Quick themes"
-          className="group flex items-center justify-center w-9 h-9 rounded-xl bg-card/60 backdrop-blur-sm border border-border/50 text-foreground/70 hover:text-foreground hover:bg-card/80 transition-all hover:-translate-y-0.5"
+          onClick={() => setOpen((v) => !v)}
+          className="group flex items-center justify-center h-7 w-7 rounded-xl bg-card/60 backdrop-blur-sm border border-border/50 text-foreground/70 hover:text-foreground hover:bg-card/80 transition-all hover:-translate-y-0.5"
         >
           <Palette className="w-4 h-4 transition-transform group-hover:rotate-12" />
         </button>
@@ -84,7 +87,7 @@ export function ThemeQuickSwitcher() {
           })}
         </div>
         <p className="mt-3 text-[10px] text-center text-muted-foreground">
-          Hover the palette anytime · saves automatically
+          Click or hover the palette anytime · saves automatically
         </p>
       </HoverCardContent>
     </HoverCard>
